@@ -43,11 +43,11 @@ function table_product_to_campaign() {
     wp_enqueue_script( 'product-assign-campaign-js', plugins_url( '/unidress/admin/js/product-assign-campaign.js'), array( 'jquery' ) );
 
     $post_meta  = get_post_meta($post->ID,'', true);
-
     foreach ($post_meta as $key=>$meta) {
 		if (is_serialized($meta[0]))
 			$post_meta[$key][0] = unserialize((string)$meta[0]);
     }
+
 
     if (isset($post_meta['kits'][0])) {
         $kits = $post_meta['kits'][0];
@@ -280,6 +280,7 @@ function render_product_to_project( $post_meta='') {
                     <td class="column-name"><?php echo esc_attr__( 'Name', 'unidress' )?></td>
                     <td class="column-graphics"><?php echo esc_attr__( 'Graphics', 'unidress' )?></td>
                     <td class="column-sku"><?php echo esc_attr__( 'SKU', 'unidress' )?></td>
+                    <td class="column-sku"><?php echo esc_attr__( 'Warehouse', 'unidress' )?></td>
                     <td class="column-price"><?php echo esc_attr__( 'Price', 'unidress' )?></td>
                     <td class="column-button"><a class="btn-remove-all-product btn-simple"><?php echo esc_attr__( 'Remove all', 'unidress' )?></a></td>
                     <td class="column-button"><?php echo esc_attr__( 'Variation', 'unidress' )?></a></td>
@@ -307,6 +308,7 @@ function render_product_to_project( $post_meta='') {
 function render_product_to_campaign($kit, $post_meta='') {
 
     $already_assign_product = json_decode (($post_meta['add_product_to_campaign'][0])[$kit]);
+
     ?>
     <div class="section-product">
         <div class="product-wrapper table-wrapper">
@@ -365,6 +367,7 @@ function render_product_to_campaign($kit, $post_meta='') {
                     <td class="column-image"><span class="wc-image tips" title="<?php echo __( 'Image', 'unidress' ) ?>"><?php echo __( 'Image', 'unidress' ) ?></span></td>
                     <td class="column-name"><?php echo esc_attr__( 'Name', 'unidress' )?></td>
                     <td class="column-sku"><?php echo esc_attr__( 'SKU', 'unidress' )?></td>
+                    <td class="column-price"><?php echo esc_attr__( 'Warehouse', 'unidress' )?></td>
                     <td class="column-option"><?php echo esc_attr__( 'Assignment Group', 'unidress' )?></td>
                     <td class="column-option"><?php echo esc_attr__( 'Required Products', 'unidress' )?></td>
                     <td class="column-price"><?php echo esc_attr__( 'Price', 'unidress' )?></td>
@@ -438,11 +441,11 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
         if (isset( $post_meta['product_option'][0] ))
             $product_option = $post_meta['product_option'][0];
 
+
         foreach( $already_assign_product as $post_id ){
 
             $product                        = wc_get_product( $post_id );
             $product_meta                   = get_post_meta($post_id, '',true);
-
             $data['id']                     = $post_id;
             $data['title']                  = render_name_column($post_id);
 	        $data['image']                  = render_thumb_column($post_id);
@@ -465,6 +468,7 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
 }
 
 function add_t_body_row($data, $assign = false ) {
+    var_dump($data);
     $row = '<tr data-id="' . $data['id'] . '">';
     $row .=     '<td class="column-image">' . $data['image'] .    '</td>';
     if ($assign) {
@@ -478,11 +482,11 @@ function add_t_body_row($data, $assign = false ) {
 
     $row .=     '<td class="column-sku">'   . $data['sku']   .    '</td>';
 
-    if (isset($data['kit']) && $data['kit'] !=''  && $data['kit'] !='0' && $assign) {
-        $row .=     '<td class="column-option">'   . get_assign_group_select($data)   .    '</td>';
-        $row .=     '<td class="column-option">'   . get_required_products_select($data)   .    '</td>';
-    }
+
+
     if (!$assign) {
+
+
 	    $row .= '<td class="column-price"><input type="number" step="any" value="' . $data['price'] . '"></td>';
 
         $row .= '<td class="column-button">';
@@ -490,8 +494,22 @@ function add_t_body_row($data, $assign = false ) {
             $row .= '<a class="btn-add-product btn-simple" data-id="' . $data['id'] . '">' . __( 'Add', 'unidress' ) . '</a>';
 	    $row .= '</td>';
     } else {
+
+        // TEST
+        $row .= ' <td><input type="text" name="" placeholder="" value=""></td>';
+        // TEST
+        // CHANGE
+        if (isset($data['kit']) && $data['kit'] !=''  && $data['kit'] !='0' && $assign) {
+            $row .=     '<td class="column-option">' . get_assign_group_select($data)   .    '</td>';
+            $row .=     '<td class="column-option">' . get_required_products_select($data)   .    '</td>';
+        }
+        // CHANGE
+
 	    $row .= '<td class="column-price"><input type="number" step="any" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][price]" placeholder="' . $data['price'] . '" value="' . ( (isset($data['product_option']['price']) && $data['product_option']['price'] != '0') ? $data['product_option']['price'] : "") . '"></td>';
 	    $row .= '<td class="column-button"><a class="btn-remove-product btn-simple" data-id="' . $data['id'] . '">Remove</a></td>';
+
+        
+
 
         if ($data['variation'] == 'variable') {
             $row .= '<td class="column-button"><a class="show-product-variation btn-simple">' . esc_attr__( 'Variation', 'unidress' ) . '</a></td>';
@@ -751,6 +769,8 @@ add_action('save_post', 'save_table_product_to_project');
 
 function save_table_product_to_project( $post_id ) {
 
+    
+
     if ( !isset( $_POST['table_product_to_project_nonce'] )
         || !wp_verify_nonce( $_POST['table_product_to_project_nonce'], basename( __FILE__ ) ) )
         return $post_id;
@@ -769,6 +789,7 @@ function save_table_product_to_project( $post_id ) {
 
 add_action('save_post', 'save_table_product_to_campaign');
 function save_table_product_to_campaign( $post_id, $data = '' ) {
+
     if ( isset($_POST['action']) && ($_POST['action'] != 'editpost') && ($data != '') )
 	    $_POST = $data;
 
