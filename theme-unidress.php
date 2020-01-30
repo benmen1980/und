@@ -11,7 +11,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
-
+define( 'MY_PLUGIN_ROOT', dirname( __FILE__) );
+define( 'MY_PLUGIN_NAME', plugin_basename(__DIR__) );
 /**
  * Main Theme_unidress Class
  *

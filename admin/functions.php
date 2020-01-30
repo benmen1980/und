@@ -11,6 +11,14 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
+define( 'MY_PLUGIN_ROOT_ADMIN', MY_PLUGIN_ROOT . '/admin' );
+
+
+require_once MY_PLUGIN_ROOT_ADMIN . '/include/functions/post-type-customers.php';
+
+
+//требуем указать заголовок и отрывок end
+
 add_action('admin_head', 'unidress_style_script');
 function unidress_style_script(){
     wp_enqueue_style( 'style-admin', plugins_url( '/style-admin.css', __FILE__ ) );
