@@ -468,7 +468,6 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
 }
 
 function add_t_body_row($data, $assign = false ) {
-    var_dump($data);
     $row = '<tr data-id="' . $data['id'] . '">';
     $row .=     '<td class="column-image">' . $data['image'] .    '</td>';
     if ($assign) {
