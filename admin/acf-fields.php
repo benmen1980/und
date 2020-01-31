@@ -288,7 +288,7 @@ if( function_exists('acf_add_local_field_group') ):
                 'name' => 'customer_type',
                 'type' => 'select',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => 0,
                 'wrapper' => array(
                     'width' => '',
@@ -300,8 +300,9 @@ if( function_exists('acf_add_local_field_group') ):
                     'campaign' => 'Campaign customer',
                 ),
                 'default_value' => array(
+                    // 'test' => 'Project customer',
                 ),
-                'allow_null' => 0,
+                'allow_null' => true,
                 'multiple' => 0,
                 'ui' => 0,
                 'return_format' => 'label',
@@ -400,7 +401,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'name' => 'active_campaign',
 		        'type' => 'post_object',
 		        'instructions' => '',
-		        'required' => 0,
+		        'required' => 1,
 		        'conditional_logic' => array(
 			        array(
 				        array(
@@ -419,10 +420,11 @@ if( function_exists('acf_add_local_field_group') ):
 			        0 => 'campaign',
 		        ),
 		        'taxonomy' => '',
-		        'allow_null' => 0,
+		        'allow_null' => 1,
 		        'multiple' => 0,
 		        'return_format' => 'object',
 		        'ui' => 1,
+                'placeholder' => 'no active project',
 	        ),
 	        array(
 		        'key' => 'field_5ced1313470b2',
@@ -430,7 +432,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'name' => 'active_campaign',
 		        'type' => 'post_object',
 		        'instructions' => '',
-		        'required' => 0,
+		        'required' => 1,
 		        'conditional_logic' => array(
 			        array(
 				        array(
@@ -449,10 +451,11 @@ if( function_exists('acf_add_local_field_group') ):
 			        0 => 'project',
 		        ),
 		        'taxonomy' => '',
-		        'allow_null' => 0,
+		        'allow_null' => 1,
 		        'multiple' => 0,
 		        'return_format' => 'object',
 		        'ui' => 1,
+                'placeholder' => 'no active project',
 	        ),
             array(
                 //'key' => 'field_5c91f9674933c',

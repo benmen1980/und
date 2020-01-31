@@ -390,3 +390,8 @@
 .filter-users-report > *:last-child {
     margin: 0 6px;
 }
+
+
+input.error{
+    border: 1px solid red;
+}

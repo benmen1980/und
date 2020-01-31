@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'MY_PLUGIN_ROOT_ADMIN', MY_PLUGIN_ROOT . '/admin' );
 
 
-require_once MY_PLUGIN_ROOT_ADMIN . '/include/functions/post-type-customers.php';
+require_once MY_PLUGIN_ROOT_ADMIN . '/include/functions/functions.php';
 
 
 //требуем указать заголовок и отрывок end
