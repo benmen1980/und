@@ -9,7 +9,7 @@
             if( !input.val().length ) {
             	
                 var temp = new Object();
-                temp["input"] = "post_title";
+                temp["input"] = "_post_title";
                 temp["message"] = "A Title is required";
                 error();
 
@@ -31,10 +31,12 @@
                     
         });
         function error() {
-        	input.addClass('error');
-            $('html, body').animate({
-		        scrollTop: $('body').offset().top
-		    }, 400);
+        	// setTimeout(function () {
+                input.addClass('error');
+                // $('html, body').animate({
+                //     scrollTop: $('body').offset().top
+                // }, 400);
+            // }, 100);
         }
         input.focus(function(event) {
         	$(this).removeClass('error');
