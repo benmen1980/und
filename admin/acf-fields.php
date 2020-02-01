@@ -42,7 +42,7 @@ if( function_exists('acf_add_local_field_group') ):
                 'name' => 'branch_priority_number',
                 'type' => 'text',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => 0,
                 'wrapper' => array(
 	                'width' => '50',
@@ -61,7 +61,7 @@ if( function_exists('acf_add_local_field_group') ):
                 'name' => 'branch_customer',
                 'type' => 'post_object',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => 0,
                 'wrapper' => array(
                     'width' => '',

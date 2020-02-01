@@ -1,5 +1,5 @@
 (function($) {
-    
+
     $(document).ready(function(){
         var input = $("input#title");
         acf.add_filter('validation_complete', function( json, $form ){
@@ -23,8 +23,7 @@
                 // push the error
                 json.errors.push(temp);
             }
-            // console.log(json);
-            // console.log($form);
+            console.log($form);
             
             // return
             return json;
