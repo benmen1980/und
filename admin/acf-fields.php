@@ -296,18 +296,19 @@ if( function_exists('acf_add_local_field_group') ):
                     'id' => '',
                 ),
                 'choices' => array(
+                    'none' => 'none',
                     'project' => 'Project customer',
                     'campaign' => 'Campaign customer',
                 ),
                 'default_value' => array(
-                    // 'test' => 'Project customer',
+                    'none' => 'none',
                 ),
-                'allow_null' => true,
+                'allow_null' => 0,
                 'multiple' => 0,
                 'ui' => 0,
                 'return_format' => 'label',
                 'ajax' => 0,
-                'placeholder' => '',
+                'placeholder' => 'none',
             ),
             array(
                 'key' => 'field_5c9200c20756a',
@@ -424,7 +425,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'multiple' => 0,
 		        'return_format' => 'object',
 		        'ui' => 1,
-                'placeholder' => 'no active project',
+                'placeholder' => '',
 	        ),
 	        array(
 		        'key' => 'field_5ced1313470b2',
@@ -455,7 +456,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'multiple' => 0,
 		        'return_format' => 'object',
 		        'ui' => 1,
-                'placeholder' => 'no active project',
+                'placeholder' => '',
 	        ),
             array(
                 //'key' => 'field_5c91f9674933c',
