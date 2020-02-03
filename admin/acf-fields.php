@@ -425,7 +425,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'multiple' => 0,
 		        'return_format' => 'object',
 		        'ui' => 1,
-                'placeholder' => 'no active project',
+                'placeholder' => 'no active campaign',
 	        ),
 	        array(
 		        'key' => 'field_5ced1313470b2',
