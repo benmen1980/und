@@ -9,12 +9,29 @@ function add_table_product_to_campaign() {
     add_meta_box('add-product-to-campaign', __( 'Kit on Campaign', 'unidress' ), 'table_product_to_campaign', 'campaign', 'normal');
 }
 
+// function unid_assign_product_unserialize($meta) {
+    
+// }
+
 function table_product_to_project() {
 	global $post;
     wp_nonce_field( basename( __FILE__ ), 'table_product_to_project_nonce' );
     wp_enqueue_script( 'product-assign-js', plugins_url( '/unidress/admin/js/product-assign-project.js'), array( 'jquery' ) );
 
     $post_meta  = get_post_meta($post->ID,'', true);
+    foreach ($post_meta as $key=>$meta) {
+        if (is_serialized($meta[0]))
+            $post_meta[$key][0] = unserialize((string)$meta[0]);
+    }
+    
+
+    // if (isset($post_meta['kits'][0])) {
+    //     $kits = $post_meta['kits'][0];
+    // } else {
+    //     $kits = '';
+    // }
+
+
     echo '<section id="section-0" class="assign-products-meta-box">';
         $current_customer = isset($post_meta['project_customer'][0]) ? $post_meta['project_customer'][0]:  false;
         $current_customer_campaign = get_post_meta($current_customer, 'active_campaign', true);
@@ -495,8 +512,9 @@ function add_t_body_row($data, $assign = false ) {
     } else {
 
         // TEST
-        $row .= ' <td><input type="text" name="" placeholder="" value=""></td>';
+        $row .= ' <td><div class="acf-field"><div class="acf-input"><input class="js-assign-product-warehouse" type="text" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][warehouse]" placeholder=" " value="' . ( (isset($data['product_option']['warehouse']) && $data['product_option']['warehouse'] != '0') ? $data['product_option']['warehouse'] : "") . '"></div></div></td>';
         // TEST
+
         // CHANGE
         if (isset($data['kit']) && $data['kit'] !=''  && $data['kit'] !='0' && $assign) {
             $row .=     '<td class="column-option">' . get_assign_group_select($data)   .    '</td>';

@@ -518,11 +518,12 @@ if( function_exists('acf_add_local_field_group') ):
 	                'class' => 'unidress-input-width',
 	                'id' => '',
                 ),
-                'default_value' => '',
+                'default_value' => (mt_rand().time()),
                 'placeholder' => '',
                 'prepend' => '',
                 'append' => '',
                 'maxlength' => '',
+
             ),
             array(
                 'key' => 'field_5c86cb06ab357',
@@ -530,7 +531,7 @@ if( function_exists('acf_add_local_field_group') ):
                 'name' => 'kit_customer',
                 'type' => 'post_object',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => 0,
                 'wrapper' => array(
                     'width' => '',

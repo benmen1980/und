@@ -23,7 +23,7 @@
                 // push the error
                 json.errors.push(temp);
             }
-            console.log($form);
+            // console.log($form);
             
             // return
             return json;
