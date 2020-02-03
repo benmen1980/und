@@ -425,7 +425,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'multiple' => 0,
 		        'return_format' => 'object',
 		        'ui' => 1,
-                'placeholder' => '',
+                'placeholder' => 'no active project',
 	        ),
 	        array(
 		        'key' => 'field_5ced1313470b2',
@@ -456,7 +456,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'multiple' => 0,
 		        'return_format' => 'object',
 		        'ui' => 1,
-                'placeholder' => '',
+                'placeholder' => 'no active project',
 	        ),
             array(
                 //'key' => 'field_5c91f9674933c',
