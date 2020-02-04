@@ -395,3 +395,6 @@
 input.error{
     border: 1px solid red;
 }
+
+
+.ui-state-highlight {background: rgba(56, 117, 215, 0.05);}

@@ -30,9 +30,38 @@ function unid_get_per_page_assign_product() {
 	return $per_page;
 }
 
-
 // Теперь чтобы опция сохранялась нужно добавить еще такой хук
 // Cохранение опции экрана per_page. Нужно вызывать до события 'admin_menu'
 add_filter( 'set-screen-option', function( $status, $option, $value ){
 	return ( $option == 'unid_post_per_page_assign_product' ) ? (int) $value : $status;
 }, 10, 3 );
+
+
+// AJAX
+add_action( 'wp_ajax_unid_product_sorted_assign_product', 'unid_product_sorted_assign_product' );
+function unid_product_sorted_assign_product(){
+	global $wpdb, $userdata;
+   // $pageda = $_GET['assign-paged'] ? $_GET['assign-paged'] : 3;
+   // echo $pageda;
+   parse_str($_POST['order'], $data);
+   
+   // if (!is_array($data)    ||  count($data)    <   1)
+   // die();
+
+
+   // $mysql_query    =   $wpdb->prepare("SELECT ID FROM ". $wpdb->posts ." 
+   //                                                          WHERE post_type = %s AND post_status IN ('publish', 'pending', 'draft', 'private', 'future')
+   //                                                          ORDER BY menu_order, post_date DESC", 'product');
+   // $results        =   $wpdb->get_results($mysql_query);
+
+   // $objects_ids    =   array();
+   //  foreach($results    as  $result)
+   //      {
+   //          $objects_ids[]  =   (int)$result->ID;   
+   //      }
+   // var_dump($objects_ids);
+
+
+    
+
+}

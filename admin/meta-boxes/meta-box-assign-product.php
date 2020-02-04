@@ -301,7 +301,7 @@ function render_product_to_project( $post_meta='') {
 
                 </tr>
                 </thead>
-                <tbody class="choices-list">
+                <tbody class="choices-list js-choices-list-order">
                 <?php
                 // $pageda = $_GET['assign-paged'] ? $_GET['assign-paged'] : 1;
                 // $posts_per_page = 1; //get_option('posts_per_page');
@@ -311,7 +311,8 @@ function render_product_to_project( $post_meta='') {
                 echo get_product_to_campaign(array(
                     'numberposts'   =>  -1,
                     // 'offset'        =>  $post_offset,
-                    'orderby'     => 'post__in ',
+
+                    'orderby'     => 'post__in',
                     'order'       => 'ASC',
                     'post_type'   => 'product',
                     'post__in' => $already_assign_product
@@ -327,13 +328,7 @@ function render_product_to_project( $post_meta='') {
     
 
 }
-// AJAX
-// add_action( 'wp_ajax_action_function_name_1455', 'action_function_name_1455' );
-// function action_function_name_1455(){
-//    $pageda = $_GET['assign-paged'] ? $_GET['assign-paged'] : 3;
-//    echo $pageda;
-//    wp_die();
-// }
+
 
 function render_product_to_campaign($kit, $post_meta='') {
 
@@ -496,7 +491,7 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
 }
 
 function add_t_body_row($data, $assign = false ) {
-    $row = '<tr data-id="' . $data['id'] . '">';
+    $row = '<tr id="product-'.$data['id'].'" data-id="' . $data['id'] . '">';
     $row .=     '<td class="column-image">' . $data['image'] .    '</td>';
     if ($assign) {
         $row .=     '<td class="column-name"><div class="column-name-title">'  . $data['title'] . '</div>' . unidress_load_variations($data) . '</td>';
