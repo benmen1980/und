@@ -44,8 +44,32 @@
         });
         
     });
+
+    // $('.choices-list').sortable({
+    //   cursor: 'move',
+    //   axis: 'y',
+    //   update: function(e, ui) {
+    //     var test = $(this).sortable('refresh');
+    //     console.log(test);
+    //     var params = {};
+    //     params = $(this).find('input').serializeArray(),
+    //     console.log(params);
+    //       // $.ajax({
+    //       //   type: 'POST',
+    //       //   data: {
+    //       //     id : params
+    //       //   },
+    //       //   url: 'Your url',
+    //       //   success: function(msg) {
+    //       //     // Your sorted data.
+    //       //   }
+    //       // });
+    //   }
+    // });
+    
     
 })(jQuery); 
+
 
 
 

@@ -19,7 +19,7 @@ function unid_load_admin_scripts_assign_product( $hook ) {
 			'option' => 'unid_post_per_page_assign_product', // название опции, будет записано в метаполе юзера
 		) );
 		
-		wp_enqueue_script( 'admin_scripts',  plugins_url(MY_PLUGIN_NAME.'/admin/js/functions/assign-product.js'), array( 'jquery' ), false );
+		wp_enqueue_script( 'admin-scripts-assign-product',  plugins_url(MY_PLUGIN_NAME.'/admin/js/functions/assign-product.js'), array( 'jquery' ), '',true );
 	}
 }
 
