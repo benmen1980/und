@@ -26,6 +26,7 @@ jQuery(function($){
         });
     }
 
+
     jQuery('.current.activated-submenu').removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
 
 });

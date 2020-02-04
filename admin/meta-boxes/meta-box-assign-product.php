@@ -9,28 +9,23 @@ function add_table_product_to_campaign() {
     add_meta_box('add-product-to-campaign', __( 'Kit on Campaign', 'unidress' ), 'table_product_to_campaign', 'campaign', 'normal');
 }
 
-// function unid_assign_product_unserialize($meta) {
-    
-// }
+function unid_unserialize_assign_product($post) {
+    $post_meta  = get_post_meta($post->ID,'', true);
+    foreach ($post_meta as $key=>$meta) {
+        if (is_serialized($meta[0]))
+            $post_meta[$key][0] = unserialize((string)$meta[0]);
+    }
+    return $post_meta;
+}
+
 
 function table_product_to_project() {
 	global $post;
     wp_nonce_field( basename( __FILE__ ), 'table_product_to_project_nonce' );
     wp_enqueue_script( 'product-assign-js', plugins_url( '/unidress/admin/js/product-assign-project.js'), array( 'jquery' ) );
 
-    $post_meta  = get_post_meta($post->ID,'', true);
-    foreach ($post_meta as $key=>$meta) {
-        if (is_serialized($meta[0]))
-            $post_meta[$key][0] = unserialize((string)$meta[0]);
-    }
+    $post_meta = unid_unserialize_assign_product($post);
     
-
-    // if (isset($post_meta['kits'][0])) {
-    //     $kits = $post_meta['kits'][0];
-    // } else {
-    //     $kits = '';
-    // }
-
 
     echo '<section id="section-0" class="assign-products-meta-box">';
         $current_customer = isset($post_meta['project_customer'][0]) ? $post_meta['project_customer'][0]:  false;
@@ -233,13 +228,15 @@ function render_kit_info($kit, $post_meta='', $select_copy =''){
 
 }
 function render_product_to_project( $post_meta='') {
-
     if (isset($post_meta['add_product_to_project']) && $post_meta['add_product_to_project'][0]) {
         $already_assign_product = json_decode ($post_meta['add_product_to_project'][0]);
     } else {
         $already_assign_product = array();
     }
+    // var_dump($already_assign_product);
+    // var_dump($post_meta['add_product_to_project']);
     ?>
+
     <div class="section-product">
         <div class="product-wrapper table-wrapper">
             <div class="filter-bar">
@@ -306,8 +303,14 @@ function render_product_to_project( $post_meta='') {
                 </thead>
                 <tbody class="choices-list">
                 <?php
+                // $pageda = $_GET['assign-paged'] ? $_GET['assign-paged'] : 1;
+                // $posts_per_page = 1; //get_option('posts_per_page');
+                // $post_offset = ($pageda - 1) * $posts_per_page;
+                // echo unid_get_per_page_assign_product();
+
                 echo get_product_to_campaign(array(
-                    'numberposts' => -1,
+                    'numberposts'   =>  -1,
+                    // 'offset'        =>  $post_offset,
                     'orderby'     => 'post__in ',
                     'order'       => 'ASC',
                     'post_type'   => 'product',
@@ -321,7 +324,17 @@ function render_product_to_project( $post_meta='') {
 
     <?php
 
+    
+
 }
+// AJAX
+// add_action( 'wp_ajax_action_function_name_1455', 'action_function_name_1455' );
+// function action_function_name_1455(){
+//    $pageda = $_GET['assign-paged'] ? $_GET['assign-paged'] : 3;
+//    echo $pageda;
+//    wp_die();
+// }
+
 function render_product_to_campaign($kit, $post_meta='') {
 
     $already_assign_product = json_decode (($post_meta['add_product_to_campaign'][0])[$kit]);
@@ -458,9 +471,7 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
         if (isset( $post_meta['product_option'][0] ))
             $product_option = $post_meta['product_option'][0];
 
-
         foreach( $already_assign_product as $post_id ){
-
             $product                        = wc_get_product( $post_id );
             $product_meta                   = get_post_meta($post_id, '',true);
             $data['id']                     = $post_id;

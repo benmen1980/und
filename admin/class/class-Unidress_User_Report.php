@@ -213,6 +213,8 @@ class Unidress_User_Report extends WP_List_Table {
 				//'cb'                    =>  $index,
 				'user_id'               =>  $user_data['user_id']         ,
 				'username'              =>  $user_data['login']           ,
+                'user_fio'              =>  $user_data['first_name'].' '.
+                                            $user_data['last_name']       ,
 				'customer'              =>  $user_data['customer']        ,
 				'branch'                =>  $user_data['branch']          ,
 				'department'            =>  $user_data['department']      ,
@@ -234,6 +236,7 @@ class Unidress_User_Report extends WP_List_Table {
 		return array(
           //'cb'                    => '<input type="checkbox" />',
 			'username'              => esc_attr__( 'Username', 'unidress' )  ,
+            'user_fio'              => esc_attr__( 'First Name and Last Name', 'unidress' )  ,
 			'customer'              => esc_attr__( 'Customer', 'unidress' )  ,
 			'branch'                => esc_attr__( 'Branch', 'unidress' )    ,
 			'department'            => esc_attr__( 'Department', 'unidress' ),
@@ -335,6 +338,7 @@ class Unidress_User_Report extends WP_List_Table {
 	function get_sortable_columns(){
 		return array(
 			'username'      => array( 'username', 'desc' ),
+            'user_fio'      => array( 'user_fio', 'desc' ),
 			'customer'      => array( 'customer', 'desc' ),
 			'branch'        => array( 'branch', 'desc' ),
 			'department'    => array( 'department', 'desc' ),
@@ -793,6 +797,8 @@ class Unidress_User_Report extends WP_List_Table {
 		$output = array();
 		$output['user_id']              = $user->ID;
 		$output['login']                = $user->data->user_login;
+        $output['first_name']           = $user->first_name;
+        $output['last_name']            = $user->last_name;
 		$output['customer']             = $customer;
 		$output['branch']               = $branch;
 		$output['department']           = $department;
