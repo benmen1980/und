@@ -1277,8 +1277,15 @@ add_filter( 'woocommerce_checkout_fields', function( $field ){
 
 	$field['billing']['billing_email']['required'] = false;
 
+
+
 	return $field;
 }, 4, 10);
+
+// CHANGE EMAIL UN1-T130
+add_action('woocommerce_after_checkout_form', function () {
+	?><script type="text/javascript">document.getElementById('billing_email').value = '';</script><?php
+});
 
 add_action('woocommerce_checkout_order_processed', 'add_unidress_shipping_to_order', 10, 4);
 function add_unidress_shipping_to_order($order_id, $posted_data, $order) {
