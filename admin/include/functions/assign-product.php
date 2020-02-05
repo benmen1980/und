@@ -20,6 +20,11 @@ function unid_load_admin_scripts_assign_product( $hook ) {
 		) );
 		
 		wp_enqueue_script( 'admin-scripts-assign-product',  plugins_url(MY_PLUGIN_NAME.'/admin/js/functions/assign-product.js'), array( 'jquery' ), '',true );
+		wp_localize_script( 'jquery', 'dataAssign', 
+				array(
+					'per_page' => unid_get_per_page_assign_product()
+				)
+		  );  
 	}
 }
 

@@ -410,3 +410,11 @@ input.error{
 }
 
 
+.unid-pagination{
+    float: right;
+}
+
+
+.red{
+    background: red;
+}

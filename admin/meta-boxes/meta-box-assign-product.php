@@ -234,8 +234,6 @@ function render_product_to_project( $post_meta='') {
     } else {
         $already_assign_product = array();
     }
-    var_dump($already_assign_product);
-    var_dump($post_meta['add_product_to_project']);
     ?>
 
     <div class="section-product">
@@ -274,7 +272,7 @@ function render_product_to_project( $post_meta='') {
                 </tbody>
             </table>
         </div>
-        <div class="product-assign-wrapper table-wrapper">
+        <div class="product-assign-wrapper table-wrapper js-product-assign-wrapper">
             <h3><?php echo __( 'Assign product', 'unidress' ) ?></h3>
             <input type="hidden" class="add_product"         name="add_product_to_project" value='<?php echo (isset($post_meta['add_product_to_project'][0])) ? $post_meta['add_product_to_project'][0] : '';?>'>
             <div id="filter-assign-product" class="filter-bar">
@@ -288,6 +286,7 @@ function render_product_to_project( $post_meta='') {
                     <a class="button button-search" table-assign="true"><?php echo __( 'Search', 'unidress' ) ?></a>
                 </p>
             </div>
+            <?php require MY_PLUGIN_ROOT_ADMIN.'/parts/assign-product/pagination.php'; ?>
             <table class="product-table product-assign">
                 <thead>
                 <tr>
@@ -322,6 +321,7 @@ function render_product_to_project( $post_meta='') {
                 ?>
                 </tbody>
             </table>
+            <?php require MY_PLUGIN_ROOT_ADMIN.'/parts/assign-product/pagination.php'; ?>
         </div>
     </div>
 
@@ -374,7 +374,7 @@ function render_product_to_campaign($kit, $post_meta='') {
                 </tbody>
             </table>
         </div>
-        <div class="product-assign-wrapper table-wrapper">
+        <div class="product-assign-wrapper table-wrapper js-product-assign-wrapper">
             <h3><?php echo __( 'Assign product', 'unidress' ) ?></h3>
             <input type="hidden" class="add_product"         name="add_product_to_campaign[<?php echo $kit ?>]" value='<?php echo (isset($post_meta['add_product_to_campaign'][0][$kit])) ? $post_meta['add_product_to_campaign'][0][$kit] : '';?>'>
             <div id="filter-assign-product" class="filter-bar">
@@ -388,6 +388,7 @@ function render_product_to_campaign($kit, $post_meta='') {
                     <a class="button button-search" table-assign="true"><?php echo __( 'Search', 'unidress' ) ?></a>
                 </p>
             </div>
+            <?php require MY_PLUGIN_ROOT_ADMIN.'/parts/assign-product/pagination.php'; ?>
             <table class="product-table product-assign">
                 <thead>
                 <tr>
@@ -414,6 +415,7 @@ function render_product_to_campaign($kit, $post_meta='') {
                 ), true, $already_assign_product, $kit, $post_meta); ?>
                 </tbody>
             </table>
+            <?php require MY_PLUGIN_ROOT_ADMIN.'/parts/assign-product/pagination.php'; ?>
         </div>
     </div>
     <?php
@@ -468,6 +470,9 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
 
         if (isset( $post_meta['product_option'][0] ))
             $product_option = $post_meta['product_option'][0];
+        $count = 1;
+        $already_assign_product = array_merge($already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product);
+        shuffle($already_assign_product);
 
         foreach( $already_assign_product as $post_id ){
             $product                        = wc_get_product( $post_id );
@@ -484,8 +489,10 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
             $data['product_option']         = isset($product_option[$kit][$post_id]) ? $product_option[$kit][$post_id] : "";
             $data['variation']              = $product ? $product->get_type() : $product;
 
-            $output .= add_t_body_row($data, $assign);
+            $output .= add_t_body_row($data, $assign, $count);
+            $count++;
         }
+       
     }
 
     wp_reset_postdata();
@@ -493,8 +500,8 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
     return $output;
 }
 
-function add_t_body_row($data, $assign = false ) {
-    $row = '<tr id="product-'.$data['id'].'" data-id="' . $data['id'] . '">';
+function add_t_body_row($data, $assign = false, $count = 1) {
+    $row = '<tr class="js-product-assign-tr '.((!$assign) ? '' : 'hidden').'" data-count="'.$count.'" data-id="' . $data['id'] . '">';
     $row .=     '<td class="column-image">' . $data['image'] .    '</td>';
     if ($assign) {
         $row .=     '<td class="column-name"><div class="column-name-title">'  . $data['title'] . '</div>' . unidress_load_variations($data) . '</td>';
