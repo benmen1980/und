@@ -38,30 +38,32 @@ add_filter( 'set-screen-option', function( $status, $option, $value ){
 
 
 // AJAX
-add_action( 'wp_ajax_unid_product_sorted_assign_product', 'unid_product_sorted_assign_product' );
-function unid_product_sorted_assign_product(){
-	global $wpdb, $userdata;
-   // $pageda = $_GET['assign-paged'] ? $_GET['assign-paged'] : 3;
-   // echo $pageda;
-   parse_str($_POST['order'], $data);
+// add_action( 'wp_ajax_unid_product_sorted_assign_product', 'unid_product_sorted_assign_product' );
+// function unid_product_sorted_assign_product(){
+// 	global $wpdb, $userdata;
+//    // $pageda = $_GET['assign-paged'] ? $_GET['assign-paged'] : 3;
+//    // echo $pageda;
+//    parse_str($_POST['order'], $data);
    
-   // if (!is_array($data)    ||  count($data)    <   1)
-   // die();
+//    // if (!is_array($data)    ||  count($data)    <   1)
+//    // die();
 
 
-   // $mysql_query    =   $wpdb->prepare("SELECT ID FROM ". $wpdb->posts ." 
-   //                                                          WHERE post_type = %s AND post_status IN ('publish', 'pending', 'draft', 'private', 'future')
-   //                                                          ORDER BY menu_order, post_date DESC", 'product');
-   // $results        =   $wpdb->get_results($mysql_query);
+//    // $mysql_query    =   $wpdb->prepare("SELECT ID FROM ". $wpdb->posts ." 
+//    //                                                          WHERE post_type = %s AND post_status IN ('publish', 'pending', 'draft', 'private', 'future')
+//    //                                                          ORDER BY menu_order, post_date DESC", 'product');
+//    // $results        =   $wpdb->get_results($mysql_query);
 
-   // $objects_ids    =   array();
-   //  foreach($results    as  $result)
-   //      {
-   //          $objects_ids[]  =   (int)$result->ID;   
-   //      }
-   // var_dump($objects_ids);
+//    // $objects_ids    =   array();
+//    //  foreach($results    as  $result)
+//    //      {
+//    //          $objects_ids[]  =   (int)$result->ID;   
+//    //      }
+//    // var_dump($objects_ids);
 
 
     
 
-}
+// }
+
+

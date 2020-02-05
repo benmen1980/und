@@ -61,6 +61,7 @@ function table_product_to_campaign() {
     }
 
 
+
     if (isset($post_meta['kits'][0])) {
         $kits = $post_meta['kits'][0];
     } else {
@@ -233,8 +234,8 @@ function render_product_to_project( $post_meta='') {
     } else {
         $already_assign_product = array();
     }
-    // var_dump($already_assign_product);
-    // var_dump($post_meta['add_product_to_project']);
+    var_dump($already_assign_product);
+    var_dump($post_meta['add_product_to_project']);
     ?>
 
     <div class="section-product">
@@ -298,6 +299,7 @@ function render_product_to_project( $post_meta='') {
                     <td class="column-price"><?php echo esc_attr__( 'Price', 'unidress' )?></td>
                     <td class="column-button"><a class="btn-remove-all-product btn-simple"><?php echo esc_attr__( 'Remove all', 'unidress' )?></a></td>
                     <td class="column-button"><?php echo esc_attr__( 'Variation', 'unidress' )?></a></td>
+                    <td class="column-button"><div class="h-width-1 h-margin-auto"><?php echo esc_attr__( 'Display Order', 'unidress' )?></div></td>
 
                 </tr>
                 </thead>
@@ -398,6 +400,7 @@ function render_product_to_campaign($kit, $post_meta='') {
                     <td class="column-price"><?php echo esc_attr__( 'Price', 'unidress' )?></td>
                     <td class="column-button"><a class="btn-remove-all-product btn-simple"><?php echo esc_attr__( 'Remove all', 'unidress' )?></a></td>
                     <td class="column-button"><?php echo esc_attr__( 'Variation', 'unidress' )?></td>
+                    <td class="column-button"><div class="h-width-1 h-margin-auto"><?php echo esc_attr__( 'Display Order', 'unidress' )?></div></td>
                 </tr>
                 </thead>
                 <tbody class="choices-list">
@@ -539,6 +542,7 @@ function add_t_body_row($data, $assign = false ) {
         } else {
             $row .= '<td class="column-button"></td>';
         }
+        $row .= '<td><input class="h-width-full" type="number" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][order]" value="' . ( (isset($data['product_option']['order']) && $data['product_option']['order'] != '0') ? $data['product_option']['order'] : "") . '"></td>';
     }
     $row .= '</tr>';
     return $row;
@@ -792,7 +796,6 @@ add_action('save_post', 'save_table_product_to_project');
 
 function save_table_product_to_project( $post_id ) {
 
-    
 
     if ( !isset( $_POST['table_product_to_project_nonce'] )
         || !wp_verify_nonce( $_POST['table_product_to_project_nonce'], basename( __FILE__ ) ) )
@@ -810,8 +813,10 @@ function save_table_product_to_project( $post_id ) {
 
 }
 
+
 add_action('save_post', 'save_table_product_to_campaign');
 function save_table_product_to_campaign( $post_id, $data = '' ) {
+     
 
     if ( isset($_POST['action']) && ($_POST['action'] != 'editpost') && ($data != '') )
 	    $_POST = $data;
@@ -855,6 +860,7 @@ function save_table_product_to_campaign( $post_id, $data = '' ) {
         delete_post_meta( $post_id, 'groups' );
         delete_post_meta( $post_id, 'required_products' );
     }
+
 
 }
 
