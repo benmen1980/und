@@ -9,3 +9,4 @@ function unid_load_admin_scripts_post_type_customers( $hook ) {
 		wp_enqueue_script( 'admin-scripts-assign-product',  plugins_url(MY_PLUGIN_NAME.'/admin/js/functions/post-type-customers.js'), array( 'jquery' ), '',true );
 	}
 }
+

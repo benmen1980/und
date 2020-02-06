@@ -64,18 +64,19 @@ if ($product->get_type() == 'variable') {
                 <?php do_action( 'woocommerce_before_variations_form' ); ?>
                 <div class="product-list-item">
        
-                  
                     <div class="product-description">
-                    <?php woocommerce_template_loop_product_thumbnail(); ?>
+                        <a href="<?= $product->get_permalink() ?>">
+                            <?php woocommerce_template_loop_product_thumbnail(); ?>
+                        </a>
 
                         <?php if ( empty( $available_variations ) && false !== $available_variations ) : ?>
                             <p class="stock out-of-stock"><?php esc_html_e( 'This product is currently out of stock and unavailable.', 'woocommerce' ); ?></p>
                         <?php else : ?>
                             <div class="variations" cellspacing="0">
 
-                                <div class="product-description" style="margin-bottom: 20px;">
+                                <a href="<?= $product->get_permalink() ?>" class="product-description d-block" style="margin-bottom: 20px;">
                                     <?php do_action( 'woocommerce_shop_loop_item_title' ); ?>
-                                </div>
+                                </a>
                                 <?php foreach ( $attributes as $attribute_name => $options ) : ?>
                                     <div class="select-wrapper">
                                         <h3 class="label"><label for="<?php echo esc_attr( sanitize_title( $attribute_name ) ); ?>"><?php echo wc_attribute_label( $attribute_name ); // WPCS: XSS ok. ?></label></h3>
@@ -120,7 +121,7 @@ if ($product->get_type() == 'simple') {
         <form class="cart closed_list" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype='multipart/form-data'>
 
             <?php do_action( 'woocommerce_before_variations_form' ); ?>
-            <div class="product-list-item">
+            <a href="<?= $product->get_permalink() ?>" class="product-list-item">
 
                 <div class="product-description">
                     <?php do_action( 'woocommerce_shop_loop_item_title' ); ?>
@@ -129,7 +130,7 @@ if ($product->get_type() == 'simple') {
                 <div class="product-image">
                     <?php woocommerce_template_loop_product_thumbnail(); ?>
                 </div>
-            </div>
+            </a>
             <div class="product-add">
 	            <?php
 	            do_action( 'woocommerce_before_add_to_cart_quantity' );
