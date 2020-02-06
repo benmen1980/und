@@ -702,9 +702,14 @@ function unidress_load_variations($data) {
 	$array_vari_slug = array();
 	$navigation = '';
 
+
 	if ( $variations ) {
 
 		if (count( $product_object->get_attributes() ) !== 2 ) {
+            // $output .= '        <label class="variation-row">';
+            // $output .= '            <span><input class="shipping-all-select" type="checkbox" ></span>';
+            // $output .=              esc_html__( 'Select all', 'unidress' );
+            // $output .= '        </label>';
 
 			foreach ( $variations as $variation_object ) {
 
@@ -718,7 +723,8 @@ function unidress_load_variations($data) {
 
 				$product = wc_get_product( $variation_id );
 
-				$output .= '<div class="variation-row">';
+				
+                $output .= '<div class="variation-row">';
 				$output .= '<span><input data-variation="' . $variation_id . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][]" value="' . esc_html( $variation_id ) . '" ' . $checked . '></span>';
 				$output .= '<span>#' . esc_html( $variation_id ) . '</span>';
 

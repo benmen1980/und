@@ -1,5 +1,5 @@
 jQuery(document).ready(function($){
-    checkAllInputs(jQuery('.unidress-shops-shipping input.shipping-select').eq(0));
+    checkAllInputs(jQuery('.unidress-shops-shipping input.shipping-select'));
 
     /* Update ajax for campaign customer */
     jQuery('.inside').on('change', '#acf-field_5c8778d42c013', function(){
