@@ -471,8 +471,8 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
         if (isset( $post_meta['product_option'][0] ))
             $product_option = $post_meta['product_option'][0];
         $count = 1;
-        $already_assign_product = array_merge($already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product);
-        shuffle($already_assign_product);
+        // $already_assign_product = array_merge($already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product);
+        // shuffle($already_assign_product);
 
         foreach( $already_assign_product as $post_id ){
             $product                        = wc_get_product( $post_id );
@@ -706,10 +706,12 @@ function unidress_load_variations($data) {
 	if ( $variations ) {
 
 		if (count( $product_object->get_attributes() ) !== 2 ) {
-            // $output .= '        <label class="variation-row">';
-            // $output .= '            <span><input class="shipping-all-select" type="checkbox" ></span>';
-            // $output .=              esc_html__( 'Select all', 'unidress' );
-            // $output .= '        </label>';
+            $output .= '        <fieldset class="unidress-shops-shipping">';
+            $output .= '        <label class="variation-row">';
+            $output .= '            <span><input class="shipping-all-select" type="checkbox"></span>';
+            $output .=              esc_html__( 'Select all', 'unidress' );
+            $output .= '        </label>';
+            $output .= '        <ul>';
 
 			foreach ( $variations as $variation_object ) {
 
@@ -724,8 +726,8 @@ function unidress_load_variations($data) {
 				$product = wc_get_product( $variation_id );
 
 				
-                $output .= '<div class="variation-row">';
-				$output .= '<span><input data-variation="' . $variation_id . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][]" value="' . esc_html( $variation_id ) . '" ' . $checked . '></span>';
+                $output .= '<li class="variation-row">';
+				$output .= '<span><input class="shipping-select" data-variation="' . $variation_id . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][]" value="' . esc_html( $variation_id ) . '" ' . $checked . '></span>';
 				$output .= '<span>#' . esc_html( $variation_id ) . '</span>';
 
 				foreach ( $product_object->get_attributes( 'edit' ) as $attribute ) {
@@ -735,9 +737,11 @@ function unidress_load_variations($data) {
 					$output .= '<span>' . $product->get_attribute( sanitize_title( $attribute->get_name() ) ) . '</span>';
 				}
 
-				$output .= '</div>';
+				$output .= '</li>';
 
 			}
+            $output .= '</ul>';
+            $output .= '</fieldset>';
 
 		} else {
 

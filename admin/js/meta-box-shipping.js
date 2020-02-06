@@ -50,13 +50,19 @@ jQuery(document).ready(function($){
 
 function checkAllInputs(inputs) {
     var allChecked = true;
-    jQuery(inputs).closest('ul').find('.shipping-select').each(function () {
+    jQuery(inputs).closest('ul').each(function() {
+        jQuery(this).find('.shipping-select').each(function () {
+            console.log(jQuery(this));
+            if (!jQuery(this).prop("checked")) {
+                allChecked = false;
+                return false;
+            }
 
-        if (!jQuery(this).prop("checked")) {
-            allChecked = false;
-            return false;
-        }
-
+        });
+        jQuery(this).closest('fieldset').find('.shipping-all-select').prop("checked", allChecked);
+        allChecked = true;
     });
-    jQuery(inputs).closest('fieldset').find('.shipping-all-select').prop("checked", allChecked)
+    
+    // console.log(jQuery(inputs).closest('fieldset').find('.shipping-all-select'));
+    
 }
