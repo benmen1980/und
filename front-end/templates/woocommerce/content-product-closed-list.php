@@ -60,7 +60,7 @@ if ($product->get_type() == 'variable') {
         
     <li <?php wc_product_class(); ?>>
         <div id="variations_form_wrapper">
-            <form class="variations_form cart closed_list" style="width: 200px;" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo $variations_attr; // WPCS: XSS ok. ?>">
+            <form class="variations_form cart closed_list" style="width: 200px;" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', wc_get_page_permalink( 'shop' ) ) ); ?>" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo $variations_attr; // WPCS: XSS ok. ?>">
                 <?php do_action( 'woocommerce_before_variations_form' ); ?>
                 <div class="product-list-item">
        
@@ -118,7 +118,7 @@ if ($product->get_type() == 'simple') {
 
     ?>
     <li <?php wc_product_class(); ?>>
-        <form class="cart closed_list" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype='multipart/form-data'>
+        <form class="cart closed_list" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', wc_get_page_permalink( 'shop' ) ) ); ?>" method="post" enctype='multipart/form-data'>
 
             <?php do_action( 'woocommerce_before_variations_form' ); ?>
             <a href="<?= $product->get_permalink() ?>" class="product-list-item">

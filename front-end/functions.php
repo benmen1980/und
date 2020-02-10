@@ -6,6 +6,7 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 require_once MY_PLUGIN_ROOT_FRONT . '/include/functions/functions.php';
 
 
+
 function get_ordering_style($current_customer) {
     global $wpdb;
 

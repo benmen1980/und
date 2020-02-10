@@ -288,7 +288,7 @@ function render_product_to_project( $post_meta='') {
             </div>
             <?php require MY_PLUGIN_ROOT_ADMIN.'/parts/assign-product/pagination.php'; ?>
             <table class="product-table product-assign">
-                <thead>
+                <thead> 
                 <tr>
                     <td class="column-image"><span class="wc-image tips" title="<?php echo __( 'Image', 'unidress' ) ?>"><?php echo __( 'Image', 'unidress' ) ?></span></td>
                     <td class="column-name"><?php echo esc_attr__( 'Name', 'unidress' )?></td>
