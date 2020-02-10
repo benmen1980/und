@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Unidress\n"
-"POT-Creation-Date: 2020-02-10 16:33+0300\n"
+"POT-Creation-Date: 2020-02-10 18:53+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Myname <myemail@gmail.com>\n"
 "Language-Team: \n"
