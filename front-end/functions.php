@@ -1010,7 +1010,7 @@ function get_unidress_list_product() {
 	// var_dump($product_option_order);
 	$product_list = array_combine($product_option_order, $product_list);
 	ksort($product_list);
-	var_dump($product_list);
+	// var_dump($product_list);
     return $product_list;
 }
 
