@@ -21,6 +21,7 @@ defined( 'ABSPATH' ) || exit;
 get_header( 'shop' );
 // Closed list
 $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
+var_dump(get_ordering_style($current_customer));
 if ( get_ordering_style($current_customer)=='closed_list' ) {
 
 	/**
@@ -51,7 +52,6 @@ if (woocommerce_product_loop()) {
     woocommerce_product_loop_start();
 
     if (wc_get_loop_prop('total')) {
-
         while (have_posts()) {
 
             the_post();

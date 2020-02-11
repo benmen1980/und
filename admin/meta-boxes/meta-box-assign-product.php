@@ -473,7 +473,11 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
         $count = 1;
         // $already_assign_product = array_merge($already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product);
         // shuffle($already_assign_product);
-
+        $already_assign_product = unid_ksort(array(
+            'product_list' => $already_assign_product,
+            'product_option' => $product_option,
+            'kit' => $kit,
+        ));
         foreach( $already_assign_product as $post_id ){
             $product                        = wc_get_product( $post_id );
             $product_meta                   = get_post_meta($post_id, '',true);
@@ -489,7 +493,7 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
             $data['product_option']         = isset($product_option[$kit][$post_id]) ? $product_option[$kit][$post_id] : "";
             $data['variation']              = $product ? $product->get_type() : $product;
 
-            $output .= add_t_body_row($data, $assign, $count);
+            $output .= add_t_body_row($data, $assign);
             $count++;
         }
        
@@ -500,8 +504,8 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
     return $output;
 }
 
-function add_t_body_row($data, $assign = false, $count = 1) {
-    $row = '<tr class="js-product-assign-tr '.((!$assign) ? '' : 'hidden').'" data-count="'.$count.'" data-id="' . $data['id'] . '">';
+function add_t_body_row($data, $assign = false) {
+    $row = '<tr class="js-product-assign-tr '.((!$assign) ? '' : 'hidden').'" data-id="' . $data['id'] . '">';
     $row .=     '<td class="column-image">' . $data['image'] .    '</td>';
     if ($assign) {
         $row .=     '<td class="column-name"><div class="column-name-title">'  . $data['title'] . '</div>' . unidress_load_variations($data) . '</td>';
@@ -881,3 +885,23 @@ function save_table_product_to_campaign( $post_id, $data = '' ) {
 
 }
 
+
+
+// SORTING UN1-T130
+function unid_ksort($data) {
+    $product_option_order = [];
+    $count = 1000;
+    foreach ($data['product_list'] as $key => $value) {
+        if ($data['product_option'][$data['kit']][$value]['order'] == '') {
+            $product_option_order[] = $count++;
+        }
+        else{
+            $product_option_order[] = $data['product_option'][$data['kit']][$value]['order'];
+        }
+    }
+    // var_dump($product_option_order);
+    $product_list = array_combine($product_option_order, $data['product_list']);
+    ksort($product_list);
+    // var_dump($product_list);
+    return $product_list;
+}

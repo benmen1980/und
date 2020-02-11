@@ -92,6 +92,7 @@ add_action( 'woocommerce_product_query', 'unidress_product_query' );
 function unidress_product_query( $q ){
 
 	$q->set( 'post__in', (array) get_unidress_list_product() );
+	$q->set( 'orderby', 'post__in');
 
 }
 
@@ -542,7 +543,6 @@ function add_graphic_option_in_product(){
 
 	if ( empty($product_graphics) ||  empty($project_graphics) )
 		return;
-
 	$graphics = get_posts( array(
 		'include'     => $project_graphics,
 		'post_type'   => 'graphic',
@@ -600,7 +600,6 @@ if ( get_ordering_style($current_customer)=='closed_list' ) {
     remove_action('woocommerce_before_shop_loop', 'wc_setup_loop');
     add_action('woocommerce_before_shop_loop', 'closed_list_setup_loop');
     function closed_list_setup_loop( $args = array()  ) {
-
         $default_args = array(
             'loop'         => 0,
             'columns'      => 3,
@@ -967,6 +966,10 @@ function get_unidress_list_product() {
 	$one_order_value    = get_user_meta($user_id, 'one_order_value', true);
 	$one_order_toggle   = get_post_meta($campaign_id, 'one_order_toggle', true);
 
+	$product_option 	= get_post_meta($campaign_id, 'product_option', true);
+	$product_option_order 	= [];
+
+	
 	if (empty($campaign_id) || empty($kit_id)) {
 		return 0;
 	}
@@ -991,6 +994,23 @@ function get_unidress_list_product() {
 		$product_list = 0;
 	}
 
+	// DISPLAY ORDER UN1-T130
+	$countPost = 1000;
+	foreach ($product_list as $key => $value) {
+		// var_dump($value);
+		if ($product_option[$kit_id][$value]['order'] == '') {
+			$product_option_order[] = $countPost++;
+		}
+		else{
+			$product_option_order[] = $product_option[$kit_id][$value]['order'];
+		}
+
+		// var_dump($product_option[$kit_id][$value]['order']);
+	}
+	// var_dump($product_option_order);
+	$product_list = array_combine($product_option_order, $product_list);
+	ksort($product_list);
+	var_dump($product_list);
     return $product_list;
 }
 
