@@ -605,7 +605,7 @@ if ( get_ordering_style($current_customer)=='closed_list' ) {
             'columns'      => 3,
             'name'         => '',
             'is_shortcode' => false,
-            'is_paginated' => false,
+            'is_paginated' => true,
             'is_search'    => false,
             'is_filtered'  => false,
             'total'        => 0,
