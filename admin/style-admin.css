@@ -418,3 +418,9 @@ input.error{
 .red{
     background: red;
 }
+
+
+
+#adminmenuback{
+    display: none !important;
+}
