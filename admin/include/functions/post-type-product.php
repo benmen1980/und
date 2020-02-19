@@ -138,16 +138,6 @@ class UnidPostTypeProduct {
 				"
 				// phpcs:enable
 			);
-			echo "SELECT DISTINCT posts.ID as product_id, posts.post_parent as parent_id FROM {$wpdb->posts} posts
-				 LEFT JOIN {$wpdb->wc_product_meta_lookup} wc_product_meta_lookup ON posts.ID = wc_product_meta_lookup.product_id
-				 LEFT JOIN wp_postmeta postmeta ON posts.ID = postmeta.post_id 
-				WHERE posts.post_type IN ('" . implode( "','", $post_types ) . "')
-				$search_where
-				$status_where
-				$type_where
-				ORDER BY posts.post_parent ASC, posts.post_title ASC
-				$limit_query
-				";
 
 			$product_ids = wp_parse_id_list( array_merge( wp_list_pluck( $search_results, 'product_id' ), wp_list_pluck( $search_results, 'parent_id' ) ) );
 
@@ -163,11 +153,6 @@ class UnidPostTypeProduct {
 
 				$product_ids[] = wp_get_post_parent_id( $post_id );
 			}
-
-				// var_dump($product_ids);
-			// if (empty($product_ids)) {
-				
-			// }
 
 			return wp_parse_id_list( $product_ids );
 	}
