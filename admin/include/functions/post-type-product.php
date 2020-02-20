@@ -1,55 +1,54 @@
 <?php
-class UnidPostTypeProduct {
-	// נעל בטיחות CUBA 3/4
+class UnidPostTypeProduct extends WC_Data_Store_WP {
 	function __construct(){
 		add_filter( 'woocommerce_product_pre_search_products', array($this, 'woocommerce_product_pre_search_products'), 10, 6 );
 	}
 
-	protected function get_valid_search_terms( $terms ) {
-		$valid_terms = array();
-		$stopwords   = $this->get_search_stopwords();
+	// protected function get_valid_search_terms( $terms ) {
+	// 	$valid_terms = array();
+	// 	$stopwords   = $this->get_search_stopwords();
 
-		foreach ( $terms as $term ) {
-			// keep before/after spaces when term is for exact match, otherwise trim quotes and spaces.
-			if ( preg_match( '/^".+"$/', $term ) ) {
-				$term = trim( $term, "\"'" );
-			} else {
-				$term = trim( $term, "\"' " );
-			}
+	// 	foreach ( $terms as $term ) {
+	// 		// keep before/after spaces when term is for exact match, otherwise trim quotes and spaces.
+	// 		if ( preg_match( '/^".+"$/', $term ) ) {
+	// 			$term = trim( $term, "\"'" );
+	// 		} else {
+	// 			$term = trim( $term, "\"' " );
+	// 		}
 
-			// Avoid single A-Z and single dashes.
-			if ( empty( $term ) || ( 1 === strlen( $term ) && preg_match( '/^[a-z\-]$/i', $term ) ) ) {
-				continue;
-			}
+	// 		// Avoid single A-Z and single dashes.
+	// 		if ( empty( $term ) || ( 1 === strlen( $term ) && preg_match( '/^[a-z\-]$/i', $term ) ) ) {
+	// 			continue;
+	// 		}
 
-			if ( in_array( wc_strtolower( $term ), $stopwords, true ) ) {
-				continue;
-			}
+	// 		if ( in_array( wc_strtolower( $term ), $stopwords, true ) ) {
+	// 			continue;
+	// 		}
 
-			$valid_terms[] = $term;
-		}
+	// 		$valid_terms[] = $term;
+	// 	}
 
-		return $valid_terms;
-	}
-	protected function get_search_stopwords() {
-		// Translators: This is a comma-separated list of very common words that should be excluded from a search, like a, an, and the. These are usually called "stopwords". You should not simply translate these individual words into your language. Instead, look for and provide commonly accepted stopwords in your language.
-		$stopwords = array_map(
-			'wc_strtolower',
-			array_map(
-				'trim',
-				explode(
-					',',
-					_x(
-						'about,an,are,as,at,be,by,com,for,from,how,in,is,it,of,on,or,that,the,this,to,was,what,when,where,who,will,with,www',
-						'Comma-separated list of search stopwords in your language',
-						'woocommerce'
-					)
-				)
-			)
-		);
+	// 	return $valid_terms;
+	// }
+	// protected function get_search_stopwords() {
+	// 	// Translators: This is a comma-separated list of very common words that should be excluded from a search, like a, an, and the. These are usually called "stopwords". You should not simply translate these individual words into your language. Instead, look for and provide commonly accepted stopwords in your language.
+	// 	$stopwords = array_map(
+	// 		'wc_strtolower',
+	// 		array_map(
+	// 			'trim',
+	// 			explode(
+	// 				',',
+	// 				_x(
+	// 					'about,an,are,as,at,be,by,com,for,from,how,in,is,it,of,on,or,that,the,this,to,was,what,when,where,who,will,with,www',
+	// 					'Comma-separated list of search stopwords in your language',
+	// 					'woocommerce'
+	// 				)
+	// 			)
+	// 		)
+	// 	);
 
-		return apply_filters( 'wp_search_stopwords', $stopwords );
-	}
+	// 	return apply_filters( 'wp_search_stopwords', $stopwords );
+	// }
 
 	function woocommerce_product_pre_search_products( $false, $term, $type, $include_variations, $all_statuses, $limit ){
 			global $wpdb;
@@ -58,6 +57,11 @@ class UnidPostTypeProduct {
 			$status_where = '';
 			$limit_query  = '';
 			$term         = wc_strtolower( $term );
+
+			$post_statuses = apply_filters(
+				'woocommerce_search_products_post_statuses',
+				current_user_can( 'edit_private_products' ) ? array( 'private', 'publish' ) : array( 'publish' )
+			);
 
 			// See if search term contains OR keywords.
 			if ( strstr( $term, ' or ' ) ) {
@@ -158,7 +162,6 @@ class UnidPostTypeProduct {
 	}
 
 }
-// 53Z12/0S3/899
 // SELECT DISTINCT posts.ID as product_id, posts.post_parent as parent_id FROM wp_posts posts 
 // LEFT JOIN wp_wc_product_meta_lookup wc_product_meta_lookup ON posts.ID = wc_product_meta_lookup.product_id 
 // LEFT JOIN wp_postmeta postmeta ON posts.ID = postmeta.post_id 
@@ -170,10 +173,4 @@ class UnidPostTypeProduct {
 // OR ( wc_product_meta_lookup.sku LIKE '{051a8e65498762d91d06811a675a6e87ae8a2df93617cfc01ffbba38d64442c2}530z0/0s3/899{051a8e65498762d91d06811a675a6e87ae8a2df93617cfc01ffbba38d64442c2}' ) )) ORDER BY posts.post_parent ASC, posts.post_title ASC
 
 new UnidPostTypeProduct();
-
-
-
-
-
-
 
