@@ -53,7 +53,6 @@ class UnidPostTypeProduct {
 	}
 
 	function woocommerce_product_pre_search_products( $false, $term, $type, $include_variations, $all_statuses, $limit ){
-		var_dump('test CLASS'); 
 			global $wpdb;
 			$post_types   = $include_variations ? array( 'product', 'product_variation' ) : array( 'product' );
 			$type_where   = '';
