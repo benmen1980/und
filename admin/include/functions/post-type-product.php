@@ -173,5 +173,4 @@ class UnidPostTypeProduct {
 // OR ( posts.post_content LIKE '{051a8e65498762d91d06811a675a6e87ae8a2df93617cfc01ffbba38d64442c2}530z0/0s3/899{051a8e65498762d91d06811a675a6e87ae8a2df93617cfc01ffbba38d64442c2}' )
 // OR ( wc_product_meta_lookup.sku LIKE '{051a8e65498762d91d06811a675a6e87ae8a2df93617cfc01ffbba38d64442c2}530z0/0s3/899{051a8e65498762d91d06811a675a6e87ae8a2df93617cfc01ffbba38d64442c2}' ) )) ORDER BY posts.post_parent ASC, posts.post_title ASC
 
-// new UnidPostTypeProduct();
-// 2520B/202
+new UnidPostTypeProduct();
