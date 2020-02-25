@@ -1,5 +1,6 @@
 <?php
-// extends WC_Data_Store_WP 
+// extends WC_Data_Store_WP
+var_dump('test'); 
 class UnidPostTypeProduct {
 	function __construct(){
 		add_filter( 'woocommerce_product_pre_search_products', array($this, 'woocommerce_product_pre_search_products'), 10, 6 );
