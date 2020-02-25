@@ -1,56 +1,56 @@
 <?php
 // extends WC_Data_Store_WP
 
-class UnidPostTypeProduct {
+class UnidPostTypeProduct extends WC_Data_Store_WP {
 	function __construct(){
 		add_filter( 'woocommerce_product_pre_search_products', array($this, 'woocommerce_product_pre_search_products'), 10, 6 );
 	}
 
-	protected function get_valid_search_terms( $terms ) {
-		$valid_terms = array();
-		$stopwords   = $this->get_search_stopwords();
+	// protected function get_valid_search_terms( $terms ) {
+	// 	$valid_terms = array();
+	// 	$stopwords   = $this->get_search_stopwords();
 
-		foreach ( $terms as $term ) {
-			// keep before/after spaces when term is for exact match, otherwise trim quotes and spaces.
-			if ( preg_match( '/^".+"$/', $term ) ) {
-				$term = trim( $term, "\"'" );
-			} else {
-				$term = trim( $term, "\"' " );
-			}
+	// 	foreach ( $terms as $term ) {
+	// 		// keep before/after spaces when term is for exact match, otherwise trim quotes and spaces.
+	// 		if ( preg_match( '/^".+"$/', $term ) ) {
+	// 			$term = trim( $term, "\"'" );
+	// 		} else {
+	// 			$term = trim( $term, "\"' " );
+	// 		}
 
-			// Avoid single A-Z and single dashes.
-			if ( empty( $term ) || ( 1 === strlen( $term ) && preg_match( '/^[a-z\-]$/i', $term ) ) ) {
-				continue;
-			}
+	// 		// Avoid single A-Z and single dashes.
+	// 		if ( empty( $term ) || ( 1 === strlen( $term ) && preg_match( '/^[a-z\-]$/i', $term ) ) ) {
+	// 			continue;
+	// 		}
 
-			if ( in_array( wc_strtolower( $term ), $stopwords, true ) ) {
-				continue;
-			}
+	// 		if ( in_array( wc_strtolower( $term ), $stopwords, true ) ) {
+	// 			continue;
+	// 		}
 
-			$valid_terms[] = $term;
-		}
+	// 		$valid_terms[] = $term;
+	// 	}
 
-		return $valid_terms;
-	}
-	protected function get_search_stopwords() {
-		// Translators: This is a comma-separated list of very common words that should be excluded from a search, like a, an, and the. These are usually called "stopwords". You should not simply translate these individual words into your language. Instead, look for and provide commonly accepted stopwords in your language.
-		$stopwords = array_map(
-			'wc_strtolower',
-			array_map(
-				'trim',
-				explode(
-					',',
-					_x(
-						'about,an,are,as,at,be,by,com,for,from,how,in,is,it,of,on,or,that,the,this,to,was,what,when,where,who,will,with,www',
-						'Comma-separated list of search stopwords in your language',
-						'woocommerce'
-					)
-				)
-			)
-		);
+	// 	return $valid_terms;
+	// }
+	// protected function get_search_stopwords() {
+	// 	// Translators: This is a comma-separated list of very common words that should be excluded from a search, like a, an, and the. These are usually called "stopwords". You should not simply translate these individual words into your language. Instead, look for and provide commonly accepted stopwords in your language.
+	// 	$stopwords = array_map(
+	// 		'wc_strtolower',
+	// 		array_map(
+	// 			'trim',
+	// 			explode(
+	// 				',',
+	// 				_x(
+	// 					'about,an,are,as,at,be,by,com,for,from,how,in,is,it,of,on,or,that,the,this,to,was,what,when,where,who,will,with,www',
+	// 					'Comma-separated list of search stopwords in your language',
+	// 					'woocommerce'
+	// 				)
+	// 			)
+	// 		)
+	// 	);
 
-		return apply_filters( 'wp_search_stopwords', $stopwords );
-	}
+	// 	return apply_filters( 'wp_search_stopwords', $stopwords );
+	// }
 
 	function woocommerce_product_pre_search_products( $false, $term, $type, $include_variations, $all_statuses, $limit ){
 			global $wpdb;
