@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Unidress\n"
-"POT-Creation-Date: 2020-02-10 18:53+0300\n"
+"POT-Creation-Date: 2020-02-25 13:03+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Myname <myemail@gmail.com>\n"
 "Language-Team: \n"
@@ -176,7 +176,7 @@ msgstr "פרטי משתמש"
 #: admin/class/class-Unidress_User_Import.php:107
 #: admin/class/class-Unidress_User_Report.php:41
 #: admin/class/class-Unidress_User_Report.php:241 admin/functions.php:73
-#: admin/functions.php:163 admin/functions.php:164 front-end/functions.php:147
+#: admin/functions.php:163 admin/functions.php:164 front-end/functions.php:148
 msgid "Branch"
 msgstr "שלוחות"
 
@@ -190,7 +190,7 @@ msgstr "קולקציה"
 #: admin/acf-fields.php:898 admin/class/class-Unidress_User_Import.php:108
 #: admin/class/class-Unidress_User_Report.php:42
 #: admin/class/class-Unidress_User_Report.php:242 admin/functions.php:74
-#: front-end/functions.php:151
+#: front-end/functions.php:152
 msgid "Department"
 msgstr "מחלקה"
 
@@ -221,7 +221,7 @@ msgstr "תאור מיקום הדפס"
 #: admin/meta-boxes/meta-box-assign-product.php:396
 #: admin/product_option.php:180 admin/product_option.php:216
 #: admin/product_option.php:276 admin/views/html-product-options.php:22
-#: front-end/functions.php:139
+#: front-end/functions.php:140
 msgid "Name"
 msgstr "שם העובד"
 
@@ -245,7 +245,7 @@ msgstr "כמות"
 
 #: admin/class/class-Unidress_Assign_Product_Table.php:145
 #: admin/meta-boxes/meta-box-assign-product.php:77
-#: admin/meta-boxes/meta-box-assign-product.php:526
+#: admin/meta-boxes/meta-box-assign-product.php:530
 #: admin/views/html-product-data-options.php:50
 msgid "Add"
 msgstr "הוספה"
@@ -295,7 +295,7 @@ msgstr "מזהה משתמש"
 
 #: admin/class/class-Unidress_User_Import.php:101
 #: admin/class/class-Unidress_User_Report.php:39
-#: admin/class/class-Unidress_User_Report.php:238 front-end/functions.php:143
+#: admin/class/class-Unidress_User_Report.php:238 front-end/functions.php:144
 msgid "Username"
 msgstr "שם משתמש"
 
@@ -356,7 +356,7 @@ msgstr "קבוצה"
 
 #: admin/class/class-Unidress_User_Report.php:52
 #: admin/class/class-Unidress_User_Report.php:907 ajax.php:823
-#: front-end/functions.php:690
+#: front-end/functions.php:689
 msgid "Limit"
 msgstr "כמות מקסימלית להזמנה"
 
@@ -456,7 +456,7 @@ msgid "Edit Campaign"
 msgstr "עריכת קמפיין"
 
 #: admin/functions.php:275 admin/meta-boxes/meta-box-assign-product.php:295
-#: admin/meta-boxes/meta-box-assign-product.php:596 front-end/functions.php:557
+#: admin/meta-boxes/meta-box-assign-product.php:600 front-end/functions.php:557
 msgid "Graphics"
 msgstr "גרפיקות"
 
@@ -680,7 +680,7 @@ msgstr "הוספה"
 
 #: admin/meta-boxes/meta-box-assign-product.php:198
 #: admin/meta-boxes/meta-box-assign-product.php:202
-#: admin/meta-boxes/meta-box-assign-product.php:400 front-end/functions.php:213
+#: admin/meta-boxes/meta-box-assign-product.php:400 front-end/functions.php:214
 msgid "Required Products"
 msgstr "פרטי חובה"
 
@@ -714,7 +714,7 @@ msgstr "הסר הכל"
 
 #: admin/meta-boxes/meta-box-assign-product.php:300
 #: admin/meta-boxes/meta-box-assign-product.php:403
-#: admin/meta-boxes/meta-box-assign-product.php:548
+#: admin/meta-boxes/meta-box-assign-product.php:552
 msgid "Variation"
 msgstr "וריאציות "
 
@@ -733,32 +733,32 @@ msgstr "כל המוצרים"
 msgid "Assignment Group"
 msgstr "קבוצת הקצאה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:559
-#: admin/meta-boxes/meta-box-assign-product.php:578
+#: admin/meta-boxes/meta-box-assign-product.php:563
+#: admin/meta-boxes/meta-box-assign-product.php:582
 msgid "Not assign"
 msgstr "לא משויך "
 
-#: admin/meta-boxes/meta-box-assign-product.php:619
+#: admin/meta-boxes/meta-box-assign-product.php:623
 msgid "Filter by product type"
 msgstr "סינון לפי סוג מוצר"
 
-#: admin/meta-boxes/meta-box-assign-product.php:630
+#: admin/meta-boxes/meta-box-assign-product.php:634
 msgid "Downloadable"
 msgstr "להורדה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:634
+#: admin/meta-boxes/meta-box-assign-product.php:638
 msgid "Virtual"
 msgstr "וירטואלי"
 
-#: admin/meta-boxes/meta-box-assign-product.php:646
+#: admin/meta-boxes/meta-box-assign-product.php:650
 msgid "Filter by category"
 msgstr "סינון לפי קטגוריה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:657
+#: admin/meta-boxes/meta-box-assign-product.php:661
 msgid "Filter by stock status"
 msgstr "סינון לפי מצב מלאי"
 
-#: admin/meta-boxes/meta-box-assign-product.php:712
+#: admin/meta-boxes/meta-box-assign-product.php:716
 #: admin/meta-boxes/meta-box-shipping.php:64
 #: admin/meta-boxes/meta-box-shipping.php:123
 #: admin/views/html-product-options.php:61
@@ -911,31 +911,31 @@ msgstr "כמות מינימלית להזמנה"
 msgid "Amount"
 msgstr "כמות שהוזמנה"
 
-#: front-end/functions.php:134
+#: front-end/functions.php:135
 msgid "User's Personal Details"
 msgstr "פרטים אישיים של המשתמש"
 
-#: front-end/functions.php:346 front-end/functions.php:851
-#: front-end/functions.php:1512
+#: front-end/functions.php:347 front-end/functions.php:850
+#: front-end/functions.php:1532
 msgid "Product \""
 msgstr "מוצר"
 
-#: front-end/functions.php:363 front-end/functions.php:785
-#: front-end/functions.php:1534
+#: front-end/functions.php:364 front-end/functions.php:784
+#: front-end/functions.php:1554
 msgid "The total amount of the purchase exceeds the balance of your budget"
 msgstr "הסכום הכולל של הזמנה חורג מיתרת התקציב שלך"
 
-#: front-end/functions.php:416 front-end/functions.php:834
-#: front-end/functions.php:1493
+#: front-end/functions.php:417 front-end/functions.php:833
+#: front-end/functions.php:1513
 msgid "You have exceeded the limit by product group"
 msgstr "חרגת מהכמות המותרת לקבוצת הקצאה"
 
-#: front-end/functions.php:427 front-end/functions.php:842
-#: front-end/functions.php:1503
+#: front-end/functions.php:428 front-end/functions.php:841
+#: front-end/functions.php:1523
 msgid "You already buy something"
 msgstr "ביצעת הזמנה אחת, לא ניתן לבצע הזמנה נוספת."
 
-#: front-end/functions.php:808 front-end/functions.php:1468
+#: front-end/functions.php:807 front-end/functions.php:1488
 #, php-format
 msgid ""
 "Need More Essential Products. Go to <a href=\"%s\">Cart</a> or <a href=\"%s"
@@ -944,35 +944,35 @@ msgstr ""
 "חסרים לך פרטי חובה נוספים כדי לבצע את ההזמנה. עבור ל<a href=\"%s\">עגלת "
 "הקניות</a> או <a href=\"%s\">לחנות</a>"
 
-#: front-end/functions.php:1124
+#: front-end/functions.php:1144
 msgid "Budget Balance"
 msgstr "יתרת התקציב"
 
-#: front-end/functions.php:1226
+#: front-end/functions.php:1246
 msgid "Pages:"
 msgstr "עמודים"
 
-#: front-end/functions.php:1232
+#: front-end/functions.php:1252
 msgid "Go to Marketplace"
 msgstr "לחנות"
 
-#: front-end/functions.php:1271
+#: front-end/functions.php:1291
 msgid "Choose Shipping"
 msgstr "בחירת משלוח / נקודת איסוף "
 
-#: front-end/functions.php:1375
+#: front-end/functions.php:1395
 msgid "You are not allowed to order more"
 msgstr ". אסור לך להזמין עוד"
 
-#: front-end/functions.php:1397
+#: front-end/functions.php:1417
 msgid "You are exceeding your budget, this product cannot be added to cart."
 msgstr "אתה חורג מהתקציב שלך,  לא ניתן להוסיף לסל מוצר זה."
 
-#: front-end/functions.php:1549
+#: front-end/functions.php:1569
 msgid "&larr; To Unidress Main Site"
 msgstr "&larr; לאתר הראשי של Unidress"
 
-#: front-end/functions.php:1660
+#: front-end/functions.php:1680
 #: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:56
 msgid ""
 "Dear employee, only one order can be placed. Please make sure you have "
@@ -980,7 +980,7 @@ msgid ""
 msgstr ""
 "עובד/ת יקר/ה, ניתן לבצע רק הזמנה אחת. נא וודא/י שבחרת את כל הפריטים הרצויים."
 
-#: front-end/functions.php:1708
+#: front-end/functions.php:1728
 msgid "View your shopping cart"
 msgstr "צפייה בסל קניות"
 
@@ -1133,13 +1133,13 @@ msgid "Shipping to:"
 msgstr "משלוח/איסוף:"
 
 #: front-end/templates/woocommerce/content-product-closed-list.php:73
-#: front-end/templates/woocommerce/content-product.php:113
+#: front-end/templates/woocommerce/content-product.php:112
 #: front-end/templates/woocommerce/single-product/add-to-cart/variable.php:73
 msgid "This product is currently out of stock and unavailable."
 msgstr "מוצר זה חסר כרגע במלאי ואינו זמין."
 
 #: front-end/templates/woocommerce/content-product-closed-list.php:90
-#: front-end/templates/woocommerce/content-product.php:130
+#: front-end/templates/woocommerce/content-product.php:129
 #: front-end/templates/woocommerce/single-product/add-to-cart/variable.php:87
 msgid "Clear"
 msgstr "נקה"
