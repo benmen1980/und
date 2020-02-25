@@ -1,6 +1,6 @@
 <?php
 // extends WC_Data_Store_WP
-var_dump('test'); 
+
 class UnidPostTypeProduct {
 	function __construct(){
 		add_filter( 'woocommerce_product_pre_search_products', array($this, 'woocommerce_product_pre_search_products'), 10, 6 );
@@ -53,6 +53,7 @@ class UnidPostTypeProduct {
 	}
 
 	function woocommerce_product_pre_search_products( $false, $term, $type, $include_variations, $all_statuses, $limit ){
+		var_dump('test CLASS'); 
 			global $wpdb;
 			$post_types   = $include_variations ? array( 'product', 'product_variation' ) : array( 'product' );
 			$type_where   = '';
