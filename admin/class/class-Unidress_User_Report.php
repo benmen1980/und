@@ -37,21 +37,22 @@ class Unidress_User_Report extends WP_List_Table {
             //header
             $sheet = $spreadsheet->getActiveSheet();
             $sheet->setCellValue('A1', esc_attr__( 'Username', 'unidress' ));
-            $sheet->setCellValue('B1', esc_attr__( 'Customer', 'unidress' ));
-            $sheet->setCellValue('C1', esc_attr__( 'Branch', 'unidress' ));
-            $sheet->setCellValue('D1', esc_attr__( 'Department', 'unidress' ));
-            $sheet->setCellValue('E1', esc_attr__( 'Kit', 'unidress' ));
-            $sheet->setCellValue('F1', esc_attr__( 'Campaign', 'unidress' ));
-            $sheet->setCellValue('G1', esc_attr__( 'Project', 'unidress' ));
-            $sheet->setCellValue('H1', esc_attr__( 'Budget', 'unidress' ));
-            $sheet->setCellValue('I1', esc_attr__( 'Budget utilization', 'unidress' ));
-            $sheet->setCellValue('J1', esc_attr__( 'Budget remaining', 'unidress' ));
-            $sheet->setCellValue('K1', esc_attr__( 'Groups assigning', 'unidress' ));
+            $sheet->setCellValue('B1', esc_attr__( 'First Name and Last Name', 'unidress' ));
+            $sheet->setCellValue('C1', esc_attr__( 'Customer', 'unidress' ));
+            $sheet->setCellValue('D1', esc_attr__( 'Branch', 'unidress' ));
+            $sheet->setCellValue('E1', esc_attr__( 'Department', 'unidress' ));
+            $sheet->setCellValue('F1', esc_attr__( 'Kit', 'unidress' ));
+            $sheet->setCellValue('G1', esc_attr__( 'Campaign', 'unidress' ));
+            $sheet->setCellValue('H1', esc_attr__( 'Project', 'unidress' ));
+            $sheet->setCellValue('I1', esc_attr__( 'Budget', 'unidress' ));
+            $sheet->setCellValue('J1', esc_attr__( 'Budget utilization', 'unidress' ));
+            $sheet->setCellValue('K1', esc_attr__( 'Budget remaining', 'unidress' ));
 
-            $sheet->setCellValue('K2', esc_attr__( 'Group', 'unidress' ));
-            $sheet->setCellValue('L2', esc_attr__( 'Limit', 'unidress' ));
-            $sheet->setCellValue('M2', esc_attr__( 'Utilization', 'unidress' ));
-            $sheet->setCellValue('N2', esc_attr__( 'Remaining', 'unidress' ));
+            $sheet->setCellValue('L1', esc_attr__( 'Groups assigning', 'unidress' ));
+            $sheet->setCellValue('L2', esc_attr__( 'Group', 'unidress' ));
+            $sheet->setCellValue('M2', esc_attr__( 'Limit', 'unidress' ));
+            $sheet->setCellValue('N2', esc_attr__( 'Utilization', 'unidress' ));
+            $sheet->setCellValue('O2', esc_attr__( 'Remaining', 'unidress' ));
 
             $sheet->mergeCells('A1:A2');
             $sheet->mergeCells('B1:B2');
@@ -63,11 +64,12 @@ class Unidress_User_Report extends WP_List_Table {
             $sheet->mergeCells('H1:H2');
             $sheet->mergeCells('I1:I2');
             $sheet->mergeCells('J1:J2');
-
             $sheet->mergeCells('K1:N1');
-            $sheet->getStyle('A1:N2')
+            $sheet->mergeCells('L1:L2');
+
+            $sheet->getStyle('A1:O2')
                   ->getAlignment()-> setHorizontal(PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle('A1:N2')
+            $sheet->getStyle('A1:O2')
                   ->getAlignment()-> setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
             $users = $this->get_user_data_array();
@@ -99,34 +101,36 @@ class Unidress_User_Report extends WP_List_Table {
                         foreach ($user['groups'] as $group_value ) {
                             $i++;
                             $sheet->setCellValue('A'.$i, html_entity_decode($user['login']              ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('B'.$i, html_entity_decode($user['customer']           ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('C'.$i, html_entity_decode($user['branch']             ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('D'.$i, html_entity_decode($user['department']         ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('E'.$i, html_entity_decode($user['kit']                ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('F'.$i, html_entity_decode($user['campaign']           ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('G'.$i, html_entity_decode($user['project']            ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('H'.$i, html_entity_decode($user['budget']             ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('I'.$i, html_entity_decode($user['budget_left']        ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('J'.$i, html_entity_decode($user['budget_remaining']   ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('B'.$i, html_entity_decode($user['user_fio']              ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('C'.$i, html_entity_decode($user['customer']           ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('D'.$i, html_entity_decode($user['branch']             ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('E'.$i, html_entity_decode($user['department']         ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('F'.$i, html_entity_decode($user['kit']                ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('G'.$i, html_entity_decode($user['campaign']           ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('H'.$i, html_entity_decode($user['project']            ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('I'.$i, html_entity_decode($user['budget']             ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('J'.$i, html_entity_decode($user['budget_left']        ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('K'.$i, html_entity_decode($user['budget_remaining']   ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('L'.$i, html_entity_decode($group_value['group']       ,ENT_QUOTES,'UTF-8'));
 
-                            $sheet->setCellValue('K'.$i, html_entity_decode($group_value['group']       ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('L'.$i, html_entity_decode($group_value['limit']       ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('M'.$i, html_entity_decode($group_value['utilization'] ,ENT_QUOTES,'UTF-8'));
-                            $sheet->setCellValue('N'.$i, html_entity_decode($group_value['remaining']   ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('M'.$i, html_entity_decode($group_value['limit']       ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('N'.$i, html_entity_decode($group_value['utilization'] ,ENT_QUOTES,'UTF-8'));
+                            $sheet->setCellValue('O'.$i, html_entity_decode($group_value['remaining']   ,ENT_QUOTES,'UTF-8'));
 
                         }
                     } else  {
 
                         $sheet->setCellValue('A'.$i, html_entity_decode($user['login']            ,ENT_QUOTES,'UTF-8'));
-                        $sheet->setCellValue('B'.$i, html_entity_decode($user['customer']         ,ENT_QUOTES,'UTF-8'));
-                        $sheet->setCellValue('C'.$i, html_entity_decode($user['branch']           ,ENT_QUOTES,'UTF-8'));
-                        $sheet->setCellValue('D'.$i, html_entity_decode($user['department']       ,ENT_QUOTES,'UTF-8'));
-                        $sheet->setCellValue('E'.$i, html_entity_decode($user['kit']              ,ENT_QUOTES,'UTF-8'));
-                        $sheet->setCellValue('F'.$i, html_entity_decode($user['campaign']         ,ENT_QUOTES,'UTF-8'));
-                        $sheet->setCellValue('G'.$i, html_entity_decode($user['project']          ,ENT_QUOTES,'UTF-8'));
-                        $sheet->setCellValue('H'.$i, html_entity_decode($user['budget']           ,ENT_QUOTES,'UTF-8'));
-                        $sheet->setCellValue('I'.$i, html_entity_decode($user['budget_left']      ,ENT_QUOTES,'UTF-8'));
-                        $sheet->setCellValue('j'.$i, html_entity_decode($user['budget_remaining'] ,ENT_QUOTES,'UTF-8'));
+                        $sheet->setCellValue('B'.$i, html_entity_decode($user['user_fio']            ,ENT_QUOTES,'UTF-8'));
+                        $sheet->setCellValue('C'.$i, html_entity_decode($user['customer']         ,ENT_QUOTES,'UTF-8'));
+                        $sheet->setCellValue('D'.$i, html_entity_decode($user['branch']           ,ENT_QUOTES,'UTF-8'));
+                        $sheet->setCellValue('E'.$i, html_entity_decode($user['department']       ,ENT_QUOTES,'UTF-8'));
+                        $sheet->setCellValue('F'.$i, html_entity_decode($user['kit']              ,ENT_QUOTES,'UTF-8'));
+                        $sheet->setCellValue('G'.$i, html_entity_decode($user['campaign']         ,ENT_QUOTES,'UTF-8'));
+                        $sheet->setCellValue('H'.$i, html_entity_decode($user['project']          ,ENT_QUOTES,'UTF-8'));
+                        $sheet->setCellValue('I'.$i, html_entity_decode($user['budget']           ,ENT_QUOTES,'UTF-8'));
+                        $sheet->setCellValue('J'.$i, html_entity_decode($user['budget_left']      ,ENT_QUOTES,'UTF-8'));
+                        $sheet->setCellValue('K'.$i, html_entity_decode($user['budget_remaining'] ,ENT_QUOTES,'UTF-8'));
                     }
 
                     $i++;
@@ -146,8 +150,9 @@ class Unidress_User_Report extends WP_List_Table {
             $sheet->getColumnDimension('L')->setAutoSize(true);
             $sheet->getColumnDimension('M')->setAutoSize(true);
             $sheet->getColumnDimension('N')->setAutoSize(true);
+            $sheet->getColumnDimension('O')->setAutoSize(true);
 
-            $sheet->getStyle('A1:N' . $i)->applyFromArray($borderStyleArray);
+            $sheet->getStyle('A1:O' . $i)->applyFromArray($borderStyleArray);
 
             $writer = new PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
@@ -213,6 +218,8 @@ class Unidress_User_Report extends WP_List_Table {
 				//'cb'                    =>  $index,
 				'user_id'               =>  $user_data['user_id']         ,
 				'username'              =>  $user_data['login']           ,
+                'user_fio'              =>  $user_data['first_name'].' '.
+                                            $user_data['last_name']       ,
 				'customer'              =>  $user_data['customer']        ,
 				'branch'                =>  $user_data['branch']          ,
 				'department'            =>  $user_data['department']      ,
@@ -234,6 +241,7 @@ class Unidress_User_Report extends WP_List_Table {
 		return array(
           //'cb'                    => '<input type="checkbox" />',
 			'username'              => esc_attr__( 'Username', 'unidress' )  ,
+            'user_fio'              => esc_attr__( 'First Name and Last Name', 'unidress' )  ,
 			'customer'              => esc_attr__( 'Customer', 'unidress' )  ,
 			'branch'                => esc_attr__( 'Branch', 'unidress' )    ,
 			'department'            => esc_attr__( 'Department', 'unidress' ),
@@ -255,6 +263,9 @@ class Unidress_User_Report extends WP_List_Table {
 		$users_data = $this->users_array;
 
 		foreach ($users as $user) {
+            $new_user = get_userdata( $user->ID );
+            $first_name = $new_user->first_name;
+            $last_name = $new_user->last_name;
             $customer_id        = $users_data[$user->ID]['customers']['id'];
             $branch_id          = $users_data[$user->ID]['branch']['id'];
 			$kit_id             = $users_data[$user->ID]['kits']['id'];
@@ -307,6 +318,7 @@ class Unidress_User_Report extends WP_List_Table {
             }
 
 			$output[$user->ID]['login']                = $user->data->user_login;
+            $output[$user->ID]['user_fio']             = $first_name.' '.$last_name;
 			$output[$user->ID]['customer']             = $customer;
 			$output[$user->ID]['branch']               = $branch;
 			$output[$user->ID]['department']           = $department;
@@ -335,6 +347,7 @@ class Unidress_User_Report extends WP_List_Table {
 	function get_sortable_columns(){
 		return array(
 			'username'      => array( 'username', 'desc' ),
+            'user_fio'      => array( 'user_fio', 'desc' ),
 			'customer'      => array( 'customer', 'desc' ),
 			'branch'        => array( 'branch', 'desc' ),
 			'department'    => array( 'department', 'desc' ),
@@ -793,6 +806,8 @@ class Unidress_User_Report extends WP_List_Table {
 		$output = array();
 		$output['user_id']              = $user->ID;
 		$output['login']                = $user->data->user_login;
+        $output['first_name']           = $user->first_name;
+        $output['last_name']            = $user->last_name;
 		$output['customer']             = $customer;
 		$output['branch']               = $branch;
 		$output['department']           = $department;
