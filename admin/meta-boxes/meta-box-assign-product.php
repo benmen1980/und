@@ -9,12 +9,24 @@ function add_table_product_to_campaign() {
     add_meta_box('add-product-to-campaign', __( 'Kit on Campaign', 'unidress' ), 'table_product_to_campaign', 'campaign', 'normal');
 }
 
+function unid_unserialize_assign_product($post) {
+    $post_meta  = get_post_meta($post->ID,'', true);
+    foreach ($post_meta as $key=>$meta) {
+        if (is_serialized($meta[0]))
+            $post_meta[$key][0] = unserialize((string)$meta[0]);
+    }
+    return $post_meta;
+}
+
+
 function table_product_to_project() {
 	global $post;
     wp_nonce_field( basename( __FILE__ ), 'table_product_to_project_nonce' );
     wp_enqueue_script( 'product-assign-js', plugins_url( '/unidress/admin/js/product-assign-project.js'), array( 'jquery' ) );
 
-    $post_meta  = get_post_meta($post->ID,'', true);
+    $post_meta = unid_unserialize_assign_product($post);
+    
+
     echo '<section id="section-0" class="assign-products-meta-box">';
         $current_customer = isset($post_meta['project_customer'][0]) ? $post_meta['project_customer'][0]:  false;
         $current_customer_campaign = get_post_meta($current_customer, 'active_campaign', true);
@@ -47,6 +59,7 @@ function table_product_to_campaign() {
 		if (is_serialized($meta[0]))
 			$post_meta[$key][0] = unserialize((string)$meta[0]);
     }
+
 
 
     if (isset($post_meta['kits'][0])) {
@@ -216,13 +229,13 @@ function render_kit_info($kit, $post_meta='', $select_copy =''){
 
 }
 function render_product_to_project( $post_meta='') {
-
     if (isset($post_meta['add_product_to_project']) && $post_meta['add_product_to_project'][0]) {
         $already_assign_product = json_decode ($post_meta['add_product_to_project'][0]);
     } else {
         $already_assign_product = array();
     }
     ?>
+
     <div class="section-product">
         <div class="product-wrapper table-wrapper">
             <div class="filter-bar">
@@ -259,7 +272,7 @@ function render_product_to_project( $post_meta='') {
                 </tbody>
             </table>
         </div>
-        <div class="product-assign-wrapper table-wrapper">
+        <div class="product-assign-wrapper table-wrapper js-product-assign-wrapper">
             <h3><?php echo __( 'Assign product', 'unidress' ) ?></h3>
             <input type="hidden" class="add_product"         name="add_product_to_project" value='<?php echo (isset($post_meta['add_product_to_project'][0])) ? $post_meta['add_product_to_project'][0] : '';?>'>
             <div id="filter-assign-product" class="filter-bar">
@@ -273,8 +286,9 @@ function render_product_to_project( $post_meta='') {
                     <a class="button button-search" table-assign="true"><?php echo __( 'Search', 'unidress' ) ?></a>
                 </p>
             </div>
+            <?php require MY_PLUGIN_ROOT_ADMIN.'/parts/assign-product/pagination.php'; ?>
             <table class="product-table product-assign">
-                <thead>
+                <thead> 
                 <tr>
                     <td class="column-image"><span class="wc-image tips" title="<?php echo __( 'Image', 'unidress' ) ?>"><?php echo __( 'Image', 'unidress' ) ?></span></td>
                     <td class="column-name"><?php echo esc_attr__( 'Name', 'unidress' )?></td>
@@ -284,14 +298,22 @@ function render_product_to_project( $post_meta='') {
                     <td class="column-price"><?php echo esc_attr__( 'Price', 'unidress' )?></td>
                     <td class="column-button"><a class="btn-remove-all-product btn-simple"><?php echo esc_attr__( 'Remove all', 'unidress' )?></a></td>
                     <td class="column-button"><?php echo esc_attr__( 'Variation', 'unidress' )?></a></td>
+                    <td class="column-button"><div class="h-width-1 h-margin-auto"><?php echo esc_attr__( 'Display Order', 'unidress' )?></div></td>
 
                 </tr>
                 </thead>
-                <tbody class="choices-list">
+                <tbody class="choices-list js-choices-list-order">
                 <?php
+                // $pageda = $_GET['assign-paged'] ? $_GET['assign-paged'] : 1;
+                // $posts_per_page = 1; //get_option('posts_per_page');
+                // $post_offset = ($pageda - 1) * $posts_per_page;
+                // echo unid_get_per_page_assign_product();
+
                 echo get_product_to_campaign(array(
-                    'numberposts' => -1,
-                    'orderby'     => 'post__in ',
+                    'numberposts'   =>  -1,
+                    // 'offset'        =>  $post_offset,
+
+                    'orderby'     => 'post__in',
                     'order'       => 'ASC',
                     'post_type'   => 'product',
                     'post__in' => $already_assign_product
@@ -299,12 +321,17 @@ function render_product_to_project( $post_meta='') {
                 ?>
                 </tbody>
             </table>
+            <?php require MY_PLUGIN_ROOT_ADMIN.'/parts/assign-product/pagination.php'; ?>
         </div>
     </div>
 
     <?php
 
+    
+
 }
+
+
 function render_product_to_campaign($kit, $post_meta='') {
 
     $already_assign_product = json_decode (($post_meta['add_product_to_campaign'][0])[$kit]);
@@ -347,7 +374,7 @@ function render_product_to_campaign($kit, $post_meta='') {
                 </tbody>
             </table>
         </div>
-        <div class="product-assign-wrapper table-wrapper">
+        <div class="product-assign-wrapper table-wrapper js-product-assign-wrapper">
             <h3><?php echo __( 'Assign product', 'unidress' ) ?></h3>
             <input type="hidden" class="add_product"         name="add_product_to_campaign[<?php echo $kit ?>]" value='<?php echo (isset($post_meta['add_product_to_campaign'][0][$kit])) ? $post_meta['add_product_to_campaign'][0][$kit] : '';?>'>
             <div id="filter-assign-product" class="filter-bar">
@@ -361,6 +388,7 @@ function render_product_to_campaign($kit, $post_meta='') {
                     <a class="button button-search" table-assign="true"><?php echo __( 'Search', 'unidress' ) ?></a>
                 </p>
             </div>
+            <?php require MY_PLUGIN_ROOT_ADMIN.'/parts/assign-product/pagination.php'; ?>
             <table class="product-table product-assign">
                 <thead>
                 <tr>
@@ -373,6 +401,7 @@ function render_product_to_campaign($kit, $post_meta='') {
                     <td class="column-price"><?php echo esc_attr__( 'Price', 'unidress' )?></td>
                     <td class="column-button"><a class="btn-remove-all-product btn-simple"><?php echo esc_attr__( 'Remove all', 'unidress' )?></a></td>
                     <td class="column-button"><?php echo esc_attr__( 'Variation', 'unidress' )?></td>
+                    <td class="column-button"><div class="h-width-1 h-margin-auto"><?php echo esc_attr__( 'Display Order', 'unidress' )?></div></td>
                 </tr>
                 </thead>
                 <tbody class="choices-list">
@@ -386,6 +415,7 @@ function render_product_to_campaign($kit, $post_meta='') {
                 ), true, $already_assign_product, $kit, $post_meta); ?>
                 </tbody>
             </table>
+            <?php require MY_PLUGIN_ROOT_ADMIN.'/parts/assign-product/pagination.php'; ?>
         </div>
     </div>
     <?php
@@ -440,10 +470,15 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
 
         if (isset( $post_meta['product_option'][0] ))
             $product_option = $post_meta['product_option'][0];
-
-
+        $count = 1;
+        // $already_assign_product = array_merge($already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product, $already_assign_product);
+        // shuffle($already_assign_product);
+        $already_assign_product = unid_ksort(array(
+            'product_list' => $already_assign_product,
+            'product_option' => $product_option,
+            'kit' => $kit,
+        ));
         foreach( $already_assign_product as $post_id ){
-
             $product                        = wc_get_product( $post_id );
             $product_meta                   = get_post_meta($post_id, '',true);
             $data['id']                     = $post_id;
@@ -459,7 +494,9 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
             $data['variation']              = $product ? $product->get_type() : $product;
 
             $output .= add_t_body_row($data, $assign);
+            $count++;
         }
+       
     }
 
     wp_reset_postdata();
@@ -467,9 +504,8 @@ function get_product_to_campaign ($arg, $assign = false, $already_assign_product
     return $output;
 }
 
-function add_t_body_row($data, $assign = false ) {
-    var_dump($data);
-    $row = '<tr data-id="' . $data['id'] . '">';
+function add_t_body_row($data, $assign = false) {
+    $row = '<tr class="js-product-assign-tr '.((!$assign) ? '' : 'hidden').'" data-id="' . $data['id'] . '">';
     $row .=     '<td class="column-image">' . $data['image'] .    '</td>';
     if ($assign) {
         $row .=     '<td class="column-name"><div class="column-name-title">'  . $data['title'] . '</div>' . unidress_load_variations($data) . '</td>';
@@ -496,8 +532,9 @@ function add_t_body_row($data, $assign = false ) {
     } else {
 
         // TEST
-        $row .= ' <td><input type="text" name="" placeholder="" value=""></td>';
+        $row .= ' <td><div class="acf-field"><div class="acf-input"><input class="js-assign-product-warehouse" type="text" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][warehouse]" placeholder=" " value="' . ( (isset($data['product_option']['warehouse']) && $data['product_option']['warehouse'] != '0') ? $data['product_option']['warehouse'] : "") . '"></div></div></td>';
         // TEST
+
         // CHANGE
         if (isset($data['kit']) && $data['kit'] !=''  && $data['kit'] !='0' && $assign) {
             $row .=     '<td class="column-option">' . get_assign_group_select($data)   .    '</td>';
@@ -516,6 +553,7 @@ function add_t_body_row($data, $assign = false ) {
         } else {
             $row .= '<td class="column-button"></td>';
         }
+        $row .= '<td><input class="h-width-full" type="number" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][order]" value="' . ( (isset($data['product_option']['order']) && $data['product_option']['order'] != '0') ? $data['product_option']['order'] : "") . '"></td>';
     }
     $row .= '</tr>';
     return $row;
@@ -668,9 +706,16 @@ function unidress_load_variations($data) {
 	$array_vari_slug = array();
 	$navigation = '';
 
+
 	if ( $variations ) {
 
 		if (count( $product_object->get_attributes() ) !== 2 ) {
+            $output .= '        <fieldset class="unidress-shops-shipping">';
+            $output .= '        <label class="variation-row">';
+            $output .= '            <span><input class="shipping-all-select" type="checkbox"></span>';
+            $output .=              esc_html__( 'Select all', 'unidress' );
+            $output .= '        </label>';
+            $output .= '        <ul>';
 
 			foreach ( $variations as $variation_object ) {
 
@@ -684,8 +729,9 @@ function unidress_load_variations($data) {
 
 				$product = wc_get_product( $variation_id );
 
-				$output .= '<div class="variation-row">';
-				$output .= '<span><input data-variation="' . $variation_id . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][]" value="' . esc_html( $variation_id ) . '" ' . $checked . '></span>';
+				
+                $output .= '<li class="variation-row">';
+				$output .= '<span><input class="shipping-select" data-variation="' . $variation_id . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][]" value="' . esc_html( $variation_id ) . '" ' . $checked . '></span>';
 				$output .= '<span>#' . esc_html( $variation_id ) . '</span>';
 
 				foreach ( $product_object->get_attributes( 'edit' ) as $attribute ) {
@@ -695,9 +741,11 @@ function unidress_load_variations($data) {
 					$output .= '<span>' . $product->get_attribute( sanitize_title( $attribute->get_name() ) ) . '</span>';
 				}
 
-				$output .= '</div>';
+				$output .= '</li>';
 
 			}
+            $output .= '</ul>';
+            $output .= '</fieldset>';
 
 		} else {
 
@@ -769,7 +817,6 @@ add_action('save_post', 'save_table_product_to_project');
 
 function save_table_product_to_project( $post_id ) {
 
-    
 
     if ( !isset( $_POST['table_product_to_project_nonce'] )
         || !wp_verify_nonce( $_POST['table_product_to_project_nonce'], basename( __FILE__ ) ) )
@@ -787,8 +834,10 @@ function save_table_product_to_project( $post_id ) {
 
 }
 
+
 add_action('save_post', 'save_table_product_to_campaign');
 function save_table_product_to_campaign( $post_id, $data = '' ) {
+     
 
     if ( isset($_POST['action']) && ($_POST['action'] != 'editpost') && ($data != '') )
 	    $_POST = $data;
@@ -833,5 +882,26 @@ function save_table_product_to_campaign( $post_id, $data = '' ) {
         delete_post_meta( $post_id, 'required_products' );
     }
 
+
 }
 
+
+
+// SORTING UN1-T130
+function unid_ksort($data) {
+    $product_option_order = [];
+    $count = 1000;
+    foreach ($data['product_list'] as $key => $value) {
+        if ($data['product_option'][$data['kit']][$value]['order'] == '') {
+            $product_option_order[] = $count++;
+        }
+        else{
+            $product_option_order[] = $data['product_option'][$data['kit']][$value]['order'];
+        }
+    }
+    // var_dump($product_option_order);
+    $product_list = array_combine($product_option_order, $data['product_list']);
+    ksort($product_list);
+    // var_dump($product_list);
+    return $product_list;
+}

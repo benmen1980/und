@@ -115,9 +115,14 @@ function render_customer_branches_address_shipping_option($customer_id = '', $ca
 
 		$shops_checked = get_post_meta($campaign_id, 'shops', true);
 
-		$output = '<fieldset>';
+		$output = '<fieldset class="unidress-shops-shipping">';
 		$output .= '<h4 class="shipping-option-label">' . esc_html__( 'Branches addresses', 'unidress' ) .'</h4>';
 
+		$output .= '		<label>';
+		$output .= '			<input name="shops[]" class="shipping-all-select" type="checkbox" >';
+		$output .=              esc_html__( 'Select all', 'unidress' );
+		$output .= '		</label>';
+		$output .= '<ul class="acf-checkbox-list acf-bl">';
 		foreach( $shops_branch as $shop ){
 			$checked = '';
 			if (is_array($shops_checked) && in_array($shop->ID, $shops_checked)) {
@@ -125,15 +130,17 @@ function render_customer_branches_address_shipping_option($customer_id = '', $ca
 			}
 			setup_postdata($shop);
 
-			$output .= '<ul class="acf-checkbox-list acf-bl">';
+			
 			$output .= '	<li>';
 			$output .= '		<label>';
-			$output .= '			<input type="checkbox" name="shops[]" value="' . $shop->ID . '" ' .$checked. '>';
+			$output .= '			<input type="checkbox" name="shops[]" class="shipping-select" value="' . $shop->ID . '" ' .$checked. '>';
 			$output .=              $shop->post_title;
 			$output .= '		</label>';
 			$output .= '	</li>';
-			$output .= '</ul>';
+			
 		}
+
+		$output .= '</ul>';
 
 		$output .= '</fieldset>';
 

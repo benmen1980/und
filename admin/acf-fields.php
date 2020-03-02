@@ -42,7 +42,7 @@ if( function_exists('acf_add_local_field_group') ):
                 'name' => 'branch_priority_number',
                 'type' => 'text',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => 0,
                 'wrapper' => array(
 	                'width' => '50',
@@ -61,7 +61,7 @@ if( function_exists('acf_add_local_field_group') ):
                 'name' => 'branch_customer',
                 'type' => 'post_object',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => 0,
                 'wrapper' => array(
                     'width' => '',
@@ -288,7 +288,7 @@ if( function_exists('acf_add_local_field_group') ):
                 'name' => 'customer_type',
                 'type' => 'select',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => 0,
                 'wrapper' => array(
                     'width' => '',
@@ -296,17 +296,19 @@ if( function_exists('acf_add_local_field_group') ):
                     'id' => '',
                 ),
                 'choices' => array(
+                    'none' => 'none',
                     'project' => 'Project customer',
                     'campaign' => 'Campaign customer',
                 ),
                 'default_value' => array(
+                    'none' => 'none',
                 ),
                 'allow_null' => 0,
                 'multiple' => 0,
                 'ui' => 0,
                 'return_format' => 'label',
                 'ajax' => 0,
-                'placeholder' => '',
+                'placeholder' => 'none',
             ),
             array(
                 'key' => 'field_5c9200c20756a',
@@ -400,7 +402,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'name' => 'active_campaign',
 		        'type' => 'post_object',
 		        'instructions' => '',
-		        'required' => 0,
+		        'required' => 1,
 		        'conditional_logic' => array(
 			        array(
 				        array(
@@ -423,6 +425,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'multiple' => 0,
 		        'return_format' => 'object',
 		        'ui' => 1,
+                'placeholder' => __('no active campaign'),
 	        ),
 	        array(
 		        'key' => 'field_5ced1313470b2',
@@ -430,7 +433,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'name' => 'active_campaign',
 		        'type' => 'post_object',
 		        'instructions' => '',
-		        'required' => 0,
+		        'required' => 1,
 		        'conditional_logic' => array(
 			        array(
 				        array(
@@ -453,6 +456,7 @@ if( function_exists('acf_add_local_field_group') ):
 		        'multiple' => 0,
 		        'return_format' => 'object',
 		        'ui' => 1,
+                'placeholder' => __('no active project'),
 	        ),
             array(
                 //'key' => 'field_5c91f9674933c',
@@ -515,11 +519,12 @@ if( function_exists('acf_add_local_field_group') ):
 	                'class' => 'unidress-input-width',
 	                'id' => '',
                 ),
-                'default_value' => '',
+                'default_value' => (mt_rand().time()),
                 'placeholder' => '',
                 'prepend' => '',
                 'append' => '',
                 'maxlength' => '',
+
             ),
             array(
                 'key' => 'field_5c86cb06ab357',
@@ -527,7 +532,7 @@ if( function_exists('acf_add_local_field_group') ):
                 'name' => 'kit_customer',
                 'type' => 'post_object',
                 'instructions' => '',
-                'required' => 0,
+                'required' => 1,
                 'conditional_logic' => 0,
                 'wrapper' => array(
                     'width' => '',

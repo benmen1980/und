@@ -390,3 +390,37 @@
 .filter-users-report > *:last-child {
     margin: 0 6px;
 }
+
+
+/*NEW STYLE*/
+
+input.error{
+    border: 1px solid red;
+}
+
+
+.h-width-full{
+    width: 100%;
+}
+.h-width-1{
+    width: 55px;
+}
+.h-margin-auto{
+    margin: 0 auto;
+}
+
+
+.unid-pagination{
+    float: right;
+}
+
+
+.red{
+    background: red;
+}
+
+
+
+#adminmenuback{
+    display: none !important;
+}

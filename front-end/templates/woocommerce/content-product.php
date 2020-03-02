@@ -51,7 +51,6 @@ if ($product->get_type() == 'variable') {
                 }
             }
         }
-
 	    sort($available_variations);
 	    $attribute_keys  = array_keys( $attributes );
         $variations_json = wp_json_encode( $available_variations );

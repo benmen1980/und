@@ -10,11 +10,21 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
+global $translatePluginsAdmin;
+$translatePluginsAdmin = array(
+    'type' => array(
+        'customers' => array(
+            'no_active_campaign' => __('no active campaign', 'unidress'),
+            'no_active_project' => __('no active project', 'unidress'),
+        ),
+    ),
+);
+
 
 define( 'MY_PLUGIN_ROOT_ADMIN', MY_PLUGIN_ROOT . '/admin' );
 
 
-require_once MY_PLUGIN_ROOT_ADMIN . '/include/functions/post-type-customers.php';
+require_once MY_PLUGIN_ROOT_ADMIN . '/include/functions/functions.php';
 
 
 //требуем указать заголовок и отрывок end

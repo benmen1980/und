@@ -13118,7 +13118,6 @@
 	*  @return	object
 	*/
 	var getValidator = function( $el ){
-		
 		// instantiate
 		var validator = $el.data('acf');
 		if( !validator ) {
@@ -13455,6 +13454,7 @@
 			// vars
 			var $form = $el.closest('form');
 			
+				
 			// check form exists
 			if( $form.length ) {
 				
@@ -13463,7 +13463,7 @@
 					input: $el.attr('name'),
 					message: e.target.validationMessage
 				});
-				
+
 				// trigger submit on $form
 				// - allows for "save", "preview" and "publish" to work
 				$form.submit();

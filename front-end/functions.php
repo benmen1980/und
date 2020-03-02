@@ -1,6 +1,11 @@
 <?php
-
+define( 'MY_PLUGIN_ROOT_FRONT', MY_PLUGIN_ROOT . '/front-end' );
 $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
+
+
+require_once MY_PLUGIN_ROOT_FRONT . '/include/functions/functions.php';
+
+
 
 function get_ordering_style($current_customer) {
     global $wpdb;
@@ -87,6 +92,7 @@ add_action( 'woocommerce_product_query', 'unidress_product_query' );
 function unidress_product_query( $q ){
 
 	$q->set( 'post__in', (array) get_unidress_list_product() );
+	$q->set( 'orderby', 'post__in');
 
 }
 
@@ -316,7 +322,8 @@ update_user_meta(1, '$passed_validation', $passed_validation );
 	$groups_in_kit       = $groups_in_campaign[$kit_id]   ?: array();
 	$required_in_kit     = $required_products[$kit_id]    ?: array();
 	$product_in_kit      = $product_in_campaign[$kit_id]  ?: array();
-	$budget_in_kit       = $budget_in_campaign[$kit_id]   ?: 0;
+	$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
+	//$budget_in_kit       = $budget_in_campaign[$kit_id]   ?: 0;
 
 	$get_cart = WC()->cart->get_cart();
 
@@ -537,7 +544,6 @@ function add_graphic_option_in_product(){
 
 	if ( empty($product_graphics) ||  empty($project_graphics) )
 		return;
-
 	$graphics = get_posts( array(
 		'include'     => $project_graphics,
 		'post_type'   => 'graphic',
@@ -595,13 +601,12 @@ if ( get_ordering_style($current_customer)=='closed_list' ) {
     remove_action('woocommerce_before_shop_loop', 'wc_setup_loop');
     add_action('woocommerce_before_shop_loop', 'closed_list_setup_loop');
     function closed_list_setup_loop( $args = array()  ) {
-
         $default_args = array(
             'loop'         => 0,
             'columns'      => 3,
             'name'         => '',
             'is_shortcode' => false,
-            'is_paginated' => false,
+            'is_paginated' => true,
             'is_search'    => false,
             'is_filtered'  => false,
             'total'        => 0,
@@ -750,10 +755,11 @@ function check_group_limit() {
 	}
 
 	//kit data
-	$groups_in_kit       = $groups_in_campaign[$kit_id]   ?: array();
-	$required_in_kit     = $required_products[$kit_id]    ?: array();
-	$product_in_kit      = $product_in_campaign[$kit_id]  ?: array();
-	$budget_in_kit       = $budget_in_campaign[$kit_id]   ?: 0;
+	$groups_in_kit       = $groups_in_campaign[$kit_id]  ?: array();
+	$required_in_kit     = $required_products[$kit_id]   ?: array();
+	$product_in_kit      = $product_in_campaign[$kit_id] ?: array();
+	$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
+	//$budget_in_kit       = $budget_in_campaign[$kit_id]   ?: 0;
 
 	$get_cart = WC()->cart->get_cart();
 
@@ -962,6 +968,10 @@ function get_unidress_list_product() {
 	$one_order_value    = get_user_meta($user_id, 'one_order_value', true);
 	$one_order_toggle   = get_post_meta($campaign_id, 'one_order_toggle', true);
 
+	$product_option 	= get_post_meta($campaign_id, 'product_option', true);
+	$product_option_order 	= [];
+
+	
 	if (empty($campaign_id) || empty($kit_id)) {
 		return 0;
 	}
@@ -972,21 +982,38 @@ function get_unidress_list_product() {
 	    if (isset($product_in_campaign[$kit_id]))
 		    $product_list           = json_decode($product_in_campaign[$kit_id]);
 
-    } else {
-	    $product_list           = get_post_meta($campaign_id, 'add_product_to_project', true);
-	    $vowels = array("[", "]", "\"", "\\");
-	    $product_list           = explode(",", str_replace($vowels, "", $product_list));
-    }
+	} else {
+		$product_list           = get_post_meta($campaign_id, 'add_product_to_project', true);
+		$vowels = array("[", "]", "\"", "\\");
+		$product_list           = explode(",", str_replace($vowels, "", $product_list));
+	}
 
-    if (!isset($product_list) || !$product_list) {
-	    $product_list = 0;
-    }
+	if (!isset($product_list) || !$product_list) {
+		$product_list = 0;
+	}
 	// You already buy something check
 	if ($one_order_toggle && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id] ) {
 		$product_list = 0;
 	}
 
-    return $product_list;
+	// DISPLAY ORDER UN1-T130
+	$countPost = 1000;
+	foreach ($product_list as $key => $value) {
+		// var_dump($value);
+		if ($product_option[$kit_id][$value]['order'] == '') {
+			$product_option_order[] = $countPost++;
+		}
+		else{
+			$product_option_order[] = $product_option[$kit_id][$value]['order'];
+		}
+
+		// var_dump($product_option[$kit_id][$value]['order']);
+	}
+	// var_dump($product_option_order);
+	$product_list = array_combine($product_option_order, $product_list);
+	ksort($product_list);
+	// var_dump($product_list);
+	return $product_list;
 }
 
 //add tab to product page
@@ -1064,60 +1091,62 @@ function product_option_tab_content( $tabs ) {
 //UN1-T11: Site Logo Defined by Customer
 //UN1-T24: Customer Name below the customer's logo
 function storefront_site_branding() {
-    ?>
-    <div class="site-branding">
-        <?php if ( function_exists( 'the_custom_logo' ) && has_custom_logo() ) {
-            $logo = get_custom_logo();
-            $html = is_home() ? '<h1 class="logo">' . $logo . '</h1>' : $logo;
-        } else {
-            $tag = is_home() ? 'h1' : 'div';
+?>
+	<div class="site-branding">
+<?php 
+	if ( function_exists( 'the_custom_logo' ) && has_custom_logo() ) {
+		$logo = get_custom_logo();
+		$html = is_home() ? '<h1 class="logo">' . $logo . '</h1>' : $logo;
+	} else {
+		$tag = is_home() ? 'h1' : 'div';
+		$html = '<' . esc_attr( $tag ) . ' class="beta site-title"><a href="' . esc_url( home_url( '/' ) ) . '" rel="home">' . esc_html( get_bloginfo( 'name' ) ) . '</a></' . esc_attr( $tag ) . '>';
 
-            $html = '<' . esc_attr( $tag ) . ' class="beta site-title"><a href="' . esc_url( home_url( '/' ) ) . '" rel="home">' . esc_html( get_bloginfo( 'name' ) ) . '</a></' . esc_attr( $tag ) . '>';
+		if ( '' !== get_bloginfo( 'description' ) ) {
+			$html .= '<p class="site-description">' . esc_html( get_bloginfo( 'description', 'display' ) ) . '</p>';
+		}
 
-            if ( '' !== get_bloginfo( 'description' ) ) {
-                $html .= '<p class="site-description">' . esc_html( get_bloginfo( 'description', 'display' ) ) . '</p>';
-            }
-
-            if (is_user_logged_in()){
-                $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
-                $customer_name = get_the_title($current_customer);
-                if ($current_customer) {
-                    $html.= '<div>' . $customer_name .'</div>';
-                }
-            }
-        }
-
-        echo $html; // WPCS: XSS ok. ?>
-    </div>
-    <div class="hidden-xs">
-        <?php get_budget_banner(); ?>
-    </div>
-	<?php
+		if (is_user_logged_in()){
+			$current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
+			$customer_name = get_the_title($current_customer);
+			if ($current_customer) {
+				$html.= '<div>' . $customer_name .'</div>';
+			}
+		}
+	}
+	echo $html; // WPCS: XSS ok.
+?>
+	</div>
+	<div class="hidden-xs">
+		<?php get_budget_banner(); ?>
+	</div>
+<?php
 }
 function get_budget_banner() {
 
-	$user_id            = get_current_user_id();
+	$user_id = get_current_user_id();
 	$current_customer = get_user_meta($user_id, 'user_customer', true);
 
 	if ( ( get_ordering_style($current_customer)=='standard' ) && ( get_customer_type($current_customer) == 'campaign' ) ) {
 		if ( !is_admin() ) {
 
-			$kit_id             = get_user_meta($user_id, 'user_kit', true);
-			$customer_id        = get_user_meta($user_id, 'user_customer', true);
-			$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+			$kit_id = get_user_meta($user_id, 'user_kit', true);
+			$customer_id = get_user_meta($user_id, 'user_customer', true);
+			$campaign_id = get_post_meta($customer_id, 'active_campaign', true);
+
 			$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
-			$user_budget_left   = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
+			$user_budget_left = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
 			if (empty($campaign_id) || empty($kit_id)) {
 				return;
 			}
 			//campaign data
-			$budgets_in_campaign     = get_post_meta($campaign_id, 'budget', true);
-			$budget_in_kit    = $budgets_in_campaign[$kit_id] ?: 0;
+			$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
+			$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
 
+			//$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0;
 			$total = WC()->cart->get_totals( 'total' )['total'];
-			?>
-            <div class="user-budget-bar"><?php echo esc_attr__( 'Budget Balance', 'unidress' )?>: <span class="remaining-budget"><?php echo $budget_in_kit - (int)$user_budget_left - $total ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
-			<?php
+?>
+			<div class="user-budget-bar"><?php echo esc_attr__( 'Budget Balance', 'unidress' )?>: <span class="remaining-budget"><?php echo $budget_in_kit - (int)$user_budget_left - $total ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
+<?php
 		}
 
 	}
@@ -1133,17 +1162,17 @@ function custom_logo_url ( $html ) {
     $customer_name = get_the_title($current_customer);
     $customer_logo = get_post_meta($current_customer, 'customers_logo', true);
  
-    if (is_user_logged_in()){
+    if (is_user_logged_in()) {
         if ($image) {
             $url = $image['url'];
             $html.= '<center><img src="'. $url.'" />'.$customer_name.'</center>';
-        }else{
+        } else {
             if ($customer_logo) {
                 $url = network_site_url();
                 $html = sprintf( '<a href="%1$s" class="custom-logo-link" rel="home" itemprop="url">%2$s</a>',
-                    esc_url( $url  ),
+                    esc_url( $url ),
                     wp_get_attachment_image( $customer_logo, 'full', false, array(
-                        'class'    => 'custom-logo',
+                        'class' => 'custom-logo',
                     ) )
                 );
             }
@@ -1160,7 +1189,6 @@ function get_array_product_attribute ($product, $attributes){
     foreach ($attributes as $attribute_name => $options) {
 
         if (taxonomy_exists($attribute_name)) {
-
             $terms = wc_get_product_terms($product->get_id(), $attribute_name, array(
                 'fields' => 'all',
             ));
@@ -1280,6 +1308,11 @@ add_filter( 'woocommerce_checkout_fields', function( $field ){
 	return $field;
 }, 4, 10);
 
+// CHANGE EMAIL UN1-T130
+add_action('woocommerce_after_checkout_form', function () {
+	?><script type="text/javascript">document.getElementById('billing_email').value = '';</script><?php
+});
+
 add_action('woocommerce_checkout_order_processed', 'add_unidress_shipping_to_order', 10, 4);
 function add_unidress_shipping_to_order($order_id, $posted_data, $order) {
     update_post_meta($order_id, 'unidress_shipping', $posted_data['unidress_shipping']);
@@ -1368,9 +1401,9 @@ function unidress_add_to_cart_validation($output, $add_product_id, $add_quantity
 
 		// Budget limit check in cart
 		if ( $customer_ordering_style == 'standard' && $customer_type == 'campaign' ) {
-
-			$budgets_in_campaign        = get_post_meta($campaign_id, 'budget', true);
-			$budget_in_kit              = $budgets_in_campaign[$kit_id] ?: 0;
+			$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
+			//$budget_in_kit = $budgets_in_campaign[$kit_id] ?: 0;
+			$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
 
 			$user_budget_limits         = get_user_meta($user_id, 'user_budget_limits', true);
 			$user_budget_left           = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
@@ -1477,7 +1510,7 @@ function check_proceed_to_checkout() {
 
 				$balance = $group['amount'] - $user_limit - $group_cart;
 
-				if ($balance < 0){
+				if ($balance < 0) {
 					wc_add_notice( __( 'You have exceeded the limit by product group', 'unidress' ), 'error' );
 					$output = true;
 					break;
@@ -1507,7 +1540,9 @@ function check_proceed_to_checkout() {
 	if ( $customer_ordering_style == 'standard' && $customer_type == 'campaign' ) {
 
 		$budgets_in_campaign    = get_post_meta($campaign_id, 'budget', true);
-		$budget_in_kit          = $budgets_in_campaign[$kit_id] ?: 0;
+		$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
+		//$budget_in_kit          = $budgets_in_campaign[$kit_id] ?: 0;
+
 
 		$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
 		$user_budget_left   = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
@@ -1632,7 +1667,8 @@ function storefront_page_header() {
 	$user_budget_left   = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
 
 	$budgets_in_campaign     = get_post_meta($campaign_id, 'budget', true);
-	$budget_in_kit    = $budgets_in_campaign[$kit_id] ?: 0;
+	$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
+	//$budget_in_kit    = $budgets_in_campaign[$kit_id] ?: 0;
 
 	$total = WC()->cart->get_totals( 'total' )['total'];
 	$budget = $budget_in_kit - (int)$user_budget_left - $total;
@@ -1711,7 +1747,4 @@ function unidress_add_header_bar () {
     <?php
 
 }
-
-
-
 

@@ -120,6 +120,7 @@ jQuery('.inside').on('click', '.btn-add-product', function(){
             jQuery(parent_section).find('.product-assign > tbody').append(response);
 
             jQuery(document.body).css({'cursor' : 'default'});
+            paginationAssignProduct();
         });
 
 });

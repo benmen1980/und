@@ -38,7 +38,8 @@ if (get_customer_type($current_customer) == "campaign") {
 	$user_budget_left       = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
 
 	$budgets_in_campaign    = get_post_meta($campaign_id, 'budget', true);
-	$budget_in_kit          = $budgets_in_campaign[$kit_id] ?: 0;
+    $budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
+	//$budget_in_kit          = $budgets_in_campaign[$kit_id] ?: 0;
 
 	$total                  = WC()->cart->get_totals( 'total' )['total'];
 	$budget_total           = $budget_in_kit - (int)$user_budget_left - $total;
