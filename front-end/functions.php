@@ -996,23 +996,20 @@ function get_unidress_list_product() {
 
 	// DISPLAY ORDER UN1-T130
 	$countPost = 1000;
-	
-	if ($product_list) {
-		foreach ($product_list as $key => $value) {
-			// var_dump($value);
-			if ($product_option[$kit_id][$value]['order'] == '') {
-				$product_option_order[] = $countPost++;
-			}
-			else{
-				$product_option_order[] = $product_option[$kit_id][$value]['order'];
-			}
-
-			// var_dump($product_option[$kit_id][$value]['order']);
+	foreach ($product_list as $key => $value) {
+		// var_dump($value);
+		if ($product_option[$kit_id][$value]['order'] == '') {
+			$product_option_order[] = $countPost++;
 		}
-		// var_dump($product_option_order);
-		$product_list = array_combine($product_option_order, $product_list);
-		ksort($product_list);
+		else{
+			$product_option_order[] = $product_option[$kit_id][$value]['order'];
+		}
+
+		// var_dump($product_option[$kit_id][$value]['order']);
 	}
+	// var_dump($product_option_order);
+	$product_list = array_combine($product_option_order, $product_list);
+	ksort($product_list);
 	// var_dump($product_list);
     return $product_list;
 }
