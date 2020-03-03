@@ -996,6 +996,7 @@ function get_unidress_list_product() {
 
 	// DISPLAY ORDER UN1-T130
 	$countPost = 1000;
+	var_dump($product_list);
 	foreach ($product_list as $key => $value) {
 		// var_dump($value);
 		if ($product_option[$kit_id][$value]['order'] == '') {
