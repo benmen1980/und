@@ -18,6 +18,8 @@
 defined( 'ABSPATH' ) || exit;
 
 global $product;
+
+$current_customer = false;
 // Ensure visibility.
 if ( empty( $product ) || ! $product->is_visible() ) {
     return;

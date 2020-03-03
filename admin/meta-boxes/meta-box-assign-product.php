@@ -892,16 +892,15 @@ function unid_ksort($data) {
     $product_option_order = [];
     $count = 1000;
     foreach ($data['product_list'] as $key => $value) {
-        if ($data['product_option'][$data['kit']][$value]['order'] == '') {
+        $order = isset($data['product_option'][$data['kit']][$value]['order']) ? $data['product_option'][$data['kit']][$value]['order'] : '' ;
+        if ($order == '') {
             $product_option_order[] = $count++;
         }
         else{
             $product_option_order[] = $data['product_option'][$data['kit']][$value]['order'];
         }
     }
-    // var_dump($product_option_order);
     $product_list = array_combine($product_option_order, $data['product_list']);
     ksort($product_list);
-    // var_dump($product_list);
     return $product_list;
 }

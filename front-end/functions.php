@@ -998,7 +998,8 @@ function get_unidress_list_product() {
 	$countPost = 1000;
 	foreach ($product_list as $key => $value) {
 		// var_dump($value);
-		if ($product_option[$kit_id][$value]['order'] == '') {
+		$order = isset($product_option[$kit_id][$value]['order']) ? $product_option[$kit_id][$value]['order'] : '' ;
+		if ($order == '') {
 			$product_option_order[] = $countPost++;
 		}
 		else{
