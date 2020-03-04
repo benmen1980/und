@@ -8,7 +8,6 @@ add_action( 'admin_menu', function(){
 	add_submenu_page( 'edit.php?post_type=branch', esc_attr__( 'Import Branch', 'unidress' ), esc_attr__( 'Import Branch', 'unidress' ), 'manage_options', 'import_branch', 'unidress_upload_branch' );
 } );
 
-
 function unidress_upload_customers() {
 	render_form('users');
 }
@@ -35,10 +34,12 @@ function render_form($page_type){
 			&& wp_verify_nonce( $_POST['import_file_nonce'], 'import_file' )
 			&& current_user_can( 'manage_options' )
 		) {
+			/*
 			if ($_FILES['import_file']['type'] !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
 				echo "Not valid file type";
 				return;
 			}
+			*/
 			$dir = wp_get_upload_dir();
 
 			$name = $_POST['import_type'] . '.xlsx';
@@ -135,6 +136,7 @@ function import_users($page_type){
 	$columnName['kit_number'] = 'K';
 	$columnName['kit_name'] = 'L';
 	$columnName['department'] = 'M';
+	$columnName['budget_value'] = 'N';
 
 	if (!isset($sheetData[1][$columnName['kit_number']])) {
 	    echo 'File is wrong';
@@ -333,7 +335,12 @@ function import_branch($page_type){
 function import_meta_data($user_id, $data, $columnName, $users) {
 
 	if (isset($columnName['billing_phone'])) {
-        update_user_meta( $user_id, 'billing_phone', $data[$columnName['billing_phone']] );
+		update_user_meta( $user_id, 'billing_phone', $data[$columnName['billing_phone']] );
+	}
+
+	if (isset($columnName['budget_value'])) {
+		$budget_value = (!empty($data[$columnName['budget_value']])) ? $data[$columnName['budget_value']] : 0;
+		update_user_meta( $user_id, 'unidress_budget', $budget_value);
 	}
 
     $customer_id = '';

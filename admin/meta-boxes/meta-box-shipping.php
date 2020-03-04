@@ -141,7 +141,6 @@ function render_customer_branches_address_shipping_option($customer_id = '', $ca
 		}
 
 		$output .= '</ul>';
-
 		$output .= '</fieldset>';
 
 		wp_reset_postdata();
