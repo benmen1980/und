@@ -1,11 +1,7 @@
 <?php
 define( 'MY_PLUGIN_ROOT_FRONT', MY_PLUGIN_ROOT . '/front-end' );
 $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
-
-
 require_once MY_PLUGIN_ROOT_FRONT . '/include/functions/functions.php';
-
-
 
 function get_ordering_style($current_customer) {
     global $wpdb;
@@ -322,7 +318,12 @@ update_user_meta(1, '$passed_validation', $passed_validation );
 	$groups_in_kit       = $groups_in_campaign[$kit_id]   ?: array();
 	$required_in_kit     = $required_products[$kit_id]    ?: array();
 	$product_in_kit      = $product_in_campaign[$kit_id]  ?: array();
-	$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
+	$unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
+	if($unidress_budget > 0){
+		$budget_in_kit = $unidress_budget;
+	} else {
+		$budget_in_kit = $budget_in_campaign[$kit_id] ? $budget_in_campaign[$kit_id] : 0 ;
+	}
 	//$budget_in_kit       = $budget_in_campaign[$kit_id]   ?: 0;
 
 	$get_cart = WC()->cart->get_cart();
@@ -758,7 +759,12 @@ function check_group_limit() {
 	$groups_in_kit       = $groups_in_campaign[$kit_id]  ?: array();
 	$required_in_kit     = $required_products[$kit_id]   ?: array();
 	$product_in_kit      = $product_in_campaign[$kit_id] ?: array();
-	$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
+	$unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
+	if($unidress_budget > 0){
+		$budget_in_kit = $unidress_budget;
+	} else {
+		$budget_in_kit = $budget_in_campaign[$kit_id] ? $budget_in_campaign[$kit_id] : 0 ;
+	}
 	//$budget_in_kit       = $budget_in_campaign[$kit_id]   ?: 0;
 
 	$get_cart = WC()->cart->get_cart();
@@ -1140,8 +1146,12 @@ function get_budget_banner() {
 			}
 			//campaign data
 			$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
-			$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
-
+			$unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
+			if($unidress_budget > 0){
+				$budget_in_kit = $unidress_budget;
+			} else {
+				$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0 ;
+			}
 			//$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0;
 			$total = WC()->cart->get_totals( 'total' )['total'];
 ?>
@@ -1268,6 +1278,7 @@ add_filter( 'woocommerce_cart_needs_shipping', function( $field ){
 	return 0;
 }, 1, 10);
 add_filter( 'woocommerce_checkout_fields', function( $field ){
+	global $woocommerce;
 
 	$user_id                = get_current_user_id();
 	$customer_id            = get_user_meta($user_id,     'user_customer', true);
@@ -1279,13 +1290,16 @@ add_filter( 'woocommerce_checkout_fields', function( $field ){
 	$user_billing_email     = get_user_meta($user_id, 'billing_email', true);
 	$user_billing_phone     = get_user_meta($user_id, 'billing_phone', true);
 
+	$billing_clear_first_last = get_post_meta($campaign_id, 'billing_clear_first_last', true) ? 'on' : 'off';
+	$billing_clear_email = get_post_meta($campaign_id, 'billing_clear_email', true) ? 'on' : 'off';
+	$billing_clear_phone = get_post_meta($campaign_id, 'billing_clear_phone', true) ? 'on' : 'off';
+
 	if (isset($field['billing']['billing_country']))
 	    unset($field['billing']['billing_country']);
 	unset($field['billing']['billing_address_1']);
 	unset($field['billing']['billing_address_2']);
 	unset($field['billing']['billing_city']);
 	unset($field['billing']['billing_state']);
-	unset($field['billing']['billing_postcode']);
 	unset($field['billing']['billing_postcode']);
 	$field['unidress_shipping'] = array(
 		'unidress_shipping' => array(
@@ -1295,16 +1309,34 @@ add_filter( 'woocommerce_checkout_fields', function( $field ){
 		),
 	);
 
-	$field['billing']['billing_first_name']['custom_attributes']['readonly'] = 'readonly';
-	$field['billing']['billing_last_name']['custom_attributes']['readonly']= 'readonly';
+	if( $billing_clear_first_last == 'on' ){
+		$field['billing']['billing_first_name']['default'] = NULL;
+		$field['billing']['billing_last_name']['default'] = NULL;
+		$woocommerce->session->customer['first_name'] = '';
+		$woocommerce->session->customer['last_name'] = '';
+	} else {
+		$field['billing']['billing_first_name']['custom_attributes']['readonly'] = 'readonly';
+		$field['billing']['billing_last_name']['custom_attributes']['readonly']= 'readonly';
+		$field['billing']['billing_first_name']['default'] = $user_first_name;
+		$field['billing']['billing_last_name']['default'] = $user_last_name;
+	}
 
-	$field['billing']['billing_first_name']['default'] = $user_first_name;
-	$field['billing']['billing_last_name']['default'] = $user_last_name;
-	$field['billing']['billing_email']['default'] = $user_billing_email;
-	$field['billing']['billing_phone']['default'] = $user_billing_phone;
+	if ( $billing_clear_email == 'on' ){
+		$field['billing']['billing_email']['default'] = NULL;
+		$field['billing']['billing_email']['required'] = true;
+		$woocommerce->session->customer['email'] = '';
+	} else {
+		$field['billing']['billing_email']['default'] = $user_billing_email;
+		$field['billing']['billing_email']['required'] = false;
+	}
 
-	$field['billing']['billing_email']['required'] = false;
-
+	if ( $billing_clear_phone == 'on' ){
+		$field['billing']['billing_phone']['default'] = NULL;
+		$woocommerce->session->customer['phone'] = '';
+	} else {
+		$field['billing']['billing_phone']['default'] = $user_billing_phone;
+	}
+	
 	return $field;
 }, 4, 10);
 
@@ -1403,7 +1435,12 @@ function unidress_add_to_cart_validation($output, $add_product_id, $add_quantity
 		if ( $customer_ordering_style == 'standard' && $customer_type == 'campaign' ) {
 			$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
 			//$budget_in_kit = $budgets_in_campaign[$kit_id] ?: 0;
-			$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
+			$unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
+			if($unidress_budget > 0){
+				$budget_in_kit = $unidress_budget;
+			} else {
+				$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0 ;
+			}
 
 			$user_budget_limits         = get_user_meta($user_id, 'user_budget_limits', true);
 			$user_budget_left           = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
@@ -1540,7 +1577,12 @@ function check_proceed_to_checkout() {
 	if ( $customer_ordering_style == 'standard' && $customer_type == 'campaign' ) {
 
 		$budgets_in_campaign    = get_post_meta($campaign_id, 'budget', true);
-		$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
+		$unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
+		if($unidress_budget > 0){
+			$budget_in_kit = $unidress_budget;
+		} else {
+			$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0 ;
+		}
 		//$budget_in_kit          = $budgets_in_campaign[$kit_id] ?: 0;
 
 
@@ -1667,7 +1709,12 @@ function storefront_page_header() {
 	$user_budget_left   = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
 
 	$budgets_in_campaign     = get_post_meta($campaign_id, 'budget', true);
-	$budget_in_kit = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : ($budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0);
+	$unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
+	if($unidress_budget > 0){
+		$budget_in_kit = $unidress_budget;
+	} else {
+		$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0 ;
+	}
 	//$budget_in_kit    = $budgets_in_campaign[$kit_id] ?: 0;
 
 	$total = WC()->cart->get_totals( 'total' )['total'];
@@ -1711,7 +1758,7 @@ function unidress_remove_handheld_footer_bar () {
 }
 add_action( 'storefront_before_header', 'unidress_add_header_bar', 10 );
 function unidress_add_header_bar () {
-    ?>
+?>
     <div class="unidress-mobile-header">
         <div class="unidress-mobile-header-bar">
             <div class="menu-burger">
@@ -1734,7 +1781,7 @@ function unidress_add_header_bar () {
                 </a>
             </div>
         </div>
-	<?php
+<?php
 	wp_nav_menu(
 		array(
 			'theme_location'  => 'handheld',
@@ -1742,9 +1789,31 @@ function unidress_add_header_bar () {
 		)
 	);
 	storefront_product_search();
-	?>
+?>
     </div>
-    <?php
+<?php
+}
+add_action('woocommerce_after_checkout_billing_form','woocommerce_after_checkout_billing_form_function');
+function woocommerce_after_checkout_billing_form_function(){
+	$user_id                = get_current_user_id();
+	$customer_id            = get_user_meta($user_id,     'user_customer', true);
+	$campaign_id            = get_post_meta($customer_id, 'active_campaign', true);
+
+	$billing_clear_first_last = get_post_meta($campaign_id, 'billing_clear_first_last', true) ? 'on' : 'off';
+	$billing_clear_email = get_post_meta($campaign_id, 'billing_clear_email', true) ? 'on' : 'off';
+	$billing_clear_phone = get_post_meta($campaign_id, 'billing_clear_phone', true) ? 'on' : 'off';
+
+	if( $billing_clear_first_last == 'on' ){
+		echo "<script>jQuery('#billing_first_name').val('');</script>";
+		echo "<script>jQuery('#billing_last_name').val('');</script>";
+	}
+
+	if ( $billing_clear_email == 'on' ){
+		echo "<script>jQuery('#billing_phone').val('');</script>";
+	}
+
+	if ( $billing_clear_phone == 'on' ){
+		echo "<script>jQuery('#billing_email').val('');</script>";
+	}
 
 }
-

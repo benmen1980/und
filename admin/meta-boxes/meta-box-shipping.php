@@ -110,6 +110,9 @@ function render_unidress_shops_shipping_option($customer_id = '', $campaign_id) 
 }
 function render_customer_branches_address_shipping_option($customer_id = '', $campaign_id) {
 	$output = '';
+	$billing_clear_first_last = get_post_meta($campaign_id, 'billing_clear_first_last', true) ? 'checked' : '';
+	$billing_clear_email = get_post_meta($campaign_id, 'billing_clear_email', true) ? 'checked' : '';
+	$billing_clear_phone = get_post_meta($campaign_id, 'billing_clear_phone', true) ? 'checked' : '';
 
 	if ($customer_id) {
 
@@ -160,7 +163,29 @@ function render_customer_branches_address_shipping_option($customer_id = '', $ca
 		wp_reset_postdata();
 
 	}
-
+	$output = ' <fieldset class="unidress-shops-billing">
+					<h4 class="shipping-option-label">' . esc_html__( 'Checkout Billing Fileds', 'unidress' ) .'</h4>
+					<ul>
+						<li>
+							<label>
+								<input type="checkbox" name="billing-clear-first-last" '.$billing_clear_first_last.' >
+								'.esc_html__( 'Clear First & Last Name', 'unidress' ).'
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" name="billing-clear-email" '.$billing_clear_email.' >
+								'.esc_html__( 'Clear Email Address', 'unidress' ).'
+							</label>
+						</li>
+						<li>
+							<label>
+								<input type="checkbox" name="billing-clear-phone" '.$billing_clear_phone.' >
+								'.esc_html__( 'Clear Phone Number', 'unidress' ).'
+							</label>
+						</li>
+					</ul>
+				</fieldset>';
 	return $output;
 
 }
@@ -178,12 +203,23 @@ function save_shipping_option( $post_id ) {
 
 	$shops = isset($_POST['shops']) ? $_POST['shops'] : '';
 	$shipping_allow = isset($_POST['shipping_allow']) ? $_POST['shipping_allow'] : '';
+
 	$min_order_value = isset($_POST['min_order_value']) ? $_POST['min_order_value'] : 0;
 	$shipping_price = isset($_POST['shipping_price']) ? $_POST['shipping_price'] : 0;
+
+	$billing_clear_first_last = isset($_POST['billing-clear-first-last']) ? $_POST['billing-clear-first-last'] : '';
+	$billing_clear_email = isset($_POST['billing-clear-email']) ? $_POST['billing-clear-email'] : '';
+	$billing_clear_phone = isset($_POST['billing-clear-phone']) ? $_POST['billing-clear-phone'] : '';
+
 	update_post_meta($post_id, 'shops', $shops);
 	update_post_meta($post_id, 'shipping_allow', $shipping_allow);
+
 	update_post_meta($post_id, 'min_order_value', $min_order_value);
 	update_post_meta($post_id, 'shipping_price', $shipping_price);
+
+	update_post_meta($post_id, 'billing_clear_first_last', $billing_clear_first_last);
+	update_post_meta($post_id, 'billing_clear_email', $billing_clear_email);
+	update_post_meta($post_id, 'billing_clear_phone', $billing_clear_phone);
 }
 
 //Show shipping in checkout
@@ -280,12 +316,12 @@ function show_shipping_option_in_checkout() {
 			$output .= '<ul class="cart-shipping-list">';
 
 			foreach( $shops_branch as $key => $shop ){
-				$output .= '	<li>';
-				$output .= '		<label>';
-				$output .= '			<input type="radio" name="unidress_shipping" value="' . $shop->ID . '">';
-				$output .=				$shop->post_title;
-				$output .= '		</label>';
-				$output .= '	</li>';
+				$output .= '<li>';
+				$output .= '	<label>';
+				$output .= '		<input type="radio" name="unidress_shipping" value="' . $shop->ID . '">';
+				$output .=			$shop->post_title;
+				$output .= '	</label>';
+				$output .= '</li>';
 			}
 
 			$output .= '</ul>';
