@@ -658,7 +658,12 @@ if( wp_doing_ajax() ){
 			}
 			//campaign data
 			$budgets_in_campaign    = get_post_meta($campaign_id, 'budget', true);
-			$budget_in_kit          = $budgets_in_campaign[$kit_id] ?: 0;
+            $unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
+            if($unidress_budget > 0){
+                $budget_in_kit = $unidress_budget;
+            } else {
+                $budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0 ;
+            }
 
 			$total = WC()->cart->get_totals( 'total' )['total'];
 			$budget_total = (int)$budget_in_kit - (int)$user_budget_left - (int)$total;
@@ -728,7 +733,12 @@ if( wp_doing_ajax() ){
 		    }
 		    //campaign data
 		    $budgets_in_campaign    = get_post_meta($campaign_id, 'budget', true);
-		    $budget_in_kit          = $budgets_in_campaign[$kit_id] ?: 0;
+            $unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
+            if($unidress_budget > 0){
+                $budget_in_kit = $unidress_budget;
+            } else {
+                $budget_in_kit = $budgets_in_campaign[$kit_id] ?: 0;
+            }
 
 		    $total = WC()->cart->get_totals( 'total' )['total'];
 
