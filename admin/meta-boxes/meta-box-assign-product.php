@@ -587,11 +587,17 @@ function add_t_body_row($data, $assign = false)
         // CHANGE
 
         // points column
+        $blank_points_val = ''; // this is to prevent points value loss, when campaign not budget by points. 
         if (isset($data['nipl_points'])) {
-            $row .= '<td class="column-points"><input type="number" step="any" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][points]" placeholder="' . $data['points'] . '" value="' . ((isset($data['product_option']['points']) && $data['product_option']['points'] != '0') ? $data['product_option']['points'] : "") . '"></td>';
+            $row .= '<td class="column-points"><input type="number" step="any" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][points]" placeholder="' . $data['product_option']['points'] . '" value="' . ((isset($data['product_option']['points']) && $data['product_option']['points'] != '0') ? $data['product_option']['points'] : "") . '"></td>';
+        } else {
+            // store in hidden field so it is not lost. 
+            $blank_points_val = '<input type="hidden" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][points]" placeholder="' . $data['product_option']['points'] . '" value="' . ((isset($data['product_option']['points']) && $data['product_option']['points'] != '0') ? $data['product_option']['points'] : "") . '">';
         }
 
-        $row .= '<td class="column-price"><input type="number" step="any" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][price]" placeholder="' . $data['price'] . '" value="' . ((isset($data['product_option']['price']) && $data['product_option']['price'] != '0') ? $data['product_option']['price'] : "") . '"></td>';
+        $row .= '<td class="column-price"><input type="number" step="any" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][price]" placeholder="' . $data['price'] . '" value="' . ((isset($data['product_option']['price']) && $data['product_option']['price'] != '0') ? $data['product_option']['price'] : "") . '">' . $blank_points_val . '</td>';
+
+
         $row .= '<td class="column-button"><a class="btn-remove-product btn-simple" data-id="' . $data['id'] . '">Remove</a></td>';
 
 
