@@ -163,8 +163,8 @@ function render_customer_branches_address_shipping_option($customer_id = '', $ca
 		wp_reset_postdata();
 
 	}
-	$output = ' <fieldset class="unidress-shops-billing">
-					<h4 class="shipping-option-label">' . esc_html__( 'Checkout Billing Fields', 'unidress' ) .'</h4>
+	$output .= ' <fieldset class="unidress-shops-billing">
+					<h4 class="shipping-option-label">' . esc_html__( 'Checkout Billing Fileds', 'unidress' ) .'</h4>
 					<ul>
 						<li>
 							<label>
