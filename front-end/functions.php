@@ -409,7 +409,6 @@ function woocommerce_show_variation_price($price, $variable)
 
 	// if campaign is budget by points send points. 
 	if ($budget_by_point == 1 && $product_option[$kit_id][$product_id]['points'] != '') {
-
 		return wc_price($product_option[$kit_id][$product_id]['points']);
 	}
 
@@ -432,7 +431,7 @@ function change_existing_currency_symbol($currency_symbol, $currency)
 		$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
 
 		if ($budget_by_point == 1) {
-			$currency_symbol = 'Pts';
+			$currency_symbol =  esc_attr__('Pts', 'unidress');
 		}
 	}
 

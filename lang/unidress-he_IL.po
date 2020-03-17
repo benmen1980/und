@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Unidress\n"
-"POT-Creation-Date: 2020-02-10 18:53+0300\n"
+"POT-Creation-Date: 2020-03-17 10:29+0530\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Myname <myemail@gmail.com>\n"
 "Language-Team: \n"
@@ -15,227 +15,239 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
 "_nx_noop:1,2,3c;esc_attr__;esc_attr_e;esc_html__;esc_html_e\n"
 "X-Poedit-Basepath: ..\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.2.3\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: admin/include\n"
 
-#: admin/acf-fields.php:37
+#: admin/acf-fields.php:41
 msgid "Branch fields"
 msgstr "פרטי שלוחה"
 
-#: admin/acf-fields.php:41 admin/class/class-Unidress_Branch_Import.php:99
+#: admin/acf-fields.php:45 admin/class/class-Unidress_Branch_Import.php:99
 #: admin/functions.php:176
 msgid "Priority Branch Number"
 msgstr "מספר שלוחה בפריוריטי"
 
-#: admin/acf-fields.php:60 admin/acf-fields.php:163 admin/acf-fields.php:531
-#: admin/acf-fields.php:655 admin/acf-fields.php:828 admin/acf-fields.php:941
+#: admin/acf-fields.php:64 admin/acf-fields.php:167 admin/acf-fields.php:574
+#: admin/acf-fields.php:698 admin/acf-fields.php:871 admin/acf-fields.php:980
 #: admin/class/class-Unidress_Branch_Import.php:102
-#: admin/class/class-Unidress_User_Import.php:106
-#: admin/class/class-Unidress_User_Report.php:40
-#: admin/class/class-Unidress_User_Report.php:240 admin/functions.php:107
+#: admin/class/class-Unidress_User_Import.php:107
+#: admin/class/class-Unidress_User_Report.php:41
+#: admin/class/class-Unidress_User_Report.php:245 admin/functions.php:107
 #: admin/functions.php:237 admin/functions.php:262 admin/functions.php:288
 msgid "Customer"
 msgstr "לקוח"
 
-#: admin/acf-fields.php:82
+#: admin/acf-fields.php:86
 msgid "Branch Address"
 msgstr "כתובת שלוחה"
 
-#: admin/acf-fields.php:101
+#: admin/acf-fields.php:105
 msgid "Contact Name"
 msgstr "שם איש קשר"
 
-#: admin/acf-fields.php:120
+#: admin/acf-fields.php:124
 msgid "Contact Phone Number"
 msgstr "מספר איש קשר"
 
-#: admin/acf-fields.php:159
+#: admin/acf-fields.php:163
 msgid "Campaign fields"
 msgstr "פרטי קמפיין"
 
-#: admin/acf-fields.php:185
+#: admin/acf-fields.php:189
 msgid "Campaign Number"
 msgstr "מספר קמפיין"
 
-#: admin/acf-fields.php:206 admin/acf-fields.php:698
+#: admin/acf-fields.php:210 admin/acf-fields.php:741
 msgid "Order Due Date"
 msgstr "תאריך אספקה להזמנות"
 
-#: admin/acf-fields.php:223 admin/acf-fields.php:742
+#: admin/acf-fields.php:227
+msgid "Number Of Days to Due Date"
+msgstr ""
+
+#: admin/acf-fields.php:248 admin/acf-fields.php:785
 msgid "Enable order notes"
 msgstr "הפוך הערות הזמנה לזמינות"
 
-#: admin/acf-fields.php:234 admin/acf-fields.php:753
+#: admin/acf-fields.php:259 admin/acf-fields.php:796
 msgid "Show order notes in checkout page"
 msgstr "הצג הערות הזמנה בעמוד הקופה"
 
-#: admin/acf-fields.php:262
+#: admin/acf-fields.php:267
+msgid "Budget by points?"
+msgstr ""
+
+#: admin/acf-fields.php:278
+msgid "Check this checkbox to set campagin as - Budget by points."
+msgstr ""
+
+#: admin/acf-fields.php:306
 msgid "Customers fields"
 msgstr "פרטי לקוח"
 
-#: admin/acf-fields.php:266 admin/class/class-Unidress_Branch_Import.php:101
+#: admin/acf-fields.php:310 admin/class/class-Unidress_Branch_Import.php:101
 #: admin/functions.php:121
 msgid "Priority Customer Number"
 msgstr "מספר לקוח בפריוריטי"
 
-#: admin/acf-fields.php:287 admin/functions.php:120
+#: admin/acf-fields.php:331 admin/functions.php:120
 msgid "Customer Type"
 msgstr "סוג לקוח"
 
-#: admin/acf-fields.php:315
+#: admin/acf-fields.php:359
 msgid "Ordering Style for Campaign Customers"
 msgstr "סגנון הזמנה ללקוחות קמפיין"
 
-#: admin/acf-fields.php:345
+#: admin/acf-fields.php:389
 msgid "Ordering Style for Project Customers"
 msgstr "סגנון הזמנה ללקוחות פרויקטליים"
 
-#: admin/acf-fields.php:375 admin/functions.php:122
+#: admin/acf-fields.php:419 admin/functions.php:122
 msgid "Customer Price List"
 msgstr "מחירון לקוח"
 
-#: admin/acf-fields.php:401 admin/meta-boxes/meta-box-assign-product.php:154
+#: admin/acf-fields.php:444 admin/meta-boxes/meta-box-assign-product.php:164
 msgid "Active Campaign"
 msgstr "קמפיין פעיל"
 
-#: admin/acf-fields.php:428 admin/functions.php:17
+#: admin/acf-fields.php:471 admin/functions.php:17
 #, fuzzy
 #| msgid "Not active Campaign"
 msgid "no active campaign"
 msgstr "קמפיין לא פעיל"
 
-#: admin/acf-fields.php:432 admin/meta-boxes/meta-box-assign-product.php:36
+#: admin/acf-fields.php:475 admin/meta-boxes/meta-box-assign-product.php:40
 msgid "Active Project"
 msgstr "פרויקט פעיל"
 
-#: admin/acf-fields.php:459 admin/functions.php:18
+#: admin/acf-fields.php:502 admin/functions.php:18
 #, fuzzy
 #| msgid "Not active Project"
 msgid "no active project"
 msgstr "פרויקט לא פעיל"
 
-#: admin/acf-fields.php:463
+#: admin/acf-fields.php:506
 msgid "Customer's Logo"
 msgstr "לוגו לקוח"
 
-#: admin/acf-fields.php:507
+#: admin/acf-fields.php:550
 msgid "Kits fields"
 msgstr "פרטי קולקציה"
 
-#: admin/acf-fields.php:511
+#: admin/acf-fields.php:554
 msgid "Kit number"
 msgstr "מספר קולקציה"
 
-#: admin/acf-fields.php:553
+#: admin/acf-fields.php:596
 msgid "Kit Logo"
 msgstr ""
 
-#: admin/acf-fields.php:582
+#: admin/acf-fields.php:625
 msgid "Product option tag"
 msgstr "לשונית אפשרויות למוצרים"
 
-#: admin/acf-fields.php:586
+#: admin/acf-fields.php:629
 msgid "Priority SKU"
 msgstr "מק\"ט"
 
-#: admin/acf-fields.php:607 admin/acf-fields.php:1052
+#: admin/acf-fields.php:650 admin/acf-fields.php:1087
 #: admin/class/class-Unidress_Assign_Product_Table.php:86
-#: admin/functions.php:292 admin/meta-boxes/meta-box-assign-product.php:255
-#: admin/meta-boxes/meta-box-assign-product.php:293
-#: admin/meta-boxes/meta-box-assign-product.php:357
-#: admin/meta-boxes/meta-box-assign-product.php:395
+#: admin/functions.php:292 admin/meta-boxes/meta-box-assign-product.php:267
+#: admin/meta-boxes/meta-box-assign-product.php:305
+#: admin/meta-boxes/meta-box-assign-product.php:373
+#: admin/meta-boxes/meta-box-assign-product.php:411
 msgid "Image"
 msgstr "תמונה"
 
-#: admin/acf-fields.php:651
+#: admin/acf-fields.php:694
 msgid "Project fields"
 msgstr "פרטי פרויקט"
 
-#: admin/acf-fields.php:677
+#: admin/acf-fields.php:720
 msgid "Project Number"
 msgstr "מספר פרויקט"
 
-#: admin/acf-fields.php:715
+#: admin/acf-fields.php:758
 msgid "Graphics in Project"
 msgstr "גרפיקות בפרויקט"
 
-#: admin/acf-fields.php:781
+#: admin/acf-fields.php:824
 msgid "Shops field"
 msgstr "פרטי חנויות"
 
-#: admin/acf-fields.php:785
+#: admin/acf-fields.php:828
 msgid "Address"
 msgstr "כתובת"
 
-#: admin/acf-fields.php:824
+#: admin/acf-fields.php:867
 msgid "Users fields"
 msgstr "פרטי משתמש"
 
-#: admin/acf-fields.php:850 admin/class/class-Unidress_Branch_Import.php:100
-#: admin/class/class-Unidress_User_Import.php:107
-#: admin/class/class-Unidress_User_Report.php:41
-#: admin/class/class-Unidress_User_Report.php:241 admin/functions.php:73
-#: admin/functions.php:163 admin/functions.php:164 front-end/functions.php:147
+#: admin/acf-fields.php:893 admin/class/class-Unidress_Branch_Import.php:100
+#: admin/class/class-Unidress_User_Import.php:108
+#: admin/class/class-Unidress_User_Report.php:42
+#: admin/class/class-Unidress_User_Report.php:246 admin/functions.php:73
+#: admin/functions.php:163 admin/functions.php:164 front-end/functions.php:150
 msgid "Branch"
 msgstr "שלוחות"
 
-#: admin/acf-fields.php:874 admin/class/class-Unidress_User_Import.php:109
-#: admin/class/class-Unidress_User_Report.php:43
-#: admin/class/class-Unidress_User_Report.php:243 admin/functions.php:75
+#: admin/acf-fields.php:915 admin/class/class-Unidress_User_Import.php:110
+#: admin/class/class-Unidress_User_Report.php:44
+#: admin/class/class-Unidress_User_Report.php:248 admin/functions.php:75
 #: admin/functions.php:196
 msgid "Kit"
 msgstr "קולקציה"
 
-#: admin/acf-fields.php:898 admin/class/class-Unidress_User_Import.php:108
-#: admin/class/class-Unidress_User_Report.php:42
-#: admin/class/class-Unidress_User_Report.php:242 admin/functions.php:74
-#: front-end/functions.php:151
+#: admin/acf-fields.php:937 admin/class/class-Unidress_User_Import.php:109
+#: admin/class/class-Unidress_User_Report.php:43
+#: admin/class/class-Unidress_User_Report.php:247 admin/functions.php:74
+#: front-end/functions.php:154
 msgid "Department"
 msgstr "מחלקה"
 
-#: admin/acf-fields.php:937
+#: admin/acf-fields.php:976
 msgid "Graphic field"
 msgstr "פרטי גרפיקה"
 
-#: admin/acf-fields.php:963 admin/functions.php:289
+#: admin/acf-fields.php:1002 admin/functions.php:289
 msgid "Embroidery type"
 msgstr "סוג רקמה"
 
-#: admin/acf-fields.php:987 admin/functions.php:290
+#: admin/acf-fields.php:1024 admin/functions.php:290
 msgid "Colors in logo"
 msgstr "צבעים בלוגו"
 
-#: admin/acf-fields.php:1011 admin/functions.php:291
+#: admin/acf-fields.php:1046 admin/functions.php:291
 msgid "Print location"
 msgstr "מיקום הדפס"
 
-#: admin/acf-fields.php:1033
+#: admin/acf-fields.php:1068
 msgid "Print location description"
 msgstr "תאור מיקום הדפס"
 
 #: admin/class/class-Unidress_Assign_Product_Table.php:87
-#: admin/functions.php:119 admin/meta-boxes/meta-box-assign-product.php:256
-#: admin/meta-boxes/meta-box-assign-product.php:294
-#: admin/meta-boxes/meta-box-assign-product.php:358
-#: admin/meta-boxes/meta-box-assign-product.php:396
+#: admin/functions.php:119 admin/meta-boxes/meta-box-assign-product.php:268
+#: admin/meta-boxes/meta-box-assign-product.php:306
+#: admin/meta-boxes/meta-box-assign-product.php:374
+#: admin/meta-boxes/meta-box-assign-product.php:412
 #: admin/product_option.php:180 admin/product_option.php:216
 #: admin/product_option.php:276 admin/views/html-product-options.php:22
-#: front-end/functions.php:139
+#: front-end/functions.php:142
 msgid "Name"
 msgstr "שם העובד"
 
 #: admin/class/class-Unidress_Assign_Product_Table.php:88
-#: admin/meta-boxes/meta-box-assign-product.php:257
-#: admin/meta-boxes/meta-box-assign-product.php:296
-#: admin/meta-boxes/meta-box-assign-product.php:359
-#: admin/meta-boxes/meta-box-assign-product.php:397
+#: admin/meta-boxes/meta-box-assign-product.php:269
+#: admin/meta-boxes/meta-box-assign-product.php:308
+#: admin/meta-boxes/meta-box-assign-product.php:375
+#: admin/meta-boxes/meta-box-assign-product.php:413
 msgid "SKU"
 msgstr "מק\"ט"
 
 #: admin/class/class-Unidress_Assign_Product_Table.php:89
-#: admin/meta-boxes/meta-box-assign-product.php:259
-#: admin/meta-boxes/meta-box-assign-product.php:361
+#: admin/meta-boxes/meta-box-assign-product.php:271
+#: admin/meta-boxes/meta-box-assign-product.php:377
 msgid "Add all"
 msgstr "הוסף הכל"
 
@@ -244,18 +256,18 @@ msgid "Count"
 msgstr "כמות"
 
 #: admin/class/class-Unidress_Assign_Product_Table.php:145
-#: admin/meta-boxes/meta-box-assign-product.php:77
-#: admin/meta-boxes/meta-box-assign-product.php:526
+#: admin/meta-boxes/meta-box-assign-product.php:81
+#: admin/meta-boxes/meta-box-assign-product.php:574
 #: admin/views/html-product-data-options.php:50
 msgid "Add"
 msgstr "הוספה"
 
 #: admin/class/class-Unidress_Assign_Product_page.php:29
-#: admin/class/class-Unidress_User_Report.php:373 admin/functions.php:959
-#: admin/meta-boxes/meta-box-assign-product.php:245
-#: admin/meta-boxes/meta-box-assign-product.php:282
-#: admin/meta-boxes/meta-box-assign-product.php:347
-#: admin/meta-boxes/meta-box-assign-product.php:384
+#: admin/class/class-Unidress_User_Report.php:382 admin/functions.php:959
+#: admin/meta-boxes/meta-box-assign-product.php:257
+#: admin/meta-boxes/meta-box-assign-product.php:294
+#: admin/meta-boxes/meta-box-assign-product.php:363
+#: admin/meta-boxes/meta-box-assign-product.php:400
 msgid "Filter"
 msgstr "סנן"
 
@@ -272,120 +284,122 @@ msgid "Contact phone"
 msgstr "מספר איש קשר"
 
 #: admin/class/class-Unidress_Branch_Import.php:106
-#: admin/class/class-Unidress_User_Import.php:110
+#: admin/class/class-Unidress_User_Import.php:111
 msgid "Status"
 msgstr "הערה"
 
 #: admin/class/class-Unidress_Branch_Import.php:138
-#: admin/class/class-Unidress_User_Import.php:142
-#: admin/class/class-Unidress_User_Report.php:730
+#: admin/class/class-Unidress_User_Import.php:144
+#: admin/class/class-Unidress_User_Report.php:739
 msgid "Super Admin"
 msgstr "מנהל האתר"
 
 #: admin/class/class-Unidress_Branch_Import.php:144
-#: admin/class/class-Unidress_User_Import.php:148
-#: admin/class/class-Unidress_User_Report.php:736 admin/functions.php:578
+#: admin/class/class-Unidress_User_Import.php:150
+#: admin/class/class-Unidress_User_Report.php:745 admin/functions.php:578
 #: admin/product_option.php:228
 msgid "Edit"
 msgstr "עריכה"
 
-#: admin/class/class-Unidress_User_Import.php:100
+#: admin/class/class-Unidress_User_Import.php:101
 msgid "ID"
 msgstr "מזהה משתמש"
 
-#: admin/class/class-Unidress_User_Import.php:101
+#: admin/class/class-Unidress_User_Import.php:102
 #: admin/class/class-Unidress_User_Report.php:39
-#: admin/class/class-Unidress_User_Report.php:238 front-end/functions.php:143
+#: admin/class/class-Unidress_User_Report.php:243 front-end/functions.php:146
 msgid "Username"
 msgstr "שם משתמש"
 
-#: admin/class/class-Unidress_User_Import.php:102
+#: admin/class/class-Unidress_User_Import.php:103
 #: front-end/templates/woocommerce/myaccount/form-edit-account.php:27
 msgid "First name"
 msgstr "שם פרטי"
 
-#: admin/class/class-Unidress_User_Import.php:103
+#: admin/class/class-Unidress_User_Import.php:104
 #: front-end/templates/woocommerce/myaccount/form-edit-account.php:31
 msgid "Last name"
 msgstr "שם משפחה"
 
-#: admin/class/class-Unidress_User_Import.php:104
+#: admin/class/class-Unidress_User_Import.php:105
 msgid "E-mail"
 msgstr "אימייל"
 
-#: admin/class/class-Unidress_User_Import.php:105
+#: admin/class/class-Unidress_User_Import.php:106
 msgid "Phone"
 msgstr "טלפון"
 
-#: admin/class/class-Unidress_User_Report.php:44
-#: admin/class/class-Unidress_User_Report.php:244 admin/functions.php:250
+#: admin/class/class-Unidress_User_Import.php:112
+#: admin/class/class-Unidress_User_Report.php:47
+#: admin/class/class-Unidress_User_Report.php:251
+#: admin/meta-boxes/meta-box-assign-product.php:156 ajax.php:766
+msgid "Budget"
+msgstr "תקציב"
+
+#: admin/class/class-Unidress_User_Report.php:40
+#: admin/class/class-Unidress_User_Report.php:244
+msgid "First Name and Last Name"
+msgstr ""
+
+#: admin/class/class-Unidress_User_Report.php:45
+#: admin/class/class-Unidress_User_Report.php:249 admin/functions.php:250
 #: admin/functions.php:251
 msgid "Campaign"
 msgstr "קמפיינים"
 
-#: admin/class/class-Unidress_User_Report.php:45
-#: admin/class/class-Unidress_User_Report.php:245 admin/functions.php:226
+#: admin/class/class-Unidress_User_Report.php:46
+#: admin/class/class-Unidress_User_Report.php:250 admin/functions.php:226
 msgid "Project"
 msgstr "פרוייקטים"
 
-#: admin/class/class-Unidress_User_Report.php:46
-#: admin/class/class-Unidress_User_Report.php:246
-#: admin/meta-boxes/meta-box-assign-product.php:146 ajax.php:736
-msgid "Budget"
-msgstr "תקציב"
-
-#: admin/class/class-Unidress_User_Report.php:47
-#: admin/class/class-Unidress_User_Report.php:247
+#: admin/class/class-Unidress_User_Report.php:48
+#: admin/class/class-Unidress_User_Report.php:252
 msgid "Budget utilization"
 msgstr "ניצול תקציב"
 
-#: admin/class/class-Unidress_User_Report.php:48
-#: admin/class/class-Unidress_User_Report.php:248
+#: admin/class/class-Unidress_User_Report.php:49
+#: admin/class/class-Unidress_User_Report.php:253
 msgid "Budget remaining"
 msgstr "יתרת תקציב"
 
-#: admin/class/class-Unidress_User_Report.php:49
-#: admin/class/class-Unidress_User_Report.php:249
+#: admin/class/class-Unidress_User_Report.php:51
+#: admin/class/class-Unidress_User_Report.php:254
 msgid "Groups assigning"
 msgstr "קבוצות הקצאה"
 
-#: admin/class/class-Unidress_User_Report.php:51
-#: admin/class/class-Unidress_User_Report.php:906
+#: admin/class/class-Unidress_User_Report.php:52
+#: admin/class/class-Unidress_User_Report.php:915
 msgid "Group"
 msgstr "קבוצה"
 
-#: admin/class/class-Unidress_User_Report.php:52
-#: admin/class/class-Unidress_User_Report.php:907 ajax.php:823
-#: front-end/functions.php:690
+#: admin/class/class-Unidress_User_Report.php:53
+#: admin/class/class-Unidress_User_Report.php:916 ajax.php:849
+#: front-end/functions.php:638
 msgid "Limit"
 msgstr "כמות מקסימלית להזמנה"
 
-#: admin/class/class-Unidress_User_Report.php:53
-#: admin/class/class-Unidress_User_Report.php:908
+#: admin/class/class-Unidress_User_Report.php:54
+#: admin/class/class-Unidress_User_Report.php:917
 msgid "Utilization"
 msgstr "ניצול"
 
-#: admin/class/class-Unidress_User_Report.php:54
-#: admin/class/class-Unidress_User_Report.php:909 ajax.php:741
+#: admin/class/class-Unidress_User_Report.php:55
+#: admin/class/class-Unidress_User_Report.php:918 ajax.php:771
 msgid "Remaining"
 msgstr "יתרת תקציב"
 
-#: admin/class/class-Unidress_User_Report.php:239
-msgid "First Name and Last Name"
-msgstr ""
-
-#: admin/class/class-Unidress_User_Report.php:374
+#: admin/class/class-Unidress_User_Report.php:383
 msgid "Export"
 msgstr "ייצוא"
 
-#: admin/class/class-Unidress_User_Report.php:375 admin/functions.php:960
+#: admin/class/class-Unidress_User_Report.php:384 admin/functions.php:960
 msgid "Reset"
 msgstr "אפס סינון"
 
-#: admin/class/class-Unidress_User_Report.php:583
-#: admin/class/class-Unidress_User_Report.php:615
-#: admin/class/class-Unidress_User_Report.php:657
-#: admin/class/class-Unidress_User_Report.php:695 admin/functions.php:718
+#: admin/class/class-Unidress_User_Report.php:592
+#: admin/class/class-Unidress_User_Report.php:624
+#: admin/class/class-Unidress_User_Report.php:666
+#: admin/class/class-Unidress_User_Report.php:704 admin/functions.php:718
 #: admin/functions.php:772
 msgid "empty"
 msgstr "ריק"
@@ -455,8 +469,8 @@ msgstr "הוספת קמפיין חדש"
 msgid "Edit Campaign"
 msgstr "עריכת קמפיין"
 
-#: admin/functions.php:275 admin/meta-boxes/meta-box-assign-product.php:295
-#: admin/meta-boxes/meta-box-assign-product.php:596 front-end/functions.php:557
+#: admin/functions.php:275 admin/meta-boxes/meta-box-assign-product.php:307
+#: admin/meta-boxes/meta-box-assign-product.php:659 front-end/functions.php:504
 msgid "Graphics"
 msgstr "גרפיקות"
 
@@ -580,14 +594,14 @@ msgstr "שונות"
 msgid "Graphics Properties"
 msgstr "גרפיקות בפרויקט"
 
-#: admin/functions.php:574 admin/meta-boxes/meta-box-assign-product.php:247
-#: admin/meta-boxes/meta-box-assign-product.php:249
-#: admin/meta-boxes/meta-box-assign-product.php:284
-#: admin/meta-boxes/meta-box-assign-product.php:286
-#: admin/meta-boxes/meta-box-assign-product.php:349
-#: admin/meta-boxes/meta-box-assign-product.php:351
-#: admin/meta-boxes/meta-box-assign-product.php:386
-#: admin/meta-boxes/meta-box-assign-product.php:388
+#: admin/functions.php:574 admin/meta-boxes/meta-box-assign-product.php:259
+#: admin/meta-boxes/meta-box-assign-product.php:261
+#: admin/meta-boxes/meta-box-assign-product.php:296
+#: admin/meta-boxes/meta-box-assign-product.php:298
+#: admin/meta-boxes/meta-box-assign-product.php:365
+#: admin/meta-boxes/meta-box-assign-product.php:367
+#: admin/meta-boxes/meta-box-assign-product.php:402
+#: admin/meta-boxes/meta-box-assign-product.php:404
 msgid "Search"
 msgstr "חיפוש"
 
@@ -611,156 +625,161 @@ msgstr "ייבוא משתמשים מאקסל"
 msgid "Import Branch"
 msgstr "ייבוא שלוחות מאקסל"
 
-#: admin/meta-boxes/meta-box-assign-product.php:6
+#: admin/meta-boxes/meta-box-assign-product.php:7
 msgid "Product to project"
 msgstr "ענן תגיות למוצר"
 
-#: admin/meta-boxes/meta-box-assign-product.php:9
+#: admin/meta-boxes/meta-box-assign-product.php:11
 msgid "Kit on Campaign"
 msgstr "קיט במערכה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:43
+#: admin/meta-boxes/meta-box-assign-product.php:47
 msgid "Not active Project"
 msgstr "פרויקט לא פעיל"
 
-#: admin/meta-boxes/meta-box-assign-product.php:75
+#: admin/meta-boxes/meta-box-assign-product.php:79
 msgid "Select Kit"
 msgstr "בחר ערכה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:76
+#: admin/meta-boxes/meta-box-assign-product.php:80
 msgid "Choose"
 msgstr "בחירה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:103
+#: admin/meta-boxes/meta-box-assign-product.php:112
 msgid "Select kit to copy"
 msgstr "בחר מחלקה ממנה תועתק הקולקציה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:114
+#: admin/meta-boxes/meta-box-assign-product.php:123
 msgid "Save and Copy from"
 msgstr "ביצוע העתקת קולקציה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:129
+#: admin/meta-boxes/meta-box-assign-product.php:139
 msgid "Delete Kit"
 msgstr "מחיקה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:134
+#: admin/meta-boxes/meta-box-assign-product.php:144
 msgid "Only one order per user"
 msgstr "הזמנה אחת למשתמש"
 
-#: admin/meta-boxes/meta-box-assign-product.php:159
+#: admin/meta-boxes/meta-box-assign-product.php:169
 msgid "Not active Campaign"
 msgstr "קמפיין לא פעיל"
 
-#: admin/meta-boxes/meta-box-assign-product.php:165
+#: admin/meta-boxes/meta-box-assign-product.php:175
 msgid "Assigning Groups"
 msgstr "קבוצות הקצאה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:169
+#: admin/meta-boxes/meta-box-assign-product.php:179
 msgid "Group Name"
 msgstr "שם קבוצה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:170
+#: admin/meta-boxes/meta-box-assign-product.php:180
 msgid "The number in the group"
 msgstr "כמות "
 
-#: admin/meta-boxes/meta-box-assign-product.php:184
-#: admin/meta-boxes/meta-box-assign-product.php:215
+#: admin/meta-boxes/meta-box-assign-product.php:194
+#: admin/meta-boxes/meta-box-assign-product.php:225
 msgid "amount"
 msgstr "כמות"
 
-#: admin/meta-boxes/meta-box-assign-product.php:185
-#: admin/meta-boxes/meta-box-assign-product.php:216 ajax.php:601
+#: admin/meta-boxes/meta-box-assign-product.php:195
+#: admin/meta-boxes/meta-box-assign-product.php:226 ajax.php:619
 msgid "del"
 msgstr "מחיקה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:192
-#: admin/meta-boxes/meta-box-assign-product.php:223
+#: admin/meta-boxes/meta-box-assign-product.php:202
+#: admin/meta-boxes/meta-box-assign-product.php:233
 msgid "add"
 msgstr "הוספה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:198
-#: admin/meta-boxes/meta-box-assign-product.php:202
-#: admin/meta-boxes/meta-box-assign-product.php:400 front-end/functions.php:213
+#: admin/meta-boxes/meta-box-assign-product.php:208
+#: admin/meta-boxes/meta-box-assign-product.php:212
+#: admin/meta-boxes/meta-box-assign-product.php:416
+#: front-end/functions.php:1831
 msgid "Required Products"
 msgstr "פרטי חובה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:203
+#: admin/meta-boxes/meta-box-assign-product.php:213
 msgid "Minimum number"
 msgstr "כמות מינימום"
 
-#: admin/meta-boxes/meta-box-assign-product.php:258
-#: admin/meta-boxes/meta-box-assign-product.php:298
-#: admin/meta-boxes/meta-box-assign-product.php:360
-#: admin/meta-boxes/meta-box-assign-product.php:401
+#: admin/meta-boxes/meta-box-assign-product.php:270
+#: admin/meta-boxes/meta-box-assign-product.php:310
+#: admin/meta-boxes/meta-box-assign-product.php:376
+#: admin/meta-boxes/meta-box-assign-product.php:426
 #: front-end/templates/woocommerce/cart/cart.php:18
 #: front-end/templates/woocommerce/cart/cart.php:85
 msgid "Price"
 msgstr "מחיר"
 
-#: admin/meta-boxes/meta-box-assign-product.php:276
-#: admin/meta-boxes/meta-box-assign-product.php:378
+#: admin/meta-boxes/meta-box-assign-product.php:288
+#: admin/meta-boxes/meta-box-assign-product.php:394
 msgid "Assign product"
 msgstr "מוצרים בקולקציה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:297
-#: admin/meta-boxes/meta-box-assign-product.php:398
+#: admin/meta-boxes/meta-box-assign-product.php:309
+#: admin/meta-boxes/meta-box-assign-product.php:414
 msgid "Warehouse"
 msgstr ""
 
-#: admin/meta-boxes/meta-box-assign-product.php:299
-#: admin/meta-boxes/meta-box-assign-product.php:402
+#: admin/meta-boxes/meta-box-assign-product.php:311
+#: admin/meta-boxes/meta-box-assign-product.php:427
 msgid "Remove all"
 msgstr "הסר הכל"
 
-#: admin/meta-boxes/meta-box-assign-product.php:300
-#: admin/meta-boxes/meta-box-assign-product.php:403
-#: admin/meta-boxes/meta-box-assign-product.php:548
+#: admin/meta-boxes/meta-box-assign-product.php:312
+#: admin/meta-boxes/meta-box-assign-product.php:428
+#: admin/meta-boxes/meta-box-assign-product.php:607
 msgid "Variation"
 msgstr "וריאציות "
 
-#: admin/meta-boxes/meta-box-assign-product.php:301
-#: admin/meta-boxes/meta-box-assign-product.php:404
+#: admin/meta-boxes/meta-box-assign-product.php:314
+#: admin/meta-boxes/meta-box-assign-product.php:430
 #, fuzzy
 #| msgid "Display name"
 msgid "Display Order"
 msgstr "שם תצוגה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:342
+#: admin/meta-boxes/meta-box-assign-product.php:358
 msgid "All product"
 msgstr "כל המוצרים"
 
-#: admin/meta-boxes/meta-box-assign-product.php:399
+#: admin/meta-boxes/meta-box-assign-product.php:415
 msgid "Assignment Group"
 msgstr "קבוצת הקצאה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:559
-#: admin/meta-boxes/meta-box-assign-product.php:578
+#: admin/meta-boxes/meta-box-assign-product.php:422
+msgid "Points"
+msgstr ""
+
+#: admin/meta-boxes/meta-box-assign-product.php:620
+#: admin/meta-boxes/meta-box-assign-product.php:640
 msgid "Not assign"
 msgstr "לא משויך "
 
-#: admin/meta-boxes/meta-box-assign-product.php:619
+#: admin/meta-boxes/meta-box-assign-product.php:683
 msgid "Filter by product type"
 msgstr "סינון לפי סוג מוצר"
 
-#: admin/meta-boxes/meta-box-assign-product.php:630
+#: admin/meta-boxes/meta-box-assign-product.php:694
 msgid "Downloadable"
 msgstr "להורדה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:634
+#: admin/meta-boxes/meta-box-assign-product.php:698
 msgid "Virtual"
 msgstr "וירטואלי"
 
-#: admin/meta-boxes/meta-box-assign-product.php:646
+#: admin/meta-boxes/meta-box-assign-product.php:712
 msgid "Filter by category"
 msgstr "סינון לפי קטגוריה"
 
-#: admin/meta-boxes/meta-box-assign-product.php:657
+#: admin/meta-boxes/meta-box-assign-product.php:724
 msgid "Filter by stock status"
 msgstr "סינון לפי מצב מלאי"
 
-#: admin/meta-boxes/meta-box-assign-product.php:712
-#: admin/meta-boxes/meta-box-shipping.php:64
-#: admin/meta-boxes/meta-box-shipping.php:123
+#: admin/meta-boxes/meta-box-assign-product.php:783
+#: admin/meta-boxes/meta-box-shipping.php:80
+#: admin/meta-boxes/meta-box-shipping.php:141
 #: admin/views/html-product-options.php:61
 msgid "Select all"
 msgstr "לבחור הכל"
@@ -771,28 +790,60 @@ msgstr "לבחור הכל"
 msgid "Shipping"
 msgstr "משלוח/איסוף"
 
-#: admin/meta-boxes/meta-box-shipping.php:33
+#: admin/meta-boxes/meta-box-shipping.php:37
 msgid "Shipping to user's brunch"
 msgstr "משלוח לשלוחה שלך"
 
 #: admin/meta-boxes/meta-box-shipping.php:38
+#, fuzzy
+#| msgid "Minimum number"
+msgid "Minimum order value"
+msgstr "כמות מינימום"
+
+#: admin/meta-boxes/meta-box-shipping.php:39
+#, fuzzy
+#| msgid "Shipping"
+msgid "Shipping Price"
+msgstr "משלוח/איסוף"
+
+#: admin/meta-boxes/meta-box-shipping.php:49
 msgid "Allow shipping to user's brunch"
 msgstr "אפשר משלוח לשלוחה של המשתמש"
 
-#: admin/meta-boxes/meta-box-shipping.php:60
+#: admin/meta-boxes/meta-box-shipping.php:76
 msgid "Unidress shops"
 msgstr "חנויות יונידרס"
 
-#: admin/meta-boxes/meta-box-shipping.php:119
+#: admin/meta-boxes/meta-box-shipping.php:138
 msgid "Branches addresses"
 msgstr "כתובת שלוחה"
 
-#: admin/meta-boxes/meta-box-shipping.php:207
+#: admin/meta-boxes/meta-box-shipping.php:167
+msgid "Checkout Billing Fileds"
+msgstr ""
+
+#: admin/meta-boxes/meta-box-shipping.php:172
+msgid "Clear First & Last Name"
+msgstr ""
+
+#: admin/meta-boxes/meta-box-shipping.php:178
+#, fuzzy
+#| msgid "Email address"
+msgid "Clear Email Address"
+msgstr "כתובת אימייל"
+
+#: admin/meta-boxes/meta-box-shipping.php:184
+#, fuzzy
+#| msgid "Contact Phone Number"
+msgid "Clear Phone Number"
+msgstr "מספר איש קשר"
+
+#: admin/meta-boxes/meta-box-shipping.php:258
 msgid "Shipping to Unidress Shop"
 msgstr "איסוף מחנויות יונידרס"
 
-#: admin/meta-boxes/meta-box-shipping.php:233
-#: admin/meta-boxes/meta-box-shipping.php:263
+#: admin/meta-boxes/meta-box-shipping.php:284
+#: admin/meta-boxes/meta-box-shipping.php:314
 msgid "Shipping to your Branch"
 msgstr "משלוח לשלוחה שלך"
 
@@ -899,43 +950,47 @@ msgstr "הכנס טקסט או משתנים ע\"י בפרדה ב \"%s\""
 msgid "Visible on the product page"
 msgstr "מוצג בעמוד המוצר"
 
-#: ajax.php:604
+#: ajax.php:622
 msgid "Group name can't be empty"
 msgstr "שם קבוצה אינו יכול להיות ריק"
 
-#: ajax.php:771
+#: ajax.php:800
 msgid "Required"
 msgstr "כמות מינימלית להזמנה"
 
-#: ajax.php:772
+#: ajax.php:801
 msgid "Amount"
 msgstr "כמות שהוזמנה"
 
-#: front-end/functions.php:134
+#: front-end/functions.php:137
 msgid "User's Personal Details"
 msgstr "פרטים אישיים של המשתמש"
 
-#: front-end/functions.php:346 front-end/functions.php:851
-#: front-end/functions.php:1512
+#: front-end/functions.php:241 front-end/functions.php:804
+#: front-end/functions.php:1523
 msgid "Product \""
 msgstr "מוצר"
 
-#: front-end/functions.php:363 front-end/functions.php:785
-#: front-end/functions.php:1534
+#: front-end/functions.php:258 front-end/functions.php:739
+#: front-end/functions.php:1552
 msgid "The total amount of the purchase exceeds the balance of your budget"
 msgstr "הסכום הכולל של הזמנה חורג מיתרת התקציב שלך"
 
-#: front-end/functions.php:416 front-end/functions.php:834
-#: front-end/functions.php:1493
+#: front-end/functions.php:310 front-end/functions.php:787
+#: front-end/functions.php:1504
 msgid "You have exceeded the limit by product group"
 msgstr "חרגת מהכמות המותרת לקבוצת הקצאה"
 
-#: front-end/functions.php:427 front-end/functions.php:842
-#: front-end/functions.php:1503
+#: front-end/functions.php:321 front-end/functions.php:795
+#: front-end/functions.php:1514
 msgid "You already buy something"
 msgstr "ביצעת הזמנה אחת, לא ניתן לבצע הזמנה נוספת."
 
-#: front-end/functions.php:808 front-end/functions.php:1468
+#: front-end/functions.php:434
+msgid "Pts"
+msgstr ""
+
+#: front-end/functions.php:761 front-end/functions.php:1479
 #, php-format
 msgid ""
 "Need More Essential Products. Go to <a href=\"%s\">Cart</a> or <a href=\"%s"
@@ -944,43 +999,43 @@ msgstr ""
 "חסרים לך פרטי חובה נוספים כדי לבצע את ההזמנה. עבור ל<a href=\"%s\">עגלת "
 "הקניות</a> או <a href=\"%s\">לחנות</a>"
 
-#: front-end/functions.php:1124
+#: front-end/functions.php:1105
 msgid "Budget Balance"
 msgstr "יתרת התקציב"
 
-#: front-end/functions.php:1226
+#: front-end/functions.php:1208
 msgid "Pages:"
 msgstr "עמודים"
 
-#: front-end/functions.php:1232
+#: front-end/functions.php:1214
 msgid "Go to Marketplace"
 msgstr "לחנות"
 
-#: front-end/functions.php:1271
+#: front-end/functions.php:1256
 msgid "Choose Shipping"
 msgstr "בחירת משלוח / נקודת איסוף "
 
-#: front-end/functions.php:1375
+#: front-end/functions.php:1380
 msgid "You are not allowed to order more"
 msgstr ". אסור לך להזמין עוד"
 
-#: front-end/functions.php:1397
+#: front-end/functions.php:1407
 msgid "You are exceeding your budget, this product cannot be added to cart."
 msgstr "אתה חורג מהתקציב שלך,  לא ניתן להוסיף לסל מוצר זה."
 
-#: front-end/functions.php:1549
+#: front-end/functions.php:1565
 msgid "&larr; To Unidress Main Site"
 msgstr "&larr; לאתר הראשי של Unidress"
 
-#: front-end/functions.php:1660
-#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:56
+#: front-end/functions.php:1688
+#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:61
 msgid ""
 "Dear employee, only one order can be placed. Please make sure you have "
 "selected all the items you want."
 msgstr ""
 "עובד/ת יקר/ה, ניתן לבצע רק הזמנה אחת. נא וודא/י שבחרת את כל הפריטים הרצויים."
 
-#: front-end/functions.php:1708
+#: front-end/functions.php:1739
 msgid "View your shopping cart"
 msgstr "צפייה בסל קניות"
 
@@ -1055,23 +1110,23 @@ msgstr "עדכן עגלת קניות"
 msgid "No products in the cart."
 msgstr "עגלת הקניות ריקה"
 
-#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:48
-#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:71
-#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:78
+#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:53
+#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:76
+#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:83
 msgid "Proceed to checkout"
 msgstr "שליחת הזמנה"
 
-#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:58
+#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:63
 #, php-format
 msgid ""
 "You have <span class=\"remaining-budget\">%s</span>%s left in your budget."
 msgstr "נותרו לך <span class=\"remaining-budget\"> %s</span> %s בתקציב."
 
-#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:61
+#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:66
 msgid "Cancel"
 msgstr "ביטול"
 
-#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:63
+#: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:68
 msgid "Confirm"
 msgstr "אשר"
 
@@ -1133,13 +1188,13 @@ msgid "Shipping to:"
 msgstr "משלוח/איסוף:"
 
 #: front-end/templates/woocommerce/content-product-closed-list.php:73
-#: front-end/templates/woocommerce/content-product.php:113
+#: front-end/templates/woocommerce/content-product.php:112
 #: front-end/templates/woocommerce/single-product/add-to-cart/variable.php:73
 msgid "This product is currently out of stock and unavailable."
 msgstr "מוצר זה חסר כרגע במלאי ואינו זמין."
 
 #: front-end/templates/woocommerce/content-product-closed-list.php:90
-#: front-end/templates/woocommerce/content-product.php:130
+#: front-end/templates/woocommerce/content-product.php:129
 #: front-end/templates/woocommerce/single-product/add-to-cart/variable.php:87
 msgid "Clear"
 msgstr "נקה"
@@ -1657,11 +1712,6 @@ msgstr "הערה:"
 #~| msgid "Project Number"
 #~ msgid "Number"
 #~ msgstr "מספר פרויקט"
-
-#, fuzzy
-#~| msgid "Minimum number"
-#~ msgid "Minimum Value"
-#~ msgstr "כמות מינימום"
 
 #, fuzzy
 #~| msgid "Filter by product type"
