@@ -184,7 +184,11 @@ function unidress_update_cart_validation($passed_validation)
 	WC()->cart->calculate_totals();
 
 	//user data
-	$user_id            = get_current_user_id();
+	$user_id = get_current_user_id();
+	$user = get_userdata( $user_id );
+	$user_roles = $user->roles[0];
+
+
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
 	$kit_id             = get_user_meta($user_id, 'user_kit', true);
 	$user_limits        = get_user_meta($user_id, 'user_limits', true);
@@ -253,9 +257,11 @@ function unidress_update_cart_validation($passed_validation)
 
 		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total;
 
-		if ($budget_in_kit <= $new_budget_limits) {
-			$passed_validation = false;
-			wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
+		if( $user_roles != 'hr_manager' ){
+			if ($budget_in_kit <= $new_budget_limits) {
+				$passed_validation = false;
+				wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
+			}
 		}
 	}
 	update_user_meta(1, '$passed_validation4', $passed_validation);
@@ -681,7 +687,10 @@ function check_group_limit()
 {
 
 	//user data
-	$user_id            = get_current_user_id();
+	$user_id = get_current_user_id();
+	$user = get_userdata( $user_id );
+	$user_roles = $user->roles[0];
+
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
 	$kit_id             = get_user_meta($user_id, 'user_kit', true);
 	$user_limits        = get_user_meta($user_id, 'user_limits', true);
@@ -734,9 +743,10 @@ function check_group_limit()
 		$total = WC()->cart->get_totals('total')['total'];
 
 		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total;
-
-		if ($budget_in_kit <= $new_budget_limits)
-			throw new Exception(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'));
+		if( $user_roles != 'hr_manager' ){
+			if ($budget_in_kit <= $new_budget_limits)
+				throw new Exception(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'));
+		}
 	}
 
 	// Required products check
@@ -757,9 +767,11 @@ function check_group_limit()
 
 				$balance = $group['amount'] - $user_limit - $required_cart;
 
-				if ($balance > 0) {
-					throw new Exception(sprintf(__('Need More Essential Products. Go to <a href="%s">Cart</a> or <a href="%s">Shop</a>', 'unidress'), esc_url(wc_get_page_permalink('cart')), esc_url(wc_get_page_permalink('shop'))));
-					break;
+				if( $user_roles != 'hr_manager' ){
+					if ($balance > 0) {
+						throw new Exception(sprintf(__('Need More Essential Products. Go to <a href="%s">Cart</a> or <a href="%s">Shop</a>', 'unidress'), esc_url(wc_get_page_permalink('cart')), esc_url(wc_get_page_permalink('shop'))));
+						break;
+					}
 				}
 			}
 	}
@@ -1324,8 +1336,10 @@ add_action('woocommerce_after_checkout_form', function () {
 		add_action('woocommerce_add_to_cart_validation', 'unidress_add_to_cart_validation', 20, 3);
 		function unidress_add_to_cart_validation($output, $add_product_id, $add_quantity)
 		{
+			$user_id = get_current_user_id();
+			$user = get_userdata( $user_id );
+			$user_roles = $user->roles[0];
 
-			$user_id            = get_current_user_id();
 			$customer_id        = get_user_meta($user_id, 'user_customer', true);
 			$kit_id             = get_user_meta($user_id, 'user_kit', true);
 			$user_limits        = get_user_meta($user_id, 'user_limits', true);
@@ -1406,9 +1420,11 @@ add_action('woocommerce_after_checkout_form', function () {
 
 					$balance = $budget_in_kit - (int)$user_budget_left - $total - $product_price_added_total;
 
-					if ($balance < 0) {
-						wc_add_notice(__('You are exceeding your budget, this product cannot be added to cart.', 'unidress'), 'error');
-						$output = false;
+					if( $user_roles != 'hr_manager' ){
+						if ($balance < 0) {
+							wc_add_notice(__('You are exceeding your budget, this product cannot be added to cart.', 'unidress'), 'error');
+							$output = false;
+						}
 					}
 				}
 			}
@@ -1422,7 +1438,10 @@ add_action('woocommerce_after_checkout_form', function () {
 
 			$output = false;
 
-			$user_id            = get_current_user_id();
+			$user_id = get_current_user_id();
+			$user = get_userdata( $user_id );
+			$user_roles = $user->roles[0];
+
 			$customer_id        = get_user_meta($user_id, 'user_customer', true);
 			$kit_id             = get_user_meta($user_id, 'user_kit', true);
 			$user_limits        = get_user_meta($user_id, 'user_limits', true);
@@ -1476,11 +1495,12 @@ add_action('woocommerce_after_checkout_form', function () {
 						$required_cart = isset($required_products_in_cart[$group_id]) ? (int)$required_products_in_cart[$group_id] : 0;
 
 						$balance = $group['amount'] - $user_limit - $required_cart;
-
-						if ($balance > 0) {
-							$output = true;
-							wc_add_notice(sprintf(__('Need More Essential Products. Go to <a href="%s">Cart</a> or <a href="%s">Shop</a>', 'unidress'), esc_url(wc_get_page_permalink('cart')), esc_url(wc_get_page_permalink('shop'))), 'error');
-							break;
+						if( $user_roles != 'hr_manager' ){
+							if ($balance > 0) {
+								$output = true;
+								wc_add_notice(sprintf(__('Need More Essential Products. Go to <a href="%s">Cart</a> or <a href="%s">Shop</a>', 'unidress'), esc_url(wc_get_page_permalink('cart')), esc_url(wc_get_page_permalink('shop'))), 'error');
+								break;
+							}
 						}
 					}
 			}
@@ -1551,9 +1571,11 @@ add_action('woocommerce_after_checkout_form', function () {
 				$total = WC()->cart->get_totals('total')['total'];
 				$balance = $budget_in_kit - (int)$user_budget_left - $total;
 
-				if ($balance < 0) {
-					wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
-					$output = true;
+				if( $user_roles != 'hr_manager' ){
+					if ($balance < 0) {
+						wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
+						$output = true;
+					}
 				}
 			}
 
