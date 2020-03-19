@@ -922,12 +922,15 @@ function get_unidress_list_product()
 	$product_option_order 	= [];
 
 
+
+
 	if (empty($campaign_id) || empty($kit_id)) {
 		return 0;
 	}
 	//active campaign data
 	if ($customer_type == "campaign") {
 		$product_in_campaign    = get_post_meta($campaign_id, 'add_product_to_campaign', true);
+
 
 		if (isset($product_in_campaign[$kit_id]))
 			$product_list           = json_decode($product_in_campaign[$kit_id]);
@@ -1779,6 +1782,90 @@ function woocommerce_after_checkout_billing_form_function()
 }
 
 
+/**
+ * Add custom field to add to cart only on loop not on single page. 
+ */
+function nipl_woocommerce_before_add_to_cart_button()
+{
+	if (!is_user_logged_in())
+		return;
+
+	global $product;
+	$pType = $product->get_type();
+
+	$product_id         = $product->get_id();
+	$user_id            = get_current_user_id();
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
+	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
+
+	$product_option     = get_post_meta($active_campaign, 'product_option', true);
+	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
+
+
+	if ($customer_type == "project") {
+		$kit_id      = 0;
+	} else {
+		$kit_id      = get_user_meta($user_id, 'user_kit', true);
+	}
+
+	$pSimpleField = $product_option[$kit_id][$product_id]['uni_simple_field'];
+	if ($pType == 'simple' && $pSimpleField != '' && !is_singular('product')) {
+		$simple_vals = array_map('trim', explode(',', $pSimpleField));
+		$simple_options = "<option value=''>" . __('Choose an option', 'unidress') . "</option>";
+		foreach ($simple_vals as $sv) {
+			$simple_options .= "<option value='$sv'>$sv</option>";
+		}
+		echo "<span class='nipl_simple_option_wrp'><select name='prd_simple_option'>$simple_options</select></span>";
+	}
+}
+
+add_action('woocommerce_before_add_to_cart_button', 'nipl_woocommerce_before_add_to_cart_button', 10);
+
+
+/**
+ * Store custom meta in cart 
+ */
+function nipl_woocommerce_add_cart_item_data($cart_item_data, $product_id, $variation_id)
+{
+	if (isset($_POST['prd_simple_option'])) {
+		$cart_item_data['prd_simple_option'] = sanitize_text_field($_POST['prd_simple_option']);
+	}
+	return $cart_item_data;
+}
+add_action('woocommerce_add_cart_item_data', 'nipl_woocommerce_add_cart_item_data',  10, 3);
+
+
+/**
+ * Show custom order data in cart page. 
+ */
+function nipl_woocommerce_get_item_data($item_data, $cart_item_data)
+{
+	if (isset($cart_item_data['prd_simple_option'])) {
+		$item_data[] = array(
+			'key'     => __('test', 'plugin-republic'),
+			'value'   => wc_clean($cart_item_data['prd_simple_option'])
+		);
+	}
+	return $item_data;
+}
+// add_filter('woocommerce_get_item_data', 'nipl_woocommerce_get_item_data', 10, 2);
+
+
+/**
+ * Add custom simple option to order meta. 
+ */
+function nipl_woocommerce_checkout_create_order_line_item($item, $cart_item_key, $values, $order)
+{
+	if (isset($values['prd_simple_option'])) {
+		$item->add_meta_data(
+			__('Simple Option', 'unidress'),
+			$values['prd_simple_option'],
+			true
+		);
+	}
+}
+add_action('woocommerce_checkout_create_order_line_item', 'nipl_woocommerce_checkout_create_order_line_item', 10, 4);
 
 
 

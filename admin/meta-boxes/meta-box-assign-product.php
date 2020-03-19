@@ -411,7 +411,8 @@ function render_product_to_campaign($kit, $post_meta = '')
                         <td class="column-image"><span class="wc-image tips" title="<?php echo __('Image', 'unidress') ?>"><?php echo __('Image', 'unidress') ?></span></td>
                         <td class="column-name"><?php echo esc_attr__('Name', 'unidress') ?></td>
                         <td class="column-sku"><?php echo esc_attr__('SKU', 'unidress') ?></td>
-                        <td class="column-price"><?php echo esc_attr__('Warehouse', 'unidress') ?></td>
+                        <td class="column-price warehouse"><?php echo esc_attr__('Warehouse', 'unidress') ?></td>
+                        <td class="column-price simple-option"><?php echo esc_attr__('Simple Options', 'unidress') ?></td>
                         <td class="column-option"><?php echo esc_attr__('Assignment Group', 'unidress') ?></td>
                         <td class="column-option"><?php echo esc_attr__('Required Products', 'unidress') ?></td>
                         <?php
@@ -576,8 +577,11 @@ function add_t_body_row($data, $assign = false)
     } else {
 
         // TEST
-        $row .= ' <td><div class="acf-field"><div class="acf-input"><input class="js-assign-product-warehouse" type="text" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][warehouse]" placeholder=" " value="' . ((isset($data['product_option']['warehouse']) && $data['product_option']['warehouse'] != '0') ? $data['product_option']['warehouse'] : "") . '"></div></div></td>';
+        $row .= ' <td class="column-warehouse"><div class="acf-field"><div class="acf-input"><input class="js-assign-product-warehouse" type="text" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][warehouse]" placeholder=" " value="' . ((isset($data['product_option']['warehouse']) && $data['product_option']['warehouse'] != '0') ? $data['product_option']['warehouse'] : "") . '"></div></div></td>';
         // TEST
+
+        // simple field column
+        $row .= ' <td class="column-simple-field"><input class="simple-col-field" type="text" name="product_option[' . $data["kit"] . '][' . $data['id'] . '][uni_simple_field]" placeholder=" " value="' . ((isset($data['product_option']['uni_simple_field']) && $data['product_option']['uni_simple_field'] != '0') ? $data['product_option']['uni_simple_field'] : "") . '"  maxlength="50"></td>';
 
         // CHANGE
         if (isset($data['kit']) && $data['kit'] != ''  && $data['kit'] != '0' && $assign) {
