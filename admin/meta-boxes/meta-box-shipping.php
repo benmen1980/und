@@ -28,6 +28,7 @@ function unidress_shipping_option($post) {
 function render_shipping_to_user_brunch($campaign_id) {
 	get_post_meta($campaign_id, 'shipping_allow', true) ? $checked = 'checked="checked"' : $checked='';
 	$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
+	$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
 	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 
 	$output = '<fieldset>
@@ -36,6 +37,7 @@ function render_shipping_to_user_brunch($campaign_id) {
 						<tr>
 							<th><h4 class="shipping-option-label">' . esc_html__( 'Shipping to user\'s brunch', 'unidress' ) .'</h4></th>
 							<th><h4 class="shipping-option-label">' . esc_html__( 'Minimum order value', 'unidress' ) .'</h4></th>
+							<th><h4 class="shipping-option-label">' . esc_html__( 'Minimum order charge', 'unidress' ) .'</h4></th>
 							<th><h4 class="shipping-option-label">' . esc_html__( 'Shipping Price', 'unidress' ) .'</h4></th>
 						</tr>
 					</thead>
@@ -52,6 +54,7 @@ function render_shipping_to_user_brunch($campaign_id) {
 								</ul>
 							</td>
 							<td><input type="number" name="min_order_value" value="'.$min_order_value.'"></td>
+							<td><input type="number" name="min_order_charge" value="'.$min_order_charge.'"></td>
 							<td><input type="number" name="shipping_price" value="'.$shipping_price.'"></td>
 						</tr>
 					</tbody>
@@ -164,7 +167,7 @@ function render_customer_branches_address_shipping_option($customer_id = '', $ca
 
 	}
 	$output .= ' <fieldset class="unidress-shops-billing">
-					<h4 class="shipping-option-label">' . esc_html__( 'Checkout Billing Fileds', 'unidress' ) .'</h4>
+					<h4 class="shipping-option-label">' . esc_html__( 'Checkout Billing Fields', 'unidress' ) .'</h4>
 					<ul>
 						<li>
 							<label>
@@ -205,6 +208,7 @@ function save_shipping_option( $post_id ) {
 	$shipping_allow = isset($_POST['shipping_allow']) ? $_POST['shipping_allow'] : '';
 
 	$min_order_value = isset($_POST['min_order_value']) ? $_POST['min_order_value'] : 0;
+	$min_order_charge = isset($_POST['min_order_charge']) ? $_POST['min_order_charge'] : 0;
 	$shipping_price = isset($_POST['shipping_price']) ? $_POST['shipping_price'] : 0;
 
 	$billing_clear_first_last = isset($_POST['billing-clear-first-last']) ? $_POST['billing-clear-first-last'] : '';
@@ -215,6 +219,7 @@ function save_shipping_option( $post_id ) {
 	update_post_meta($post_id, 'shipping_allow', $shipping_allow);
 
 	update_post_meta($post_id, 'min_order_value', $min_order_value);
+	update_post_meta($post_id, 'min_order_charge', $min_order_charge);
 	update_post_meta($post_id, 'shipping_price', $shipping_price);
 
 	update_post_meta($post_id, 'billing_clear_first_last', $billing_clear_first_last);

@@ -1579,6 +1579,20 @@ add_action('woocommerce_after_checkout_form', function () {
 				}
 			}
 
+			// UN2-T10 : Shipping price per campaign
+			$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
+			$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
+			$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
+			if( $min_order_value > 0 ){
+				if( $total < $min_order_value ) {
+					wc_add_notice(__('You can not complete the order if the total price is less than '.$min_order_value, 'unidress'), 'error');
+					$output = true;
+				}
+				if( $min_order_charge > 0 && $total < $min_order_charge ) {
+					WC()->cart->add_fee( 'Shipping Price', $shipping_price, true, 'standard' );
+				}
+			}
+
 			return $output;
 		}
 		add_action('login_footer', function () {
