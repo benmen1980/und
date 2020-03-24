@@ -185,7 +185,7 @@ function unidress_update_cart_validation($passed_validation)
 
 	//user data
 	$user_id = get_current_user_id();
-	$user = get_userdata( $user_id );
+	$user = get_userdata($user_id);
 	$user_roles = $user->roles[0];
 
 
@@ -257,7 +257,7 @@ function unidress_update_cart_validation($passed_validation)
 
 		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total;
 
-		if( $user_roles != 'hr_manager' ){
+		if ($user_roles != 'hr_manager') {
 			if ($budget_in_kit <= $new_budget_limits) {
 				$passed_validation = false;
 				wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
@@ -688,7 +688,7 @@ function check_group_limit()
 
 	//user data
 	$user_id = get_current_user_id();
-	$user = get_userdata( $user_id );
+	$user = get_userdata($user_id);
 	$user_roles = $user->roles[0];
 
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
@@ -743,7 +743,7 @@ function check_group_limit()
 		$total = WC()->cart->get_totals('total')['total'];
 
 		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total;
-		if( $user_roles != 'hr_manager' ){
+		if ($user_roles != 'hr_manager') {
 			if ($budget_in_kit <= $new_budget_limits)
 				throw new Exception(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'));
 		}
@@ -767,7 +767,7 @@ function check_group_limit()
 
 				$balance = $group['amount'] - $user_limit - $required_cart;
 
-				if( $user_roles != 'hr_manager' ){
+				if ($user_roles != 'hr_manager') {
 					if ($balance > 0) {
 						throw new Exception(sprintf(__('Need More Essential Products. Go to <a href="%s">Cart</a> or <a href="%s">Shop</a>', 'unidress'), esc_url(wc_get_page_permalink('cart')), esc_url(wc_get_page_permalink('shop'))));
 						break;
@@ -1337,7 +1337,7 @@ add_action('woocommerce_after_checkout_form', function () {
 		function unidress_add_to_cart_validation($output, $add_product_id, $add_quantity)
 		{
 			$user_id = get_current_user_id();
-			$user = get_userdata( $user_id );
+			$user = get_userdata($user_id);
 			$user_roles = $user->roles[0];
 
 			$customer_id        = get_user_meta($user_id, 'user_customer', true);
@@ -1420,7 +1420,7 @@ add_action('woocommerce_after_checkout_form', function () {
 
 					$balance = $budget_in_kit - (int)$user_budget_left - $total - $product_price_added_total;
 
-					if( $user_roles != 'hr_manager' ){
+					if ($user_roles != 'hr_manager') {
 						if ($balance < 0) {
 							wc_add_notice(__('You are exceeding your budget, this product cannot be added to cart.', 'unidress'), 'error');
 							$output = false;
@@ -1439,7 +1439,7 @@ add_action('woocommerce_after_checkout_form', function () {
 			$output = false;
 
 			$user_id = get_current_user_id();
-			$user = get_userdata( $user_id );
+			$user = get_userdata($user_id);
 			$user_roles = $user->roles[0];
 
 			$customer_id        = get_user_meta($user_id, 'user_customer', true);
@@ -1495,7 +1495,7 @@ add_action('woocommerce_after_checkout_form', function () {
 						$required_cart = isset($required_products_in_cart[$group_id]) ? (int)$required_products_in_cart[$group_id] : 0;
 
 						$balance = $group['amount'] - $user_limit - $required_cart;
-						if( $user_roles != 'hr_manager' ){
+						if ($user_roles != 'hr_manager') {
 							if ($balance > 0) {
 								$output = true;
 								wc_add_notice(sprintf(__('Need More Essential Products. Go to <a href="%s">Cart</a> or <a href="%s">Shop</a>', 'unidress'), esc_url(wc_get_page_permalink('cart')), esc_url(wc_get_page_permalink('shop'))), 'error');
@@ -1571,7 +1571,7 @@ add_action('woocommerce_after_checkout_form', function () {
 				$total = WC()->cart->get_totals('total')['total'];
 				$balance = $budget_in_kit - (int)$user_budget_left - $total;
 
-				if( $user_roles != 'hr_manager' ){
+				if ($user_roles != 'hr_manager') {
 					if ($balance < 0) {
 						wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
 						$output = true;
@@ -1583,13 +1583,13 @@ add_action('woocommerce_after_checkout_form', function () {
 			$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
 			$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
 			$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
-			if( $min_order_value > 0 ){
-				if( $total < $min_order_value ) {
-					wc_add_notice(__('You can not complete the order if the total price is less than '.$min_order_value, 'unidress'), 'error');
+			if ($min_order_value > 0) {
+				if ($total < $min_order_value) {
+					wc_add_notice(__('You can not complete the order if the total price is less than ' . $min_order_value, 'unidress'), 'error');
 					$output = true;
 				}
-				if( $min_order_charge > 0 && $total < $min_order_charge ) {
-					WC()->cart->add_fee( 'Shipping Price', $shipping_price, true, 'standard' );
+				if ($min_order_charge > 0 && $total < $min_order_charge) {
+					WC()->cart->add_fee('Shipping Price', $shipping_price, true, 'standard');
 				}
 			}
 
@@ -1852,7 +1852,7 @@ function nipl_woocommerce_before_add_to_cart_button()
 		foreach ($simple_vals as $sv) {
 			$simple_options .= "<option value='$sv'>$sv</option>";
 		}
-		echo "<span class='nipl_simple_option_wrp'><select name='prd_simple_option'>$simple_options</select></span>";
+		echo "<span class='nipl_simple_option_wrp'><select required name='prd_simple_option'>$simple_options</select></span>";
 	}
 }
 
@@ -1870,6 +1870,9 @@ function nipl_woocommerce_add_cart_item_data($cart_item_data, $product_id, $vari
 	return $cart_item_data;
 }
 add_action('woocommerce_add_cart_item_data', 'nipl_woocommerce_add_cart_item_data',  10, 3);
+
+
+
 
 
 /**
