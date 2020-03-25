@@ -19,7 +19,7 @@ jQuery(function ($) {
         }
 
         if (passed) {
-            jQuery(this).closest('form').find('.nipl_simple_option_wrp select').css('border', '1px solid rgb(169, 169, 169)'); \
+            jQuery(this).closest('form').find('.nipl_simple_option_wrp select').css('border', '1px solid rgb(169, 169, 169)');
         } else {
             e.preventDefault();
         }

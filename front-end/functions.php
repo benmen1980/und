@@ -1846,7 +1846,7 @@ function nipl_woocommerce_before_add_to_cart_button()
 	}
 
 	$pSimpleField = $product_option[$kit_id][$product_id]['uni_simple_field'];
-	if ($pType == 'simple' && $pSimpleField != '' && !is_singular('product')) {
+	if (($pType == 'simple' && $pSimpleField != '' && !is_singular('product')) || ($pType == 'variable' && $pSimpleField != '' && is_singular('product'))) {
 		$simple_vals = array_map('trim', explode(',', $pSimpleField));
 		$simple_options = "<option value=''>" . __('Choose an option', 'unidress') . "</option>";
 		foreach ($simple_vals as $sv) {
@@ -1864,6 +1864,7 @@ add_action('woocommerce_before_add_to_cart_button', 'nipl_woocommerce_before_add
  */
 function nipl_woocommerce_add_cart_item_data($cart_item_data, $product_id, $variation_id)
 {
+
 	if (isset($_POST['prd_simple_option'])) {
 		$cart_item_data['prd_simple_option'] = sanitize_text_field($_POST['prd_simple_option']);
 	}

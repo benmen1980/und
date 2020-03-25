@@ -446,6 +446,9 @@ p.no-comments a {
     top: 40%;
 }
 
+.single_variation_wrap .nipl_simple_option_wrp{display: block;margin-bottom: 20px;}
+
+
 @media (min-width: 768px) {
 
     .unidress-mobile-header {
