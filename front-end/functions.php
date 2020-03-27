@@ -743,8 +743,9 @@ function check_group_limit()
 		$total = WC()->cart->get_totals('total')['total'];
 
 		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total;
+
 		if ($user_roles != 'hr_manager') {
-			if ($budget_in_kit <= $new_budget_limits)
+			if ($budget_in_kit < $new_budget_limits)
 				throw new Exception(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'));
 		}
 	}
