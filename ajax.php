@@ -612,18 +612,22 @@ if (wp_doing_ajax()) {
         $option     = $_POST['option'] ?: '';
 
         if ($group) {
-            $output['row'] = '';
-            $output['row'] .= '<tr>';
-            $output['row'] .= '<td class="column-group-name padding-left-10">' . $group . '<input type="hidden" data-group-id="' . $random_id . '" name="' . $option . '[' . $kit . '][' . $random_id . '][name]" value="' . $group . '"></td>';
-            $output['row'] .= '<td class="column-group-amount"><input type="number" name="' . $option . '[' . $kit . '][' . $random_id . '][amount]" placeholder="amount" value="' . $amount . '"></td>';
-            $output['row'] .= '<td class="column-button"><a class="btn-remove-option btn-simple">' . __('del', 'unidress') . '</a></td>';
-            $output['row'] .= '</tr>';
+            $data           = '';
+            $data           .= '<tr>';
+            $group          = stripslashes($group);
+            $name           = $option . '[' . $kit . '][' . $random_id . '][name]';
+            $data           .= "<td class='column-group-name padding-left-10'>$group<input type='hidden' data-group-id='$random_id' name='$name' value=' $group'></td>";
+            $kit            =  $option . '[' . $kit . '][' . $random_id . '][amount]';
+            $data           .= "<td class='column-group-amount'><input type='number' name='$kit' placeholder='amount' value='$amount'></td>";
+            $del_text       =  __('del', 'unidress');
+            $data           .= "<td class='column-button'><a class='btn-remove-option btn-simple'>$del_text</a></td>";
+            $data           .= '</tr>';
+            $output['row']  = "$data";
         } else {
             $output['alert'] = __('Group name can\'t be empty', 'unidress');
         }
 
         echo json_encode($output);
-
         die;
     }
 }
