@@ -638,3 +638,14 @@ p.no-comments a {
 .d-block{
     display: block;
 }
+span.woocommerce-Price-amount.amount {
+    display: flex;    
+}
+li.product span.woocommerce-Price-amount.amount {
+    justify-content: center;
+}
+span.woocommerce-Price-currencySymbol {
+    display: inline-block;
+    margin-right: 3px;
+    order: 1;
+}
