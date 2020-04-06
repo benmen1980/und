@@ -614,7 +614,7 @@ if (wp_doing_ajax()) {
         if ($group) {
             $data           = '';
             $data           .= '<tr>';
-            $group          = stripslashes($group);
+            $group          = esc_attr(stripslashes($group));
             $name           = $option . '[' . $kit . '][' . $random_id . '][name]';
             $data           .= "<td class='column-group-name padding-left-10'>$group<input type='hidden' data-group-id='$random_id' name='$name' value=' $group'></td>";
             $kit            =  $option . '[' . $kit . '][' . $random_id . '][amount]';
