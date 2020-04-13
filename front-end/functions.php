@@ -445,6 +445,7 @@ function change_existing_currency_symbol($currency_symbol, $currency)
 	return $currency_symbol;
 }
 
+
 add_filter('woocommerce_product_variation_get_price', 'unidress_product_variation_get_price', 2, 10);
 
 function unidress_product_variation_get_price($price, $product)
@@ -957,9 +958,10 @@ function get_unidress_list_product()
 		$product_list = 0;
 	}
 	// You already buy something check
-	if ($one_order_toggle && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id]) {
-		$product_list = 0;
-	}
+	// commented for  UN2-T22
+	// if ($one_order_toggle && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id]) {
+	// 	$product_list = 0;
+	// }
 
 	// DISPLAY ORDER UN1-T130
 	$countPost = 1000;
