@@ -1406,6 +1406,7 @@ add_action('woocommerce_after_checkout_form', function () {
 				// Budget limit check in cart
 				if ($customer_ordering_style == 'standard' && $customer_type == 'campaign') {
 					$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
+					$budget_by_point 	= get_post_meta($campaign_id, 'budget_by_points',  true);
 					//$budget_in_kit = $budgets_in_campaign[$kit_id] ?: 0;
 					$unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
 					if ($unidress_budget > 0) {
@@ -1417,7 +1418,9 @@ add_action('woocommerce_after_checkout_form', function () {
 					$user_budget_limits         = get_user_meta($user_id, 'user_budget_limits', true);
 					$user_budget_left           = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
 
-					$product_price_added        = (isset($product_in_kit[$add_product_id]['price']) &&  $product_in_kit[$add_product_id]['price']) ? $product_in_kit[$add_product_id]['price'] : get_post_meta($add_product_id, '_price', true);
+					$price_filed = ($budget_by_point == 1) ? 'points' : 'price';
+
+					$product_price_added        = (isset($product_in_kit[$add_product_id][$price_filed]) &&  $product_in_kit[$add_product_id][$price_filed]) ? $product_in_kit[$add_product_id][$price_filed] : get_post_meta($add_product_id, '_price', true);
 					$product_price_added_total  = $product_price_added * $add_quantity;
 					$total = WC()->cart->get_totals('total')['total'];
 
