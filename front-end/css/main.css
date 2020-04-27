@@ -322,6 +322,13 @@ p.no-comments a {
 .woocommerce-active .site-header .unidress-logo {
     margin-bottom: 5px;
 }
+
+.single .nipl_simple_option_wrp select {
+    display: block;
+    margin-bottom: 14px;
+    padding: 7px;
+}
+
 @media (min-width: 768px) {
     .data-item-row.display-none {display: flex!important;}
 

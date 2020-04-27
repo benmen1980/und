@@ -1852,7 +1852,7 @@ function nipl_woocommerce_before_add_to_cart_button()
 	}
 
 	$pSimpleField = $product_option[$kit_id][$product_id]['uni_simple_field'];
-	if (($pType == 'simple' && $pSimpleField != '' && !is_singular('product')) || ($pType == 'variable' && $pSimpleField != '' && is_singular('product'))) {
+	if (($pType == 'simple' && $pSimpleField != '') || ($pType == 'variable' && $pSimpleField != '' && is_singular('product'))) {
 		$simple_vals = array_map('trim', explode(',', $pSimpleField));
 		$simple_options = "<option value=''>" . __('Choose an option', 'unidress') . "</option>";
 		foreach ($simple_vals as $sv) {
