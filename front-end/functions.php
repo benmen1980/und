@@ -1094,6 +1094,8 @@ function get_budget_banner()
 {
 
 	$user_id = get_current_user_id();
+	$user = get_userdata($user_id);
+	$user_roles = $user->roles[0];
 	$current_customer = get_user_meta($user_id, 'user_customer', true);
 
 	if ((get_ordering_style($current_customer) == 'standard') && (get_customer_type($current_customer) == 'campaign')) {
@@ -1119,9 +1121,11 @@ function get_budget_banner()
 			}
 			//$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0;
 			$total = WC()->cart->get_totals('total')['total'];
-			?>
+			if ($user_roles != 'hr_manager') {
+		?>
 			<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo $budget_in_kit - (int)$user_budget_left - $total ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
 		<?php
+			}
 	}
 }
 }
@@ -1358,6 +1362,9 @@ add_action('woocommerce_after_checkout_form', function () {
 			if (empty($campaign_id) || empty($kit_id)) {
 				return;
 			}
+			// pr($campaign_id);
+			// pr($groups_in_campaign);
+			// die;
 
 			//kit data
 			$groups_in_kit       = $groups_in_campaign[$kit_id]       ?: array();
@@ -1374,6 +1381,8 @@ add_action('woocommerce_after_checkout_form', function () {
 
 			if (!is_array($user_limits))
 				$user_limits = array();
+
+
 
 			// Assign group limit check
 			if ($customer_type == 'campaign' && $groups_in_kit) {
@@ -1424,7 +1433,10 @@ add_action('woocommerce_after_checkout_form', function () {
 					$product_price_added_total  = $product_price_added * $add_quantity;
 					$total = WC()->cart->get_totals('total')['total'];
 
-					$balance = $budget_in_kit - (int)$user_budget_left - $total - $product_price_added_total;
+					// $balance = $budget_in_kit - (int)$user_budget_left - $total - $product_price_added_total;
+					// pr($user_roles);
+					// pr($balance);
+					// die;
 
 					if ($user_roles != 'hr_manager') {
 						if ($balance < 0) {
