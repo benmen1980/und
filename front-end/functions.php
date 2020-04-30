@@ -1122,10 +1122,10 @@ function get_budget_banner()
 			//$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0;
 			$total = WC()->cart->get_totals('total')['total'];
 			if ($user_roles != 'hr_manager') {
-		?>
-			<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo $budget_in_kit - (int)$user_budget_left - $total ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
-		<?php
-			}
+				?>
+				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo $budget_in_kit - (int)$user_budget_left - $total ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
+			<?php
+		}
 	}
 }
 }
@@ -1385,7 +1385,7 @@ add_action('woocommerce_after_checkout_form', function () {
 
 
 			// Assign group limit check
-			if ($customer_type == 'campaign' && $groups_in_kit) {
+			if ($customer_type == 'campaign') {
 				$group_in_cart = array();
 				foreach ($product_in_kit as $product_id => $product_options) {
 					if (!isset($group_in_cart[$product_options['groups']]))
@@ -1433,7 +1433,8 @@ add_action('woocommerce_after_checkout_form', function () {
 					$product_price_added_total  = $product_price_added * $add_quantity;
 					$total = WC()->cart->get_totals('total')['total'];
 
-					// $balance = $budget_in_kit - (int)$user_budget_left - $total - $product_price_added_total;
+					$balance = $budget_in_kit - (int)$user_budget_left - $total - $product_price_added_total;
+					// pr($user_roles);
 					// pr($user_roles);
 					// pr($balance);
 					// die;
@@ -1603,7 +1604,7 @@ add_action('woocommerce_after_checkout_form', function () {
 			$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 			if ($min_order_value > 0) {
 				if ($total < $min_order_value) {
-					wc_add_notice( printf( __('You can not complete the order if the total price is less than %d', 'unidress') , $min_order_value ), 'error');
+					wc_add_notice(printf(__('You can not complete the order if the total price is less than %d', 'unidress'), $min_order_value), 'error');
 					$output = true;
 				}
 				if ($min_order_charge > 0 && $total < $min_order_charge) {
