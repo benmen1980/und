@@ -92,7 +92,7 @@ function woocommerce_variable_add_to_cart()
 add_action('woocommerce_product_query', 'unidress_product_query');
 function unidress_product_query($q)
 {
-
+	// echo get_unidress_list_product();
 	$q->set('post__in', (array)get_unidress_list_product());
 	$q->set('orderby', 'post__in');
 }
@@ -937,7 +937,6 @@ function get_unidress_list_product()
 
 
 
-
 	if (empty($campaign_id) || empty($kit_id)) {
 		return 0;
 	}
@@ -1604,7 +1603,7 @@ add_action('woocommerce_after_checkout_form', function () {
 			$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 			if ($min_order_value > 0) {
 				if ($total < $min_order_value) {
-					wc_add_notice(printf(__('You can not complete the order if the total price is less than %d', 'unidress'), $min_order_value), 'error');
+					wc_add_notice(printf(__("You can not complete the order if the total price is less than %d", "unidress"), $min_order_value), 'error');
 					$output = true;
 				}
 				if ($min_order_charge > 0 && $total < $min_order_charge) {
@@ -1926,7 +1925,82 @@ function nipl_woocommerce_checkout_create_order_line_item($item, $cart_item_key,
 }
 add_action('woocommerce_checkout_create_order_line_item', 'nipl_woocommerce_checkout_create_order_line_item', 10, 4);
 
+/**
+ * product loop image 
+ */
+function nipl_woocommerce_product_get_image($image, $product, $size, $attr, $placeholder)
+{
+	if ($product->get_type() == 'variable') {
+		$pid = $product->get_id();
 
+		$user_id            = get_current_user_id();
+		$customer_id        = get_user_meta($user_id, 'user_customer', true);
+		$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+		$kit_id             = get_user_meta($user_id, 'user_kit', true);
+		$product_option 	= get_post_meta($campaign_id, 'product_option', true);
+		$thumbnail_id 		= get_post_meta($pid, '_thumbnail_id', true);
+		$custom_img 		= $product_option[$kit_id][$pid]['camp_varible_img'];
+
+		if ($custom_img != '' && ($custom_img != $thumbnail_id)) {
+			$image = wp_get_attachment_image($custom_img, $size, false, array('class' => 'nipl_grn_border'));
+		}
+	}
+	return $image;
+}
+add_filter('woocommerce_product_get_image', 'nipl_woocommerce_product_get_image', 10, 6);
+
+
+/**
+ * Single product image 
+ */
+function nipl_woocommerce_single_product_image_thumbnail_html($html, $post_thumbnail_id)
+{
+
+	$pid = get_the_ID();
+	$user_id            = get_current_user_id();
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+	$kit_id             = get_user_meta($user_id, 'user_kit', true);
+	$product_option 	= get_post_meta($campaign_id, 'product_option', true);
+	$thumbnail_id 		= get_post_meta($pid, '_thumbnail_id', true);
+	$custom_img 		= $product_option[$kit_id][$pid]['camp_varible_img'];
+
+	if ($custom_img != '' && ($thumbnail_id != $custom_img)) {
+		// $html = wp_get_attachment_image($custom_img, 'full', false, array('class' => 'nipl_grn_border'));
+
+		$html = wc_get_gallery_image_html($custom_img, true);
+	}
+	return $html;
+}
+add_filter('woocommerce_single_product_image_thumbnail_html', 'nipl_woocommerce_single_product_image_thumbnail_html', 10, 2);
+
+
+/**
+ * single product wrapper add class for green border. 
+ */
+function nipl_woocommerce_single_product_image_gallery_classes($classes)
+{
+	$pid = get_the_ID();
+
+
+	$type = wc_get_product($pid)->get_type();
+	if ($type == 'variable') {
+		$user_id            = get_current_user_id();
+		$customer_id        = get_user_meta($user_id, 'user_customer', true);
+		$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+		$kit_id             = get_user_meta($user_id, 'user_kit', true);
+		$product_option 	= get_post_meta($campaign_id, 'product_option', true);
+		$thumbnail_id 		= get_post_meta($pid, '_thumbnail_id', true);
+		$custom_img 		= $product_option[$kit_id][$pid]['camp_varible_img'];
+
+		if ($custom_img != '' && ($thumbnail_id != $custom_img)) {
+			$classes[''] = 'bordered_product';
+		}
+	}
+
+	return $classes;
+}
+add_filter('woocommerce_single_product_image_gallery_classes', 'nipl_woocommerce_single_product_image_gallery_classes', 10, 1);
 
 // for kit
 add_action('additional_customer_information', 'unidress_required_products', 20);

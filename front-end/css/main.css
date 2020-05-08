@@ -656,3 +656,6 @@ span.woocommerce-Price-currencySymbol {
     margin-right: 3px;
     order: 1;
 }
+img.nipl_grn_border, .bordered_product {
+    border: 3px solid #54ca54;
+}
