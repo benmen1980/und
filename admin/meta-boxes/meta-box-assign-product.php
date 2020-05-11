@@ -768,9 +768,11 @@ function render_thumb_column_image($product_id, $data, $product_option)
         $d_id = $data['id'];
 
         $img_id = $thumbnail_id;
+        $camp_varible_img = '';
         // change image if custom
         if ($product_option[$kit_id][$d_id]['camp_varible_img'] != '') {
             $img_id = $product_option[$kit_id][$d_id]['camp_varible_img'];
+            $camp_varible_img = $img_id;
         }
         if ($thumbnail_id != $product_option[$kit_id][$d_id]['camp_varible_img'] && $product_option[$kit_id][$d_id]['camp_varible_img'] != '') {
             $clas = 'nipl_grn_border';
@@ -790,7 +792,7 @@ function render_thumb_column_image($product_id, $data, $product_option)
 
         <div class="nipl_varible_wrp" data-thumbid='<?php echo $thumbnail_id; ?>'>
 
-            <input type="hidden" name="product_option[<?php echo $data['kit']; ?>][<?php echo $data['id']; ?>][camp_varible_img]" class="camp_varible_img" value="" />
+            <input type="hidden" name="product_option[<?php echo $data['kit']; ?>][<?php echo $data['id']; ?>][camp_varible_img]" class="camp_varible_img" value="<?php echo $camp_varible_img; ?>" />
             <a href="#" class="misha_upload_image_button on <?php echo $clas; ?>"> <?php echo $image; ?></a>
             <!-- <a href="#" class="misha_remove_image_button" style="display:inline-block;display:' . $display . '">Remove image</a> -->
         </div>
