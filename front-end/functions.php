@@ -936,7 +936,6 @@ function get_unidress_list_product()
 	$product_option_order 	= [];
 
 
-
 	if (empty($campaign_id) || empty($kit_id)) {
 		return 0;
 	}
@@ -1976,6 +1975,44 @@ add_filter('woocommerce_single_product_image_thumbnail_html', 'nipl_woocommerce_
 
 
 
+/**
+ * Overwrite WC plugin function to show custom product thumbnail
+ */
+function woocommerce_get_product_thumbnail($size = 'shop_catalog', $deprecated1 = 0, $deprecated2 = 0)
+{
+	global $post;
+	$image_size = apply_filters('single_product_archive_thumbnail_size', $size);
+
+	if (has_post_thumbnail()) {
+		$pid = get_the_ID();
+		$user_id            = get_current_user_id();
+		$customer_id        = get_user_meta($user_id, 'user_customer', true);
+		$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+		$kit_id             = get_user_meta($user_id, 'user_kit', true);
+		$thumbnail_id_main = $thumb_id 		= get_post_thumbnail_id();
+		$product_option 	= get_post_meta($campaign_id, 'product_option', true);
+		$custom_img 		= $product_option[$kit_id][$pid]['camp_varible_img'];
+
+		if ($custom_img != '' && ($thumbnail_id_main != $custom_img)) {
+			$thumbnail_id_main =  $custom_img;
+		}
+
+
+		$props = wc_get_product_attachment_props($thumbnail_id_main, $post);
+
+		// show custom image if set. 
+		if ($custom_img != '' && ($thumb_id != $custom_img)) {
+			return	wp_get_attachment_image($custom_img, $image_size, false);
+		} else {
+			return get_the_post_thumbnail($post->ID, $image_size, array(
+				'title'	 => $props['title'],
+				'alt'    => $props['alt'],
+			));
+		}
+	} elseif (wc_placeholder_img_src()) {
+		return wc_placeholder_img($image_size);
+	}
+}
 
 // for kit
 add_action('additional_customer_information', 'unidress_required_products', 20);

@@ -757,50 +757,48 @@ function render_thumb_column_image($product_id, $data, $product_option)
     $test_p = wc_get_product($product_id);
     $type = wc_get_product($product_id)->get_type();
     ob_start();
-    if ($type == 'variable') {
-
-        $image = ' button">Upload image';
-        $image_size = 'full'; // it would be better to use thumbnail size here (150x150 or so)
-        $display = 'none'; // display state ot the "Remove image" button
-        $thumbnail_id = get_post_meta($product_id, '_thumbnail_id', true);
-
-        $kit_id = $data['kit'];
-        $d_id = $data['id'];
-
-        $img_id = $thumbnail_id;
-        $camp_varible_img = '';
-        // change image if custom
-        if ($product_option[$kit_id][$d_id]['camp_varible_img'] != '') {
-            $img_id = $product_option[$kit_id][$d_id]['camp_varible_img'];
-            $camp_varible_img = $img_id;
-        }
-        if ($thumbnail_id != $product_option[$kit_id][$d_id]['camp_varible_img'] && $product_option[$kit_id][$d_id]['camp_varible_img'] != '') {
-            $clas = 'nipl_grn_border';
-        }
 
 
-        if ($image_attributes = wp_get_attachment_image_src($img_id, 'thumbnail')) {
+    $image = ' button">Upload image';
+    $image_size = 'full'; // it would be better to use thumbnail size here (150x150 or so)
+    $display = 'none'; // display state ot the "Remove image" button
+    $thumbnail_id = get_post_meta($product_id, '_thumbnail_id', true);
 
-            // $image_attributes[0] - image URL
-            // $image_attributes[1] - image width
-            // $image_attributes[2] - image height
+    $kit_id = $data['kit'];
+    $d_id = $data['id'];
 
-            $image = '<img src="' . $image_attributes[0] . '" style="max-width:95%;display:block;" />';
-            $display = 'inline-block';
-        }    ?>
+    $img_id = $thumbnail_id;
+    $camp_varible_img = '';
+    // change image if custom
+    if ($product_option[$kit_id][$d_id]['camp_varible_img'] != '') {
+        $img_id = $product_option[$kit_id][$d_id]['camp_varible_img'];
+        $camp_varible_img = $img_id;
+    }
+    if ($thumbnail_id != $product_option[$kit_id][$d_id]['camp_varible_img'] && $product_option[$kit_id][$d_id]['camp_varible_img'] != '') {
+        $clas = 'nipl_grn_border';
+    }
 
 
-        <div class="nipl_varible_wrp" data-thumbid='<?php echo $thumbnail_id; ?>'>
+    if ($image_attributes = wp_get_attachment_image_src($img_id, 'thumbnail')) {
 
-            <input type="hidden" name="product_option[<?php echo $data['kit']; ?>][<?php echo $data['id']; ?>][camp_varible_img]" class="camp_varible_img" value="<?php echo $camp_varible_img; ?>" />
-            <a href="#" class="misha_upload_image_button on <?php echo $clas; ?>"> <?php echo $image; ?></a>
-            <!-- <a href="#" class="misha_remove_image_button" style="display:inline-block;display:' . $display . '">Remove image</a> -->
-        </div>
+        // $image_attributes[0] - image URL
+        // $image_attributes[1] - image width
+        // $image_attributes[2] - image height
+
+        $image = '<img src="' . $image_attributes[0] . '" style="max-width:95%;display:block;" />';
+        $display = 'inline-block';
+    }    ?>
+
+
+    <div class="nipl_varible_wrp" data-thumbid='<?php echo $thumbnail_id; ?>'>
+
+        <input type="hidden" name="product_option[<?php echo $data['kit']; ?>][<?php echo $data['id']; ?>][camp_varible_img]" class="camp_varible_img" value="<?php echo $camp_varible_img; ?>" />
+        <a href="#" class="misha_upload_image_button on <?php echo $clas; ?>"> <?php echo $image; ?></a>
+        <!-- <a href="#" class="misha_remove_image_button" style="display:inline-block;display:' . $display . '">Remove image</a> -->
+    </div>
     <?php
-} else {
-    return render_thumb_column($product_id);
-}
-return ob_get_clean();
+
+    return ob_get_clean();
 }
 
 /*noway*/
