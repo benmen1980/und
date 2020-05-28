@@ -49,6 +49,7 @@ function woocommerce_variable_add_to_cart()
 	// Enqueue variation scripts.
 	wp_enqueue_script('wc-add-to-cart-variation');
 
+
 	// Get Available variations?
 	$get_variations = count($product->get_children()) <= apply_filters('woocommerce_ajax_variation_threshold', 30, $product);
 
@@ -68,6 +69,10 @@ function woocommerce_variable_add_to_cart()
 	} else {
 		$kit_id = get_user_meta($user_id, 'user_kit', true);
 	}
+	// pr($product_option[$kit_id][$product_id]['variation']);
+	// pr($available_variations);
+	// pr($attributes);
+	// pr($product_option[$kit_id][$product_id]);
 
 	if (isset($product_option[$kit_id][$product_id]['variation'])) {
 		foreach ($available_variations as $index => $variation) {
@@ -76,6 +81,7 @@ function woocommerce_variable_add_to_cart()
 			}
 		}
 	}
+	// pr($available_variations);
 	sort($available_variations);
 	// Load the template.
 	wc_get_template(
@@ -322,7 +328,7 @@ function unidress_update_cart_validation($passed_validation)
 	update_user_meta(1, '$passed_validation6', $passed_validation);
 
 	// Only one order per user
-	if ($one_order_toggle && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id]) {
+	if ($one_order_toggle[$kit_id] == 'on' && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id]) {
 		$passed_validation = false;
 		wc_add_notice(__('You already buy something', 'unidress'), 'error');
 	}
@@ -805,7 +811,7 @@ function check_group_limit()
 	}
 
 	// You already buy something check
-	if ($one_order_toggle && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id]) {
+	if ($one_order_toggle[$kit_id] == 'on' && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id]) {
 		throw new Exception(__('You already buy something', 'unidress'));
 	}
 
@@ -915,7 +921,7 @@ function update_user_limits($order_id, $data)
 	update_user_meta(get_current_user_id(), 'user_limits', $new_user_limit);
 
 	//   user can only one order
-	if ($one_order_toggle) {
+	if ($one_order_toggle[$kit_id] == 'on') {
 		$one_order_value[$campaign_id][$kit_id] = $order_id;
 		update_user_meta(get_current_user_id(), 'one_order_value', $one_order_value);
 	}
@@ -935,7 +941,8 @@ function get_unidress_list_product()
 	$product_option 	= get_post_meta($campaign_id, 'product_option', true);
 	$product_option_order 	= [];
 
-
+	// pr($product_option);
+	// pr($kit_id);
 	if (empty($campaign_id) || empty($kit_id)) {
 		return 0;
 	}
@@ -1549,7 +1556,7 @@ add_action('woocommerce_after_checkout_form', function () {
 			}
 
 			// You already buy something check
-			if ($one_order_toggle && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id]) {
+			if ($one_order_toggle[$kit_id] == 'on' && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id]) {
 				$output = true;
 				wc_add_notice(__('You already buy something', 'unidress'), 'error');
 			}
@@ -1740,7 +1747,7 @@ function storefront_page_header()
 		the_title('<h1 class="entry-title">', '</h1>');
 		if (is_cart()) {
 			// You already buy something check
-			if ($one_order_toggle) {
+			if ($one_order_toggle[$kit_id] == 'on') {
 				if ($budget > 0) {
 					echo '<p class="unidress-entry-message">' . __('Dear employee, only one order can be placed. Please make sure you have selected all the items you want.', 'unidress') . '</p>';
 				}
