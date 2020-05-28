@@ -518,6 +518,10 @@ function get_product_to_campaign($arg, $assign = false, $already_assign_product 
             'product_option' => $product_option,
             'kit' => $kit,
         ));
+
+        // add kit first up so that in render_thumb_col we get kit id. 
+        $data['kit']                    = $kit;
+
         foreach ($already_assign_product as $post_id) {
             $product                        = wc_get_product($post_id);
             $product_meta                   = get_post_meta($post_id, '', true);
@@ -787,7 +791,8 @@ function render_thumb_column_image($product_id, $data, $product_option)
 
         $image = '<img src="' . $image_attributes[0] . '" style="max-width:95%;display:block;" />';
         $display = 'inline-block';
-    }    ?>
+    }
+    ?>
 
 
     <div class="nipl_varible_wrp" data-thumbid='<?php echo $thumbnail_id; ?>'>
