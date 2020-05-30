@@ -839,7 +839,7 @@ function unidress_load_variations($data)
 
     if ($variations) {
 
-        if (count($product_object->get_attributes()) !== 2) {
+        //if (count($product_object->get_attributes()) !== 2) {
             $output .= '        <fieldset class="unidress-shops-shipping">';
             $output .= '        <label class="variation-row">';
             $output .= '            <span><input class="shipping-all-select" type="checkbox"></span>';
@@ -875,7 +875,7 @@ function unidress_load_variations($data)
             }
             $output .= '</ul>';
             $output .= '</fieldset>';
-        } else {
+        /*} else {
 
             foreach ($variations as $variation_object) {
 
@@ -883,29 +883,67 @@ function unidress_load_variations($data)
 
                 $product = wc_get_product($variation_id);
 
+                // pr($product->get_attributes());
                 foreach ($product->get_attributes('edit') as $key => $attribute) {
                     $array_vari_slug[$attribute] = $key;
                     $array_vari[$product->get_ID()][] = $attribute;
+
+                    $atri_ary[$key][] = $attribute;
                 }
             }
 
+
+
+             //pr($array_vari);
             if (is_array($array_vari)) {
+                // $navigation .= '<ul class="navigation-tabs">';
+
+
+                // pr($product_option['variation']);
+
+                // foreach ($atri_ary as $atriKey => $atriVal) {
+                //     $navigation .= '<ul class="navigation-tabs">';
+
+                //     foreach (array_unique($atriVal) as $key2 => $attribute2) {
+                //         $conte =                       $product->get_attribute(sanitize_title($attribute2));
+                //         pr($conte);
+                //         $navigation .= '<li class="button-tab">
+                //                     <a><input class="tab_checked" name="product_option[' . $kit_id . '][' . $product_id . '][' . $atriKey . '][]" value="' . $attribute2 . '" type="checkbox">' . esc_html($attribute2) . '</a>
+                //                     </li>';
+                //         $i++;
+                //     }
+                //     $navigation .= '</ul>';
+                //     // $navigation .= '<div class="tab-content navigation-tabContent">';
+                // }
+
+
                 $checked = '';
+
 
                 foreach ($array_vari as $key2 => $attribute2) {
                     $array_vari2[$attribute2[0]][$attribute2[1]] = $key2;
+                   
                 }
-
+                //pr($array_vari2);
                 $i = 0;
                 $navigation .= '<ul class="navigation-tabs">';
+
+
                 foreach ($array_vari2 as $key2 => $attribute2) {
+
+                	//pr(current($attribute2));
                     $product = wc_get_product(current($attribute2));
                     $attr = $product->get_attribute(sanitize_title($array_vari_slug[$key2]));
 
-                    $navigation .= '<li class="button-tab' . ($i == 0 ? ' active' : '') . '" data-tab="tab_' . $i . '"><a><input class="tab_checked" data-checked="tab_' . $i . '" type="checkbox">' . $attr . '</a></li>';
+                    $navigation .= '
+                    <li class="button-tab' . ($i == 0 ? ' active' : '') . '" data-tab="tab_' . $i . '">
+                    <a><input class="tab_checkedd" data-checked="tab_' . $i . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][' . $array_vari_slug[$key2] . '][]" value="' . $attr . '" >' . $attr . '</a>
+                    </li>';
                     $i++;
                 }
                 $navigation .= '</ul>';
+
+                
                 $navigation .= '<div class="tab-content navigation-tabContent">';
                 $i = 0;
 
@@ -921,7 +959,7 @@ function unidress_load_variations($data)
                             in_array($id, $product_option['variation']) ? $checked = 'checked' : $checked = '';
                         }
                         $navigation .= '<div class="variation-row">';
-                        $navigation .= '<span><input data-variation="' . $id . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][]" value="' . esc_html($id) . '" ' . $checked . '></span>';
+                        $navigation .= '<span><input data-variation="' . $id . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][' . $array_vari_slug[$attribute22] . '][]" value="' . $attribute22 . '" ' . $checked . '></span>';
                         $navigation .= '<span>' . esc_html($attr2) . '</span>';
                         $navigation .= '</div>';
                     }
@@ -930,7 +968,7 @@ function unidress_load_variations($data)
                 }
                 $navigation .= '</div>';
             }
-        }
+        }*/
     }
     $output .= '</div>';
     return $header . $navigation . $output;
@@ -955,6 +993,7 @@ function save_table_product_to_project($post_id)
     if (!current_user_can('edit_post', $post_id))
         return $post_id;
 
+
     update_post_meta($post_id, 'add_product_to_project', $_POST['add_product_to_project']);
     update_post_meta($post_id, 'product_option', $_POST['product_option']);
     wc_delete_product_transients($post_id);
@@ -977,6 +1016,7 @@ function save_table_product_to_campaign($post_id, $data = '')
 
     if (!current_user_can('edit_post', $post_id))
         return $post_id;
+
 
     if ($_POST['kits']) {
         // Product options for kit

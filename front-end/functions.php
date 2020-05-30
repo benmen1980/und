@@ -73,16 +73,29 @@ function woocommerce_variable_add_to_cart()
 	// pr($available_variations);
 	// pr($attributes);
 	// pr($product_option[$kit_id][$product_id]);
-
-	if (isset($product_option[$kit_id][$product_id]['variation'])) {
-		foreach ($available_variations as $index => $variation) {
-			if (!in_array($variation['variation_id'], $product_option[$kit_id][$product_id]['variation'])) {
-				unset($available_variations[$index]);
+	//if (count($attributes) !== 2) {
+		if (isset($product_option[$kit_id][$product_id]['variation'])) {
+			foreach ($available_variations as $index => $variation) {
+				if (!in_array($variation['variation_id'], $product_option[$kit_id][$product_id]['variation'])) {
+					unset($available_variations[$index]);
+				}
 			}
 		}
-	}
-	// pr($available_variations);
-	sort($available_variations);
+		// pr($available_variations);
+		sort($available_variations);
+	//} else {
+		// pr($product_option[$kit_id][$product_id]);
+		// pr($attributes);
+		// foreach ($attributes as $at_key => $at_val) {
+		// 	foreach ($at_val as $mk => $mval) {
+		// 		if (!in_array($mval, $product_option[$kit_id][$product_id]['variation'][$at_key])) {
+		// 			pr($mval);
+		// 			unset($attributes[$mk]);
+		// 		}
+		// 	}
+		// }
+	//}
+
 	// Load the template.
 	wc_get_template(
 		'single-product/add-to-cart/variable.php',
