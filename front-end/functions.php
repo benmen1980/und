@@ -69,31 +69,43 @@ function woocommerce_variable_add_to_cart()
 	} else {
 		$kit_id = get_user_meta($user_id, 'user_kit', true);
 	}
-	// pr($product_option[$kit_id][$product_id]['variation']);
+	// pr($product_option[$kit_id][$product_id]);
 	// pr($available_variations);
 	// pr($attributes);
 	// pr($product_option[$kit_id][$product_id]);
 	//if (count($attributes) !== 2) {
-		if (isset($product_option[$kit_id][$product_id]['variation'])) {
-			foreach ($available_variations as $index => $variation) {
-				if (!in_array($variation['variation_id'], $product_option[$kit_id][$product_id]['variation'])) {
-					unset($available_variations[$index]);
-				}
+
+	// pr($product_option[$kit_id][$product_id]['pa_color']);
+	if (isset($product_option[$kit_id][$product_id]['pa_color'])) {
+		// pr(count($available_variations));
+		foreach ($available_variations as $index => $variation) {
+			if (!in_array($variation['attributes']['attribute_pa_color'], $product_option[$kit_id][$product_id]['pa_color'])) {
+				unset($available_variations[$index]);
 			}
 		}
-		// pr($available_variations);
-		sort($available_variations);
+
+
+		// pr(count($available_variations));
+	} elseif (isset($product_option[$kit_id][$product_id]['variation'])) {
+		foreach ($available_variations as $index => $variation) {
+			if (!in_array($variation['variation_id'], $product_option[$kit_id][$product_id]['variation'])) {
+				unset($available_variations[$index]);
+			}
+		}
+	}
+	// pr($available_variations);
+	sort($available_variations);
 	//} else {
-		// pr($product_option[$kit_id][$product_id]);
-		// pr($attributes);
-		// foreach ($attributes as $at_key => $at_val) {
-		// 	foreach ($at_val as $mk => $mval) {
-		// 		if (!in_array($mval, $product_option[$kit_id][$product_id]['variation'][$at_key])) {
-		// 			pr($mval);
-		// 			unset($attributes[$mk]);
-		// 		}
-		// 	}
-		// }
+	// pr($product_option[$kit_id][$product_id]);
+	// pr($attributes);
+	// foreach ($attributes as $at_key => $at_val) {
+	// 	foreach ($at_val as $mk => $mval) {
+	// 		if (!in_array($mval, $product_option[$kit_id][$product_id]['variation'][$at_key])) {
+	// 			pr($mval);
+	// 			unset($attributes[$mk]);
+	// 		}
+	// 	}
+	// }
 	//}
 
 	// Load the template.
@@ -956,6 +968,7 @@ function get_unidress_list_product()
 
 	// pr($product_option);
 	// pr($kit_id);
+	// pr($campaign_id);
 	if (empty($campaign_id) || empty($kit_id)) {
 		return 0;
 	}

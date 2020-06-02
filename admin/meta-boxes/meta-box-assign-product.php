@@ -839,7 +839,7 @@ function unidress_load_variations($data)
 
     if ($variations) {
 
-        //if (count($product_object->get_attributes()) !== 2) {
+        if (count($product_object->get_attributes()) !== 2) {
             $output .= '        <fieldset class="unidress-shops-shipping">';
             $output .= '        <label class="variation-row">';
             $output .= '            <span><input class="shipping-all-select" type="checkbox"></span>';
@@ -875,7 +875,7 @@ function unidress_load_variations($data)
             }
             $output .= '</ul>';
             $output .= '</fieldset>';
-        /*} else {
+        } else {
 
             foreach ($variations as $variation_object) {
 
@@ -889,12 +889,53 @@ function unidress_load_variations($data)
                     $array_vari[$product->get_ID()][] = $attribute;
 
                     $atri_ary[$key][] = $attribute;
+                    $atri_ary_product[$attribute] = $product->get_ID();
                 }
             }
 
+            // pr($atri_ary_product);
+            // pr('array-vari');
+            // pr($array_vari);
+            // pr('varrrrrr_slug');
+            // pr($array_vari_slug);
+            // pr($product_option['pa_color']);
+            // pr($atri_ary);
 
 
-             //pr($array_vari);
+
+
+            foreach ($array_vari as $key2 => $attribute2) {
+                $array_vari2[$attribute2[0]][$attribute2[1]] = $key2;
+                $medata[$attribute2[1]] = $key2;
+            }
+            // pr($medata);
+
+            // pr($array_vari2);
+            foreach ($medata as $key2 => $attribute2) {
+
+                // $navigation .= '<div data-tab="tab_' . $i . '" class="tab-pane' . ($i == 0 ? ' show-tab' : '') . ' tab_' . $i . '" >';
+
+                // foreach ($attribute2 as $attribute22 => $id) {
+                $product = wc_get_product($attribute2);
+                $attr2 = $product->get_attribute(sanitize_title($array_vari_slug[$key2]));
+
+                if (isset($product_option['pa_color'])) {
+                    in_array($key2, $product_option['pa_color']) ? $checked = 'checked="checked"' : $checked = '';
+                }
+                $navigation .= '<div class="variation-row test">';
+                $navigation .= '<span><input class="nipl_variation_checkbox" data-variation="' . $id . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][' . $array_vari_slug[$key2] . '][]" value="' . $key2 . '" ' . $checked . '></span>';
+                $navigation .= '<span>' . esc_html($attr2) . '</span>';
+                $navigation .= '</div>';
+
+
+                // }
+                // $navigation .= '</div>';
+                $i++;
+            }
+            $navigation .= '</div>';
+
+
+            //pr($array_vari);
             if (is_array($array_vari)) {
                 // $navigation .= '<ul class="navigation-tabs">';
 
@@ -920,55 +961,54 @@ function unidress_load_variations($data)
                 $checked = '';
 
 
-                foreach ($array_vari as $key2 => $attribute2) {
-                    $array_vari2[$attribute2[0]][$attribute2[1]] = $key2;
-                   
-                }
-                //pr($array_vari2);
-                $i = 0;
-                $navigation .= '<ul class="navigation-tabs">';
+                // foreach ($array_vari as $key2 => $attribute2) {
+                //     $array_vari2[$attribute2[0]][$attribute2[1]] = $key2;
+                // }
+                // //pr($array_vari2);
+                // $i = 0;
+                // $navigation .= '<ul class="navigation-tabs">';
 
 
-                foreach ($array_vari2 as $key2 => $attribute2) {
+                // foreach ($array_vari2 as $key2 => $attribute2) {
 
-                	//pr(current($attribute2));
-                    $product = wc_get_product(current($attribute2));
-                    $attr = $product->get_attribute(sanitize_title($array_vari_slug[$key2]));
+                //     //pr(current($attribute2));
+                //     $product = wc_get_product(current($attribute2));
+                //     $attr = $product->get_attribute(sanitize_title($array_vari_slug[$key2]));
 
-                    $navigation .= '
-                    <li class="button-tab' . ($i == 0 ? ' active' : '') . '" data-tab="tab_' . $i . '">
-                    <a><input class="tab_checkedd" data-checked="tab_' . $i . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][' . $array_vari_slug[$key2] . '][]" value="' . $attr . '" >' . $attr . '</a>
-                    </li>';
-                    $i++;
-                }
-                $navigation .= '</ul>';
+                //     $navigation .= '
+                //     <li class="button-tab' . ($i == 0 ? ' active' : '') . '" data-tab="tab_' . $i . '">
+                //     <a><input class="tab_checkedd" data-checked="tab_' . $i . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][' . $array_vari_slug[$key2] . '][]" value="' . $attr . '" >' . $attr . '</a>
+                //     </li>';
+                //     $i++;
+                // }
+                // $navigation .= '</ul>';
 
-                
-                $navigation .= '<div class="tab-content navigation-tabContent">';
-                $i = 0;
 
-                foreach ($array_vari2 as $key2 => $attribute2) {
+                // $navigation .= '<div class="tab-content navigation-tabContent">';
+                // $i = 0;
 
-                    $navigation .= '<div data-tab="tab_' . $i . '" class="tab-pane' . ($i == 0 ? ' show-tab' : '') . ' tab_' . $i . '" >';
+                // foreach ($array_vari2 as $key2 => $attribute2) {
 
-                    foreach ($attribute2 as $attribute22 => $id) {
-                        $product = wc_get_product($id);
-                        $attr2 = $product->get_attribute(sanitize_title($array_vari_slug[$attribute22]));
+                //     $navigation .= '<div data-tab="tab_' . $i . '" class="tab-pane' . ($i == 0 ? ' show-tab' : '') . ' tab_' . $i . '" >';
 
-                        if (isset($product_option['variation'])) {
-                            in_array($id, $product_option['variation']) ? $checked = 'checked' : $checked = '';
-                        }
-                        $navigation .= '<div class="variation-row">';
-                        $navigation .= '<span><input data-variation="' . $id . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][' . $array_vari_slug[$attribute22] . '][]" value="' . $attribute22 . '" ' . $checked . '></span>';
-                        $navigation .= '<span>' . esc_html($attr2) . '</span>';
-                        $navigation .= '</div>';
-                    }
-                    $navigation .= '</div>';
-                    $i++;
-                }
-                $navigation .= '</div>';
+                //     foreach ($attribute2 as $attribute22 => $id) {
+                //         $product = wc_get_product($id);
+                //         $attr2 = $product->get_attribute(sanitize_title($array_vari_slug[$attribute22]));
+
+                //         if (isset($product_option['variation'])) {
+                //             in_array($id, $product_option['variation']) ? $checked = 'checked' : $checked = '';
+                //         }
+                //         $navigation .= '<div class="variation-row">';
+                //         $navigation .= '<span><input data-variation="' . $id . '" type="checkbox" name="product_option[' . $kit_id . '][' . $product_id . '][variation][' . $array_vari_slug[$attribute22] . '][]" value="' . $attribute22 . '" ' . $checked . '></span>';
+                //         $navigation .= '<span>' . esc_html($attr2) . '</span>';
+                //         $navigation .= '</div>';
+                //     }
+                //     $navigation .= '</div>';
+                //     $i++;
+                // }
+                // $navigation .= '</div>';
             }
-        }*/
+        }
     }
     $output .= '</div>';
     return $header . $navigation . $output;
@@ -995,6 +1035,8 @@ function save_table_product_to_project($post_id)
 
 
     update_post_meta($post_id, 'add_product_to_project', $_POST['add_product_to_project']);
+
+
     update_post_meta($post_id, 'product_option', $_POST['product_option']);
     wc_delete_product_transients($post_id);
 }
@@ -1004,7 +1046,8 @@ add_action('save_post', 'save_table_product_to_campaign');
 function save_table_product_to_campaign($post_id, $data = '')
 {
 
-
+    //pr($_POST['product_option']);
+    //die;
     if (isset($_POST['action']) && ($_POST['action'] != 'editpost') && ($data != ''))
         $_POST = $data;
 

@@ -219,17 +219,20 @@ jQuery('.inside').on('change', '#acf-field_5c8778d42c013', function () {
 
 });
 //synchronized the same input - variations
-jQuery('.inside').on('change', '.column-name input', function () {
+jQuery('.inside').on('change', '.column-name input:not(.nipl_variation_checkbox)', function () {
 
     let checked = $(this).prop("checked");
     let changedId = $(this).closest('tr').attr('data-id');
     let dataOption = $(this).attr('data-variation');
 
+    // console.log('ererere');
     jQuery(this).closest('table').find('tr[data-id=' + changedId + ']').each(function (index, elem) {
         jQuery(this).find('.column-name  *[data-variation=' + dataOption + ']').prop("checked", checked);
     })
 
 });
+
+
 //synchronized the same input - price
 jQuery('.inside').on('change', '.column-price input', function () {
     $(this).priceField();
