@@ -2001,13 +2001,13 @@ function nipl_woocommerce_single_product_image_thumbnail_html($html, $post_thumb
 	if ($custom_img != '' && ($thumbnail_id != $custom_img)) {
 		 //$html = wp_get_attachment_image($custom_img, 'full', false, array('class' => 'nipl_grn_border'));
 
-		if($product_detail->is_type('variable')) {
+		/*if($product_detail->is_type('variable')) {
 			$html = wp_get_attachment_image($custom_img, 'full', false);
 		
 		}else {
-
+*/
 			$html = wc_get_gallery_image_html($custom_img, true);
-		}
+		/*}*/
 	}
 	return $html;
 }
