@@ -1988,8 +1988,8 @@ add_filter('woocommerce_product_get_image', 'nipl_woocommerce_product_get_image'
  */
 function nipl_woocommerce_single_product_image_thumbnail_html($html, $post_thumbnail_id)
 {
-
 	$pid = get_the_ID();
+	$product_detail = wc_get_product($pid);
 	$user_id            = get_current_user_id();
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
 	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
@@ -1997,11 +1997,17 @@ function nipl_woocommerce_single_product_image_thumbnail_html($html, $post_thumb
 	$product_option 	= get_post_meta($campaign_id, 'product_option', true);
 	$thumbnail_id 		= get_post_meta($pid, '_thumbnail_id', true);
 	$custom_img 		= $product_option[$kit_id][$pid]['camp_varible_img'];
-
+	
 	if ($custom_img != '' && ($thumbnail_id != $custom_img)) {
-		// $html = wp_get_attachment_image($custom_img, 'full', false, array('class' => 'nipl_grn_border'));
+		 //$html = wp_get_attachment_image($custom_img, 'full', false, array('class' => 'nipl_grn_border'));
 
-		$html = wc_get_gallery_image_html($custom_img, true);
+		if($product_detail->is_type('variable')) {
+			$html = wp_get_attachment_image($custom_img, 'full', false);
+		
+		}else {
+
+			$html = wc_get_gallery_image_html($custom_img, true);
+		}
 	}
 	return $html;
 }
