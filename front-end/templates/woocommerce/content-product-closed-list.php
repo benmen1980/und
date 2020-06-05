@@ -43,15 +43,32 @@ if ($product->get_type() == 'variable') {
         $product_option = get_post_meta($campaign_id, 'product_option', true);
 	    $product_id = $product->get_id();
 
-        if (isset($product_option[$kit_id][$product_id]['variation'])){
-            foreach ($available_variations as $index=>$variation) {
-                if (!in_array($variation['variation_id'], $product_option[$kit_id][$product_id]['variation'])){
+        if (isset($product_option[$kit_id][$product_id]['pa_color'])) {
+        // pr(count($available_variations));
+            foreach ($available_variations as $index => $variation) {
+                if (!in_array($variation['attributes']['attribute_pa_color'], $product_option[$kit_id][$product_id]['pa_color'])) {
+                    unset($available_variations[$index]);
+                }
+            }
+            // pr(count($available_variations));
+        } elseif (isset($product_option[$kit_id][$product_id]['variation'])) {
+            foreach ($available_variations as $index => $variation) {
+                if (!in_array($variation['variation_id'], $product_option[$kit_id][$product_id]['variation'])) {
                     unset($available_variations[$index]);
                 }
             }
         }
 
+        /*if (isset($product_option[$kit_id][$product_id]['variation'])){
+            foreach ($available_variations as $index=>$variation) {
+                if (!in_array($variation['variation_id'], $product_option[$kit_id][$product_id]['variation'])){
+                    unset($available_variations[$index]);
+                }
+            }
+        }*/
+
 	    sort($available_variations);
+        //pr($available_variations);
 	    $attribute_keys  = array_keys( $attributes );
         $variations_json = wp_json_encode( $available_variations );
         $variations_attr = function_exists( 'wc_esc_json' ) ? wc_esc_json( $variations_json ) : _wp_specialchars( $variations_json, ENT_QUOTES, 'UTF-8', true );
@@ -69,29 +86,42 @@ if ($product->get_type() == 'variable') {
                             <?php woocommerce_template_loop_product_thumbnail(); ?>
                         </a>
 
-                        <?php if ( empty( $available_variations ) && false !== $available_variations ) : ?>
+                        <?php 
+                        if ( empty( $available_variations ) && false !== $available_variations ) : ?>
                             <p class="stock out-of-stock"><?php esc_html_e( 'This product is currently out of stock and unavailable.', 'woocommerce' ); ?></p>
                         <?php else : ?>
+                        
                             <div class="variations" cellspacing="0">
 
                                 <a href="<?= $product->get_permalink() ?>" class="product-description d-block" style="margin-bottom: 20px;">
                                     <?php do_action( 'woocommerce_shop_loop_item_title' ); ?>
                                 </a>
-                                <?php foreach ( $attributes as $attribute_name => $options ) : ?>
-                                    <div class="select-wrapper">
-                                        <h3 class="label"><label for="<?php echo esc_attr( sanitize_title( $attribute_name ) ); ?>"><?php echo wc_attribute_label( $attribute_name ); // WPCS: XSS ok. ?></label></h3>
-                                        <div class="value">
-                                            <?php
-                                            wc_dropdown_variation_attribute_options( array(
-                                                'options'   => $options,
-                                                'attribute' => $attribute_name,
-                                                'product'   => $product,
-                                            ) );
-                                            echo end( $attribute_keys ) === $attribute_name ? wp_kses_post( apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#">' . esc_html__( 'Clear', 'woocommerce' ) . '</a>' ) ) : '';
-                                            ?>
+                                <?php 
+                                
+                                    foreach ( $attributes as $attribute_name => $options ) : 
+                                        //pr($options);
+                                        ?>
+                                        <div class="select-wrapper">
+                                            <h3 class="label"><label for="<?php echo esc_attr( sanitize_title( $attribute_name ) ); ?>"><?php echo wc_attribute_label( $attribute_name ); // WPCS: XSS ok. ?></label></h3>
+                                            <div class="value">
+                                                <?php
+                                                foreach($available_variations as $key => $value){
+                                                    foreach($value['attributes'] as $k => $val){
+                                                        $arr[] = $val;
+                                                    }
+                                                }
+                                                    wc_dropdown_variation_attribute_options( array(
+                                                        'options'   => (!empty($arr)) ? $arr : $options,
+                                                        'attribute' => $attribute_name,
+                                                        'product'   => $product,
+                                                    ) );
+                                                    echo end( $attribute_keys ) === $attribute_name ? wp_kses_post( apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#">' . esc_html__( 'Clear', 'woocommerce' ) . '</a>' ) ) : '';
+                                                
+                                                ?>
+                                            </div>
                                         </div>
-                                    </div>
-                                <?php endforeach; ?>
+                                    <?php endforeach; 
+                                ?>
                             </div>
                         <div class="single_variation_wrap"></div>
                         <?php endif; ?>
