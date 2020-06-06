@@ -51,8 +51,23 @@ do_action( 'woocommerce_before_cart' ); ?>
 
                     <td class="product-thumbnail">
 						<?php
-						$thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key );
+						$product_detail = wc_get_product($product_id);
+						$user_id            = get_current_user_id();
+						$customer_id        = get_user_meta($user_id, 'user_customer', true);
+						$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+						$kit_id             = get_user_meta($user_id, 'user_kit', true);
+						$product_option 	= get_post_meta($campaign_id, 'product_option', true);
+						$thumbnail_id 		= get_post_meta($product_id, '_thumbnail_id', true);
+						$custom_img 		= $product_option[$kit_id][$product_id]['camp_varible_img'];
+						
+						if ($custom_img != '' && ($thumbnail_id != $custom_img)) {
+							 $thumbnail = wc_get_gallery_image_html($custom_img, true);
+							
+						}else {
 
+							$thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key );
+						}
+						
 						if ( ! $product_permalink ) {
 							echo $thumbnail; // PHPCS: XSS ok.
 						} else {
