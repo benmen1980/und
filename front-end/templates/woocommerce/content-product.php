@@ -44,9 +44,17 @@ if ($product->get_type() == 'variable') {
 	    $product_id = $product->get_id();
         $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 
-        if (isset($product_option[$kit_id][$product_id]['variation'])){
-            foreach ($available_variations as $index=>$variation) {
-                if (!in_array($variation['variation_id'], $product_option[$kit_id][$product_id]['variation'])){
+        if (isset($product_option[$kit_id][$product_id]['pa_color'])) {
+        // pr(count($available_variations));
+            foreach ($available_variations as $index => $variation) {
+                if (!in_array($variation['attributes']['attribute_pa_color'], $product_option[$kit_id][$product_id]['pa_color'])) {
+                    unset($available_variations[$index]);
+                }
+            }
+            // pr(count($available_variations));
+        } elseif (isset($product_option[$kit_id][$product_id]['variation'])) {
+            foreach ($available_variations as $index => $variation) {
+                if (!in_array($variation['variation_id'], $product_option[$kit_id][$product_id]['variation'])) {
                     unset($available_variations[$index]);
                 }
             }
@@ -106,7 +114,9 @@ if ($product->get_type() == 'variable') {
        
                   
                     <div class="product-description">
-                    <?php woocommerce_template_loop_product_thumbnail(); ?>
+                    	<a href="<?= $product->get_permalink() ?>">
+                    		<?php woocommerce_template_loop_product_thumbnail(); ?>
+                    	</a>
 
                         <?php if ( empty( $available_variations ) && false !== $available_variations ) : ?>
                             <p class="stock out-of-stock"><?php esc_html_e( 'This product is currently out of stock and unavailable.', 'woocommerce' ); ?></p>
@@ -114,15 +124,23 @@ if ($product->get_type() == 'variable') {
                             <div class="variations" cellspacing="0">
 
                                 <div class="product-description" style="margin-bottom: 20px;">
-                                    <?php do_action( 'woocommerce_shop_loop_item_title' ); ?>
+                                	 <a href="<?= $product->get_permalink() ?>" class="product-description d-block" style="margin-bottom: 20px;">
+                                    	<?php do_action( 'woocommerce_shop_loop_item_title' ); ?>
+                                    </a>
                                 </div>
                                 <?php foreach ( $attributes as $attribute_name => $options ) : ?>
                                     <div class="select-wrapper">
                                         <h3 class="label"><label for="<?php echo esc_attr( sanitize_title( $attribute_name ) ); ?>"><?php echo wc_attribute_label( $attribute_name ); // WPCS: XSS ok. ?></label></h3>
                                         <div class="value">
                                             <?php
+
+                                            foreach($available_variations as $key => $value){
+                                                foreach($value['attributes'] as $k => $val){
+                                                    $arr[] = $val;
+                                                }
+                                            }
                                             wc_dropdown_variation_attribute_options( array(
-                                                'options'   => $options,
+                                                'options'   => (!empty($arr)) ? $arr : $options,
                                                 'attribute' => $attribute_name,
                                                 'product'   => $product,
                                             ) );
@@ -208,7 +226,7 @@ if ($product->get_type() == 'simple') {
                 <div class="product-description">
                     <?php do_action( 'woocommerce_shop_loop_item_title' ); ?>
                 </div>
-
+                
                 <div class="product-image">
                     <?php woocommerce_template_loop_product_thumbnail(); ?>
                 </div>
