@@ -2008,6 +2008,8 @@ function nipl_woocommerce_single_product_image_thumbnail_html($html, $post_thumb
 
 			$html = wc_get_gallery_image_html($custom_img, true);
 		}
+		remove_action( 'woocommerce_product_thumbnails', 'woocommerce_show_product_thumbnails', 20 );
+
 	}
 	return $html;
 }
