@@ -28,7 +28,7 @@ add_action( 'woocommerce_single_variation_closed_list', 'woocommerce_single_cust
 
 
 if ($product->get_type() == 'variable') {
-    $get_variations = count( $product->get_children() ) <= apply_filters( 'woocommerce_ajax_variation_threshold', 30, $product );
+    $get_variations = count( $product->get_children() ) <= apply_filters( 'woocommerce_ajax_variation_threshold', 100, $product );
     if ($product->get_available_variations() && !empty($product->get_available_variations())){
         wp_enqueue_script( 'wc-add-to-cart-variation' );
 
@@ -43,8 +43,8 @@ if ($product->get_type() == 'variable') {
         $product_option = get_post_meta($campaign_id, 'product_option', true);
 	    $product_id = $product->get_id();
 
+         //pr($product);
         if (isset($product_option[$kit_id][$product_id]['pa_color'])) {
-        // pr(count($available_variations));
             foreach ($available_variations as $index => $variation) {
                 if (!in_array($variation['attributes']['attribute_pa_color'], $product_option[$kit_id][$product_id]['pa_color'])) {
                     unset($available_variations[$index]);
