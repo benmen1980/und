@@ -51,7 +51,7 @@ function woocommerce_variable_add_to_cart()
 
 
 	// Get Available variations?
-	$get_variations = count($product->get_children()) <= apply_filters('woocommerce_ajax_variation_threshold', 100, $product);
+	$get_variations = count($product->get_children()) <= apply_filters('woocommerce_ajax_variation_threshold', 200, $product);
 
 	$available_variations = $get_variations ? $product->get_available_variations() : false;
 	$attributes           = $product->get_variation_attributes();

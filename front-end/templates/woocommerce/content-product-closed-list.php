@@ -28,7 +28,7 @@ add_action( 'woocommerce_single_variation_closed_list', 'woocommerce_single_cust
 
 
 if ($product->get_type() == 'variable') {
-    $get_variations = count( $product->get_children() ) <= apply_filters( 'woocommerce_ajax_variation_threshold', 100, $product );
+    $get_variations = count( $product->get_children() ) <= apply_filters( 'woocommerce_ajax_variation_threshold', 200, $product );
     if ($product->get_available_variations() && !empty($product->get_available_variations())){
         wp_enqueue_script( 'wc-add-to-cart-variation' );
 
