@@ -374,8 +374,8 @@ function unidress_update_cart_validation($passed_validation)
 
 
 // Use price from assigning table
-add_filter('woocommerce_product_get_price', 'unidress_product_get_price', 2, 10);
-// add_filter('woocommerce_get_price_html', 'unidress_product_get_price', 2, 20);
+add_filter('woocommerce_product_get_price', 'unidress_product_get_price', 15, 2);
+// add_filter('woocommerce_get_price_html', 'unidress_product_get_price', 20, 2);
 function unidress_product_get_price($price, $product)
 {
 	if (!is_user_logged_in())
@@ -386,28 +386,69 @@ function unidress_product_get_price($price, $product)
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
 	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
 	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
 
 	$product_option     = get_post_meta($active_campaign, 'product_option', true);
 	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
 
-
+	
 	if ($customer_type == "project") {
 		$kit_id      = 0;
 	} else {
 		$kit_id      = get_user_meta($user_id, 'user_kit', true);
 	}
 
+	if($price_list_include_vat == 1){
+		$taxrate = WC_Tax::_get_tax_rate(1);
+		$rate = $taxrate['tax_rate'];
+		/*$getrates = WC_Tax::get_rates();
+		$rate_arr[0] = $getrates[1];
+		
+		foreach($getrates as $key => $vat_rate) {
+
+			if($vat_rate['label'] == esc_html__('VAT','unidress')) {
+				echo $vat_rate['rate'];
+			} 
+		}*/
+	}
 
 	if (isset($product_option[$kit_id][$product_id]['price']) && $product_option[$kit_id][$product_id]['price'] != 0 && $budget_by_point != 1) {
-		return $product_option[$kit_id][$product_id]['price'];
+		$pr_price = $product_option[$kit_id][$product_id]['price'];
+		
+		
+		if($rate != '' && $rate > 0) {
+			$final_price = $pr_price * $rate / 100;
+			
+			return $final_price + $pr_price;
+		}else {
+			return $product_option[$kit_id][$product_id]['price'];
+		
+		}
+	} 
+	else if($budget_by_point != 1) {
+		if($rate != '' && $rate > 0) {
+			$final_price = $price * $rate / 100;
+			
+			return $price + $final_price;
+		}else {
+			return $price;
+		}
 	}
+
 
 	// if campaign is budget by points send points. 
 	if ($budget_by_point == 1 && $product_option[$kit_id][$product_id]['points'] != '') {
+		$pr_point = $product_option[$kit_id][$product_id]['points'];
+		if($rate != '' && $rate > 0) {
+			$final_price = $pr_point + ($pr_point * ($rate/100));
+			return $final_price;
+		}else {
 
-		return $product_option[$kit_id][$product_id]['points'];
+			return $product_option[$kit_id][$product_id]['points'];
+		}
 	}
 
+	
 	return $price;
 }
 
@@ -416,10 +457,17 @@ function unidress_product_get_price($price, $product)
 // function unidress_product_is_purchasable( $purchasable, $product) {
 // }
 
-add_filter('woocommerce_variable_price_html', 'woocommerce_show_variation_price', 2, 10);
+
+add_filter('woocommerce_variable_price_html', 'woocommerce_show_variation_price', 1,2);
 function woocommerce_show_variation_price($price, $variable)
 {
-	$product_id         = $variable->get_id();
+     wc_delete_product_transients($variable->get_id());
+
+	$product_id   = $variable->get_id();
+	$product = wc_get_product( $product_id );
+	$max_price = $product->get_variation_price( 'max', true );
+    $min_price = $product->get_variation_price( 'min', true );
+	$productprice = get_post_meta($product_id,'_price',true);
 	// $get_cart = WC()->cart->get_cart();
 	// pr($get_cart);
 	if (!is_user_logged_in() || !isset($product_id))
@@ -431,23 +479,66 @@ function woocommerce_show_variation_price($price, $variable)
 	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
 	$product_option     = get_post_meta($active_campaign, 'product_option', true);
 	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
 
-
+	
 	if ($customer_type == "project") {
 		$kit_id      = 0;
 	} else {
 		$kit_id      = get_user_meta($user_id, 'user_kit', true);
 	}
-
-	if (isset($product_option[$kit_id][$product_id]['price']) && $product_option[$kit_id][$product_id]['price'] != 0 && $budget_by_point != 1) {
-
-		return wc_price($product_option[$kit_id][$product_id]['price']);
+	$rate = '';
+	if($price_list_include_vat == 1){
+		$taxrate = WC_Tax::_get_tax_rate(1);
+		$rate = $taxrate['tax_rate'];
+		
 	}
-
+	
+	if (isset($product_option[$kit_id][$product_id]['price']) && $product_option[$kit_id][$product_id]['price'] != 0 && $budget_by_point != 1) {
+		$pr_price = $product_option[$kit_id][$product_id]['price'];
+		
+		if($rate != '' && $rate > 0) {
+			$final_price = $pr_price * ($rate / 100);
+			
+			return wc_price(($pr_price + $final_price));
+		}else {
+			return wc_price($product_option[$kit_id][$product_id]['price']);
+		}
+		//return wc_price($product_option[$kit_id][$product_id]['price']);
+	}else if($budget_by_point != 1 && $price_list_include_vat == 1) {
+		if($rate != '' && $rate > 0) {
+			
+			if($min_price ==  $max_price) {
+				$final_price = $min_price + ($min_price * ($rate / 100));
+				return wc_price($final_price);
+			}else {
+				
+				$finalmin_price = $min_price + ($min_price * ($rate / 100));
+				$finalmax_price = $max_price + ($max_price * ($rate / 100));
+				
+				return wc_price($finalmin_price).' – '.wc_price($finalmax_price);
+			}
+			
+			
+		}else {
+			return wc_price($productprice);
+		}
+	}
+	
 	// if campaign is budget by points send points. 
 	if ($budget_by_point == 1 && $product_option[$kit_id][$product_id]['points'] != '') {
-		return wc_price($product_option[$kit_id][$product_id]['points']);
+		$pr_point = $product_option[$kit_id][$product_id]['points'];
+		
+		if($rate != '' && $rate > 0) {
+			$final_price = $pr_point + ($pr_point * ($rate/100));
+			return wc_price($final_price);
+		}else {
+
+			return wc_price($product_option[$kit_id][$product_id]['points']);
+		}
+		//return wc_price($product_option[$kit_id][$product_id]['points']);
 	}
+	//return 9999;
 
 	return $price;
 }
@@ -477,7 +568,7 @@ function change_existing_currency_symbol($currency_symbol, $currency)
 }
 
 
-add_filter('woocommerce_product_variation_get_price', 'unidress_product_variation_get_price', 2, 10);
+add_filter('woocommerce_product_variation_get_price', 'unidress_product_variation_get_price', 20, 2);
 
 function unidress_product_variation_get_price($price, $product)
 {
@@ -491,21 +582,60 @@ function unidress_product_variation_get_price($price, $product)
 	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
 	$product_option     = get_post_meta($active_campaign, 'product_option', true);
 	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
 
 	if ($customer_type == "project") {
 		$kit_id      = 0;
 	} else {
 		$kit_id      = get_user_meta($user_id, 'user_kit', true);
 	}
-
-	if (isset($product_option[$kit_id][$product_id]['price']) && $product_option[$kit_id][$product_id]['price'] != 0 && $budget_by_point != 1) {
-
-		return $product_option[$kit_id][$product_id]['price'];
+	$rate = '';
+	if($price_list_include_vat == 1){
+		$taxrate = WC_Tax::_get_tax_rate(1);
+		$rate = $taxrate['tax_rate'];
+		
 	}
+
+
+	
+	if (isset($product_option[$kit_id][$product_id]['price']) && $product_option[$kit_id][$product_id]['price'] != 0 && $budget_by_point != 1) {
+		$pr_price = $product_option[$kit_id][$product_id]['price'];
+	
+		if($rate != '' && $rate > 0) {
+			$final_price = $pr_price * ($rate / 100);
+			
+			return ($pr_price + $final_price);
+		}else {
+			return $product_option[$kit_id][$product_id]['price'];
+		}
+		//return $product_option[$kit_id][$product_id]['price'];
+	}elseif($budget_by_point != 1 && $price_list_include_vat == 1) {
+		if($rate != '' && $rate > 0) {
+			
+			
+			if(is_numeric($price)) {
+				return (float)($price + ($price * ($rate / 100)));
+			}
+				
+		
+		}else {
+			return $price;
+		}
+	}
+	
+
 	// if campaign is budget by points send points. 
 	if ($budget_by_point == 1 && $product_option[$kit_id][$product_id]['points'] != '') {
+		$pr_point = $product_option[$kit_id][$product_id]['points'];
 
-		return $product_option[$kit_id][$product_id]['points'];
+		if($rate != '' && $rate > 0) {
+			$final_price = $pr_point + ($pr_point * $rate / 100);
+			return $final_price;
+		}else {
+
+			return $product_option[$kit_id][$product_id]['points'];
+		}
+		//return $product_option[$kit_id][$product_id]['points'];
 	}
 
 
