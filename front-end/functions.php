@@ -1082,6 +1082,61 @@ function update_user_limits($order_id, $data)
 	}
 }
 
+// Remove the Tax Line item from the cart.
+function wc_remove_cart_tax_totals( $tax_totals, $instance ) {
+
+	$user_id            = get_current_user_id();
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
+	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
+	$product_option     = get_post_meta($active_campaign, 'product_option', true);
+	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
+
+	if ($customer_type == "project") {
+		$kit_id      = 0;
+	} else {
+		$kit_id      = get_user_meta($user_id, 'user_kit', true);
+	}
+	$rate = '';
+	if($price_list_include_vat == 1){
+
+		$tax_totals = array();
+	}
+
+	return $tax_totals;
+}
+add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
+
+// Show the cart total excluding tax.
+function wc_exclude_tax_cart_total( $total, $instance ) {
+
+	$user_id            = get_current_user_id();
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
+	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
+	$product_option     = get_post_meta($active_campaign, 'product_option', true);
+	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
+
+	if ($customer_type == "project") {
+		$kit_id      = 0;
+	} else {
+		$kit_id      = get_user_meta($user_id, 'user_kit', true);
+	}
+	$rate = '';
+	if($price_list_include_vat == 1){
+
+		$total = round( WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp );
+
+	}
+
+	return $total;
+}
+add_filter( 'woocommerce_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
+//add_filter( 'woocommerce_subscriptions_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
+
+
 function get_unidress_list_product()
 {
 	//user data

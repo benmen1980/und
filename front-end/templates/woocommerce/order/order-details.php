@@ -25,6 +25,15 @@ if ( ! $order = wc_get_order( $order_id ) ) {
 $user_id            = get_current_user_id();
 $customer_id        = get_user_meta($user_id, 'user_customer', true);
 
+$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
+$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
+$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
+
+$product_option     = get_post_meta($active_campaign, 'product_option', true);
+$customer_type      = get_post_meta($customer_id, 'customer_type', true);
+
+
+
 $order_items           = $order->get_items( apply_filters( 'woocommerce_purchase_order_item_types', 'line_item' ) );
 $show_purchase_note    = $order->has_status( apply_filters( 'woocommerce_purchase_note_order_statuses', array( 'completed', 'processing' ) ) );
 $show_customer_details = is_user_logged_in() && $order->get_user_id() === get_current_user_id();
@@ -76,17 +85,25 @@ if ( $show_downloads ) {
 		<tfoot>
 
 			<?php
+			
 			$get_order_item_totals = $order->get_order_item_totals();
+			
 			foreach ( $get_order_item_totals as $key => $total ) {
+				
 				if ( get_ordering_style($customer_id)=='closed_list' && $key === 'order_total' ){
                     continue;
 				}
+				//check key of VAT
+				if($price_list_include_vat == 1 && $key === '%d7%9e%d7%a2%d7%9e-1') :
+				else :
                 ?>
                 <tr>
+
                     <th scope="row"><?php echo $total['label']; ?></th>
                     <td><?php echo ( 'payment_method' === $key ) ? esc_html( $total['value'] ) : $total['value']; ?></td>
                 </tr>
                 <?php
+            	endif;
             }
 			?>
 			<?php if ( $order->get_customer_note() ) : ?>
