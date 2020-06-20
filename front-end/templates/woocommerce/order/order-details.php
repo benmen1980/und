@@ -94,8 +94,8 @@ if ( $show_downloads ) {
                     continue;
 				}
 				//check key of VAT
-				if($price_list_include_vat == 1 && $key === '%d7%9e%d7%a2%d7%9e-1') :
-				else :
+				// if($price_list_include_vat == 1 && $key === '%d7%9e%d7%a2%d7%9e-1') :
+				// else :
                 ?>
                 <tr>
 
@@ -103,7 +103,7 @@ if ( $show_downloads ) {
                     <td><?php echo ( 'payment_method' === $key ) ? esc_html( $total['value'] ) : $total['value']; ?></td>
                 </tr>
                 <?php
-            	endif;
+            	//endif;
             }
 			?>
 			<?php if ( $order->get_customer_note() ) : ?>

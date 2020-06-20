@@ -398,54 +398,46 @@ function unidress_product_get_price($price, $product)
 		$kit_id      = get_user_meta($user_id, 'user_kit', true);
 	}
 
-	if($price_list_include_vat == 1){
-		$taxrate = WC_Tax::_get_tax_rate(1);
-		$rate = $taxrate['tax_rate'];
-		/*$getrates = WC_Tax::get_rates();
-		$rate_arr[0] = $getrates[1];
+	// if($price_list_include_vat == 1){
+	// 	$taxrate = WC_Tax::_get_tax_rate(1);
+	// 	$rate = $taxrate['tax_rate'];
 		
-		foreach($getrates as $key => $vat_rate) {
-
-			if($vat_rate['label'] == esc_html__('VAT','unidress')) {
-				echo $vat_rate['rate'];
-			} 
-		}*/
-	}
+	// }
 
 	if (isset($product_option[$kit_id][$product_id]['price']) && $product_option[$kit_id][$product_id]['price'] != 0 && $budget_by_point != 1) {
 		$pr_price = $product_option[$kit_id][$product_id]['price'];
 		
 		
-		if($rate != '' && $rate > 0) {
-			$final_price = $pr_price * $rate / 100;
+		// if($rate != '' && $rate > 0) {
+		// 	$final_price = $pr_price * $rate / 100;
 			
-			return $final_price + $pr_price;
-		}else {
+		// 	return $final_price + $pr_price;
+		// }else {
 			return $product_option[$kit_id][$product_id]['price'];
 		
-		}
+		//}
 	} 
-	else if($budget_by_point != 1) {
-		if($rate != '' && $rate > 0) {
-			$final_price = $price * $rate / 100;
+	// else if($budget_by_point != 1) {
+	// 	if($rate != '' && $rate > 0) {
+	// 		$final_price = $price * $rate / 100;
 			
-			return $price + $final_price;
-		}else {
-			return $price;
-		}
-	}
+	// 		return $price + $final_price;
+	// 	}else {
+	// 		return $price;
+	// 	}
+	// }
 
 
 	// if campaign is budget by points send points. 
 	if ($budget_by_point == 1 && $product_option[$kit_id][$product_id]['points'] != '') {
 		$pr_point = $product_option[$kit_id][$product_id]['points'];
-		if($rate != '' && $rate > 0) {
-			$final_price = $pr_point + ($pr_point * ($rate/100));
-			return $final_price;
-		}else {
+		// if($rate != '' && $rate > 0) {
+		// 	$final_price = $pr_point + ($pr_point * ($rate/100));
+		// 	return $final_price;
+		// }else {
 
 			return $product_option[$kit_id][$product_id]['points'];
-		}
+		//}
 	}
 
 	
@@ -488,54 +480,54 @@ function woocommerce_show_variation_price($price, $variable)
 		$kit_id      = get_user_meta($user_id, 'user_kit', true);
 	}
 	$rate = '';
-	if($price_list_include_vat == 1){
-		$taxrate = WC_Tax::_get_tax_rate(1);
-		$rate = $taxrate['tax_rate'];
+	// if($price_list_include_vat == 1){
+	// 	$taxrate = WC_Tax::_get_tax_rate(1);
+	// 	$rate = $taxrate['tax_rate'];
 		
-	}
+	// }
 	
 	if (isset($product_option[$kit_id][$product_id]['price']) && $product_option[$kit_id][$product_id]['price'] != 0 && $budget_by_point != 1) {
 		$pr_price = $product_option[$kit_id][$product_id]['price'];
 		
-		if($rate != '' && $rate > 0) {
-			$final_price = $pr_price * ($rate / 100);
+		// if($rate != '' && $rate > 0) {
+		// 	$final_price = $pr_price * ($rate / 100);
 			
-			return wc_price(($pr_price + $final_price));
-		}else {
+		// 	return wc_price(($pr_price + $final_price));
+		// }else {
 			return wc_price($product_option[$kit_id][$product_id]['price']);
-		}
+		//}
 		//return wc_price($product_option[$kit_id][$product_id]['price']);
-	}else if($budget_by_point != 1 && $price_list_include_vat == 1) {
-		if($rate != '' && $rate > 0) {
+	// }else if($budget_by_point != 1 && $price_list_include_vat == 1) {
+	// 	if($rate != '' && $rate > 0) {
 			
-			if($min_price ==  $max_price) {
-				$final_price = $min_price + ($min_price * ($rate / 100));
-				return wc_price($final_price);
-			}else {
+	// 		if($min_price ==  $max_price) {
+	// 			$final_price = $min_price + ($min_price * ($rate / 100));
+	// 			return wc_price($final_price);
+	// 		}else {
 				
-				$finalmin_price = $min_price + ($min_price * ($rate / 100));
-				$finalmax_price = $max_price + ($max_price * ($rate / 100));
+	// 			$finalmin_price = $min_price + ($min_price * ($rate / 100));
+	// 			$finalmax_price = $max_price + ($max_price * ($rate / 100));
 				
-				return wc_price($finalmin_price).' – '.wc_price($finalmax_price);
-			}
+	// 			return wc_price($finalmin_price).' – '.wc_price($finalmax_price);
+	// 		}
 			
 			
-		}else {
-			return wc_price($productprice);
-		}
-	}
+	// 	}else {
+	// 		return wc_price($productprice);
+	// 	}
+	 }
 	
 	// if campaign is budget by points send points. 
 	if ($budget_by_point == 1 && $product_option[$kit_id][$product_id]['points'] != '') {
 		$pr_point = $product_option[$kit_id][$product_id]['points'];
 		
-		if($rate != '' && $rate > 0) {
-			$final_price = $pr_point + ($pr_point * ($rate/100));
-			return wc_price($final_price);
-		}else {
+		// if($rate != '' && $rate > 0) {
+		// 	$final_price = $pr_point + ($pr_point * ($rate/100));
+		// 	return wc_price($final_price);
+		// }else {
 
 			return wc_price($product_option[$kit_id][$product_id]['points']);
-		}
+		//}
 		//return wc_price($product_option[$kit_id][$product_id]['points']);
 	}
 	//return 9999;
@@ -590,57 +582,146 @@ function unidress_product_variation_get_price($price, $product)
 		$kit_id      = get_user_meta($user_id, 'user_kit', true);
 	}
 	$rate = '';
-	if($price_list_include_vat == 1){
-		$taxrate = WC_Tax::_get_tax_rate(1);
-		$rate = $taxrate['tax_rate'];
+	// if($price_list_include_vat == 1){
+	// 	$taxrate = WC_Tax::_get_tax_rate(1);
+	// 	$rate = $taxrate['tax_rate'];
 		
-	}
+	// }
 
 
 	
 	if (isset($product_option[$kit_id][$product_id]['price']) && $product_option[$kit_id][$product_id]['price'] != 0 && $budget_by_point != 1) {
 		$pr_price = $product_option[$kit_id][$product_id]['price'];
 	
-		if($rate != '' && $rate > 0) {
-			$final_price = $pr_price * ($rate / 100);
+		// if($rate != '' && $rate > 0) {
+		// 	$final_price = $pr_price * ($rate / 100);
 			
-			return ($pr_price + $final_price);
-		}else {
+		// 	return ($pr_price + $final_price);
+		// }else {
 			return $product_option[$kit_id][$product_id]['price'];
-		}
+		//}
 		//return $product_option[$kit_id][$product_id]['price'];
-	}elseif($budget_by_point != 1 && $price_list_include_vat == 1) {
-		if($rate != '' && $rate > 0) {
+	// }elseif($budget_by_point != 1 && $price_list_include_vat == 1) {
+	// 	if($rate != '' && $rate > 0) {
 			
 			
-			if(is_numeric($price)) {
-				return (float)($price + ($price * ($rate / 100)));
-			}
+	// 		if(is_numeric($price)) {
+	// 			return (float)($price + ($price * ($rate / 100)));
+	// 		}
 				
 		
-		}else {
-			return $price;
-		}
-	}
+	// 	}else {
+	// 		return $price;
+	// 	}
+	 }
 	
 
 	// if campaign is budget by points send points. 
 	if ($budget_by_point == 1 && $product_option[$kit_id][$product_id]['points'] != '') {
 		$pr_point = $product_option[$kit_id][$product_id]['points'];
 
-		if($rate != '' && $rate > 0) {
-			$final_price = $pr_point + ($pr_point * $rate / 100);
-			return $final_price;
-		}else {
+		// if($rate != '' && $rate > 0) {
+		// 	$final_price = $pr_point + ($pr_point * $rate / 100);
+		// 	return $final_price;
+		// }else {
 
 			return $product_option[$kit_id][$product_id]['points'];
-		}
+		//}
 		//return $product_option[$kit_id][$product_id]['points'];
 	}
 
 
 	return $price;
 }
+// define the woocommerce_get_price_html callback 
+function filter_woocommerce_get_price_html( $price, $instance ) { 
+    // make filter magic happen here...
+    //echo $instance->price;
+    $user_id            = get_current_user_id();
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
+	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
+	$product_option     = get_post_meta($active_campaign, 'product_option', true);
+	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
+ 
+    $check = 'incl' === get_option( 'woocommerce_tax_display_shop' ) || ($price_list_include_vat == 1)?
+		wc_get_price_including_tax(
+			$instance,
+			array(
+				//'qty'   => $qty,
+				'price' => $instance->price,
+			)
+		) :
+		wc_get_price_excluding_tax(
+			$instance,
+			array(
+				//'qty'   => $qty,
+				'price' => $instance->price,
+			)
+		); 
+     return wc_price($check); 
+}; 
+add_filter( 'woocommerce_get_price_html', 'filter_woocommerce_get_price_html', 10, 2 ); 
+
+
+// define the woocommerce_cart_product_price callback 
+function filter_woocommerce_cart_product_price( $wc_price, $product ) { 
+	 $user_id            = get_current_user_id();
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
+	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
+	$product_option     = get_post_meta($active_campaign, 'product_option', true);
+	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
+ 	//woocommerce_tax_display_cart
+ 	$product_price = 'incl' === get_option( 'woocommerce_tax_display_cart' ) || ($price_list_include_vat == 1) ?
+ 		wc_get_price_including_tax( $product )
+		:
+		wc_get_price_excluding_tax( $product );
+    
+    return wc_price($product_price); 
+}; 
+         
+// add the filter 
+add_filter( 'woocommerce_cart_product_price', 'filter_woocommerce_cart_product_price', 10, 2 ); 
+
+
+function filter_woocommerce_cart_product_subtotal( $product_subtotal, $product, $quantity, $instance ) { 
+	 $user_id            = get_current_user_id();
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
+	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
+	$product_option     = get_post_meta($active_campaign, 'product_option', true);
+	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
+    if ( $product->is_taxable() ) {
+
+		if ( 'incl' === get_option( 'woocommerce_tax_display_cart' ) || ($price_list_include_vat == 1) ) {
+			$row_price        = wc_get_price_including_tax( $product, array( 'qty' => $quantity ) );
+			$product_subtotal = wc_price( $row_price );
+
+			if ( ! wc_prices_include_tax() && $instance->get_subtotal_tax() > 0 ) {
+				$product_subtotal .= ' <small class="tax_label">' . WC()->countries->inc_tax_or_vat() . '</small>';
+			}
+		} else {
+			$row_price        = wc_get_price_excluding_tax( $product, array( 'qty' => $quantity ) );
+			$product_subtotal = wc_price( $row_price );
+
+			if ( wc_prices_include_tax() && $instance->get_subtotal_tax() > 0 ) {
+				$product_subtotal .= ' <small class="tax_label">' . WC()->countries->ex_tax_or_vat() . '</small>';
+			}
+		}
+	} else {
+		$row_price        = $price * $quantity;
+		$product_subtotal = wc_price( $row_price );
+	}
+    return $product_subtotal; 
+}; 
+         
+// add the filter 
+add_filter( 'woocommerce_cart_product_subtotal', 'filter_woocommerce_cart_product_subtotal', 10, 4 ); 
+
 
 add_action('woocommerce_product_meta_end', 'add_graphic_option_in_product', 20);
 function add_graphic_option_in_product()
@@ -1082,6 +1163,7 @@ function update_user_limits($order_id, $data)
 	}
 }
 
+//nisl remove tax from cart and checkout
 // Remove the Tax Line item from the cart.
 function wc_remove_cart_tax_totals( $tax_totals, $instance ) {
 
@@ -1106,7 +1188,7 @@ function wc_remove_cart_tax_totals( $tax_totals, $instance ) {
 
 	return $tax_totals;
 }
-add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
+//add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
 
 // Show the cart total excluding tax.
 function wc_exclude_tax_cart_total( $total, $instance ) {
@@ -1125,6 +1207,7 @@ function wc_exclude_tax_cart_total( $total, $instance ) {
 		$kit_id      = get_user_meta($user_id, 'user_kit', true);
 	}
 	$rate = '';
+
 	if($price_list_include_vat == 1){
 
 		$total = round( WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp );
@@ -1133,7 +1216,7 @@ function wc_exclude_tax_cart_total( $total, $instance ) {
 
 	return $total;
 }
-add_filter( 'woocommerce_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
+//add_filter( 'woocommerce_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
 //add_filter( 'woocommerce_subscriptions_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
 
 
@@ -1337,9 +1420,11 @@ function get_budget_banner()
 			}
 			//$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0;
 			$total = WC()->cart->get_totals('total')['total'];
+			$subtotal = WC()->cart->get_subtotal(true);
+			
 			if ($user_roles != 'hr_manager') {
 				?>
-				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo $budget_in_kit - (int)$user_budget_left - $total ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
+				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo $budget_in_kit - (int)$user_budget_left - $subtotal ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
 			<?php
 		}
 	}

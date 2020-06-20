@@ -77,15 +77,15 @@ do_action( 'woocommerce_email_before_order_table', $order, $sent_to_admin, $plai
 				$i = 0;
 				foreach ( $item_totals as $key => $total ) {
 					$i++;
-					if($price_list_include_vat == 1 && $key === '%d7%9e%d7%a2%d7%9e-1') :
-					else :
+					// if($price_list_include_vat == 1 && $key === '%d7%9e%d7%a2%d7%9e-1') :
+					// else :
 					?>
 					<tr>
 						<th class="td" scope="row" colspan="2" style="text-align:<?php echo esc_attr( $text_align ); ?>; <?php echo ( 1 === $i ) ? 'border-top-width: 4px;' : ''; ?>"><?php echo wp_kses_post( $total['label'] ); ?></th>
 						<td class="td" style="text-align:<?php echo esc_attr( $text_align ); ?>; <?php echo ( 1 === $i ) ? 'border-top-width: 4px;' : ''; ?>"><?php echo wp_kses_post( $total['value'] ); ?></td>
 					</tr>
 					<?php
-					endif;
+					//endif;
 				}
 			}
 			if ( $order->get_customer_note() ) {
