@@ -1181,14 +1181,14 @@ function wc_remove_cart_tax_totals( $tax_totals, $instance ) {
 		$kit_id      = get_user_meta($user_id, 'user_kit', true);
 	}
 	$rate = '';
-	if($price_list_include_vat == 1){
+	if($price_list_include_vat != 1 && 'excl' === get_option('woocommerce_tax_display_shop')){
 
 		$tax_totals = array();
 	}
 
 	return $tax_totals;
 }
-//add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
+add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
 
 // Show the cart total excluding tax.
 function wc_exclude_tax_cart_total( $total, $instance ) {
@@ -1208,7 +1208,7 @@ function wc_exclude_tax_cart_total( $total, $instance ) {
 	}
 	$rate = '';
 
-	if($price_list_include_vat == 1){
+	if($price_list_include_vat != 1 && 'excl' === get_option('woocommerce_tax_display_shop')){
 
 		$total = round( WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp );
 
@@ -1216,7 +1216,7 @@ function wc_exclude_tax_cart_total( $total, $instance ) {
 
 	return $total;
 }
-//add_filter( 'woocommerce_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
+add_filter( 'woocommerce_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
 //add_filter( 'woocommerce_subscriptions_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
 
 
@@ -1405,6 +1405,8 @@ function get_budget_banner()
 			$campaign_id = get_post_meta($customer_id, 'active_campaign', true);
 			$budget_by_point = get_post_meta($campaign_id, 'budget_by_points',  true);
 
+			$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
+
 			$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
 			$user_budget_left = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
 			if (empty($campaign_id) || empty($kit_id)) {
@@ -1424,7 +1426,7 @@ function get_budget_banner()
 			
 			if ($user_roles != 'hr_manager') {
 				?>
-				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo $budget_in_kit - (int)$user_budget_left - $subtotal ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
+				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo (float)($budget_in_kit - (int)$user_budget_left - $total) ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
 			<?php
 		}
 	}
