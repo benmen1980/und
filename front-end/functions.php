@@ -283,10 +283,18 @@ function unidress_update_cart_validation($passed_validation)
 	if ($customer_ordering_style == 'standard' && $customer_type == 'campaign') {
 
 		$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+		$private_purchase_amount = get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 		$total = WC()->cart->get_totals('total')['total'];
+		if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
+			$private_amt = $private_purchase_amount;
+		}
+		else{
+			$private_amt = 0;
+		}
+		
+		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
 
-		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total;
 
 		if ($user_roles != 'hr_manager') {
 			if ($budget_in_kit <= $new_budget_limits) {
@@ -982,10 +990,17 @@ function check_group_limit()
 	if ($customer_type == 'campaign' && $customer_ordering_style == 'standard') {
 
 		$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+		$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 		$total = WC()->cart->get_totals('total')['total'];
 
-		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total;
+		if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
+			$private_amt = $private_purchase_amount;
+		}
+		else{
+			$private_amt = 0;
+		}
+		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
 
 		if ($user_roles != 'hr_manager') {
 			if ($budget_in_kit < $new_budget_limits)
@@ -1408,6 +1423,7 @@ function get_budget_banner()
 			$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
 
 			$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+			//pr($user_budget_limits);
 			$user_budget_left = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
 			if (empty($campaign_id) || empty($kit_id)) {
 				return;
@@ -1426,7 +1442,7 @@ function get_budget_banner()
 			
 			if ($user_roles != 'hr_manager') {
 				?>
-				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo (float)($budget_in_kit - (int)$user_budget_left - $total) ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
+				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo (float)($budget_in_kit - (int)$user_budget_left - $subtotal) ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
 			<?php
 		}
 	}
@@ -1719,6 +1735,7 @@ add_action('woocommerce_after_checkout_form', function () {
 				if ($customer_ordering_style == 'standard' && $customer_type == 'campaign') {
 					$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
 					$budget_by_point 	= get_post_meta($campaign_id, 'budget_by_points',  true);
+					$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 					//$budget_in_kit = $budgets_in_campaign[$kit_id] ?: 0;
 					$unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
 					if ($unidress_budget > 0) {
@@ -1736,7 +1753,11 @@ add_action('woocommerce_after_checkout_form', function () {
 					$product_price_added_total  = $product_price_added * $add_quantity;
 					$total = WC()->cart->get_totals('total')['total'];
 
-					$balance = $budget_in_kit - (int)$user_budget_left - $total - $product_price_added_total;
+					if(!empty($private_purchase_amount) && $private_purchase_amount > 0 ) {
+						$balance = $budget_in_kit - (int)$user_budget_left - $total - $product_price_added_total + $private_purchase_amount;
+					}else {
+						$balance = $budget_in_kit - (int)$user_budget_left - $total - $product_price_added_total;
+					}
 					// pr($user_roles);
 					// pr($user_roles);
 					// pr($balance);
@@ -1889,9 +1910,10 @@ add_action('woocommerce_after_checkout_form', function () {
 				if (empty($campaign_id) || empty($kit_id)) {
 					return;
 				}
+				$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 				$total = WC()->cart->get_totals('total')['total'];
-				$balance = $budget_in_kit - (int)$user_budget_left - $total;
+				$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
 
 				if ($user_roles != 'hr_manager') {
 					if ($balance < 0) {
@@ -2447,3 +2469,75 @@ function unidress_required_products($data)
 // Closed List - layout
 // Show budget on cart
 // Cart validation
+
+add_action('woocommerce_cart_coupon', 'discount_on_order', 100);
+function discount_on_order( ) {
+	global $woocommerce;
+	global $order,$wpdb;
+    
+	$user_id = get_current_user_id();
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$kit_id             = get_user_meta($user_id, 'user_kit', true);
+	$user_limits        = get_user_meta($user_id, 'user_limits', true);
+	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+	$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
+	$budget_by_point 	= get_post_meta($campaign_id, 'budget_by_points',  true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
+	$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
+
+
+	$amount = WC()->cart->get_totals('total')['total']; // Amount
+
+    $coupon_code = 'uni_budget_'.$user_id; // Code - perhaps generate this from the user ID + the order ID
+	$discount_type = 'fixed_cart'; // Type: fixed_cart, percent, fixed_product, percent_product
+
+
+	$coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$coupon_code}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ", ARRAY_A);
+	
+	
+	if(!empty($coupon_results)) {
+			//echo 'in if'.$coupon_results[0]['ID'];
+		if(get_post_meta($coupon_results[0]['ID'],'usage_count',true) == '0') {
+				$preamount = get_post_meta($coupon_results[0]['ID'],'coupon_amount',true);
+				if($preamount == $amount) {
+					$finalamt = $amount;
+				}
+				else {
+					$finalamt = $amount + $preamount;
+				}
+				update_post_meta( $coupon_results[0]['ID'], 'coupon_amount', $finalamt );
+			}
+
+	}else{
+
+		$coupon = array(
+		    'post_title' => $coupon_code,
+		    'post_content' => '',
+		    'post_author' => $user_id,
+		    'post_status' => 'publish',
+		    'post_type' => 'shop_coupon'
+		);    
+
+		$new_coupon_id = wp_insert_post( $coupon );
+
+		// Add meta
+		update_post_meta( $new_coupon_id, 'discount_type', $discount_type );
+		update_post_meta( $new_coupon_id, 'coupon_amount', $amount );
+		update_post_meta( $new_coupon_id, 'usage_limit', '1' );
+		update_post_meta( $new_coupon_id, 'usage_limit_per_user', '1' );
+		update_post_meta( $new_coupon_id, 'usage_count', '0' );
+		/*update_post_meta( $new_coupon_id, 'individual_use', 'yes' );
+		update_post_meta( $new_coupon_id, 'product_ids', '' );
+		update_post_meta( $new_coupon_id, 'exclude_product_ids', '' );
+		update_post_meta( $new_coupon_id, 'expiry_date', '' );*/
+
+	    WC()->cart->apply_coupon( $coupon_code );
+		//update_post_meta( $new_coupon_id, 'usage_count', '1' );
+	}
+	//wc_print_notices();
+	//$woocommerce->cart->add_discount( $coupon_code);
+    //wc_print_notices();
+
+         
+}
+
