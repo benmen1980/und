@@ -283,17 +283,17 @@ function unidress_update_cart_validation($passed_validation)
 	if ($customer_ordering_style == 'standard' && $customer_type == 'campaign') {
 
 		$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
-		$private_purchase_amount = get_post_meta($campaign_id, 'private_purchase_amount',  true);
+		//$private_purchase_amount = get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 		$total = WC()->cart->get_totals('total')['total'];
-		if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
-			$private_amt = $private_purchase_amount;
-		}
-		else{
-			$private_amt = 0;
-		}
+		// if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
+		// 	$private_amt = $private_purchase_amount;
+		// }
+		// else{
+		// 	$private_amt = 0;
+		// }
 		
-		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
+		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total; // + $private_amt;
 
 		if ($user_roles != 'hr_manager') {
 			if ($budget_in_kit <= $new_budget_limits) {
@@ -922,17 +922,17 @@ function check_group_limit()
 	if ($customer_type == 'campaign' && $customer_ordering_style == 'standard') {
 
 		$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
-		$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
+		//$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 		$total = WC()->cart->get_totals('total')['total'];
 
-		if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
+		/*if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
 			$private_amt = $private_purchase_amount;
 		}
 		else{
 			$private_amt = 0;
-		}
-		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
+		}*/
+		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total ;//+ $private_amt;
 
 		if ($user_roles != 'hr_manager') {
 			if ($budget_in_kit < $new_budget_limits)
@@ -1353,7 +1353,7 @@ function get_budget_banner()
 			$budget_by_point = get_post_meta($campaign_id, 'budget_by_points',  true);
 
 			$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
-			$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
+			//$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 			$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
 			$user_budget_left = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
@@ -1676,7 +1676,7 @@ add_action('woocommerce_after_checkout_form', function () {
 				if ($customer_ordering_style == 'standard' && $customer_type == 'campaign') {
 					$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
 					$budget_by_point 	= get_post_meta($campaign_id, 'budget_by_points',  true);
-					$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
+					//$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 					$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
 					
 					//$budget_in_kit = $budgets_in_campaign[$kit_id] ?: 0;
@@ -1881,19 +1881,19 @@ add_action('woocommerce_after_checkout_form', function () {
 				if (empty($campaign_id) || empty($kit_id)) {
 					return;
 				}
-				$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
+				//$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 				$total = WC()->cart->get_totals('total')['total'];
-				$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
+				$balance = $budget_in_kit - (int)$user_budget_left - $total;// + $private_purchase_amount;
 
-				if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
+				/*if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
 					$private_amt = $private_purchase_amount;
 				}
 				else{
 					$private_amt = 0;
-				}
+				}*/
 				
-				$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
+				$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total;// + $private_amt;
 
 				if ($user_roles != 'hr_manager') {
 					if ($budget_in_kit <= $new_budget_limits) {
