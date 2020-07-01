@@ -496,7 +496,7 @@ if (function_exists('acf_add_local_field_group')) :
                 'ui_on_text' => '',
                 'ui_off_text' => '',
             ),
-            array(
+            /*array(
                 'key' => 'field_hide_phone_on_checkout',
                 'label' => __('Hide Phone on Checkout page', 'unidress'),
                 'name' => 'hide_phone_on_checkout',
@@ -514,7 +514,7 @@ if (function_exists('acf_add_local_field_group')) :
                 'ui' => 0,
                 'ui_on_text' => '',
                 'ui_off_text' => '',
-            ),
+            ),*/
             array(
                 'key' => 'field_5ced1313470ba',
                 'label' => __('Active Campaign', 'unidress'),
