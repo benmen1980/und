@@ -262,7 +262,7 @@ if (function_exists('acf_add_local_field_group')) :
                 'max' => '',
                 'step' => '',
             ),
-            array(
+            /*array(
                 'key' => 'field_private_purchase_amount',
                 'label' => __('Private Purchase Amount', 'unidress'),
                 'name' => 'private_purchase_amount',
@@ -280,7 +280,7 @@ if (function_exists('acf_add_local_field_group')) :
                 'prepend' => '',
                 'append' => '',
                 'maxlength' => '',
-            ),
+            ),*/
             array(
                 'key' => 'field_5d8b76a94780f',
                 'label' => __('Enable order notes', 'unidress'),
