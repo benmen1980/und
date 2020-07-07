@@ -1373,6 +1373,7 @@ function get_budget_banner()
 			//$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0;
 			$total = WC()->cart->get_totals('total')['total'];
 			$subtotal = WC()->cart->get_subtotal(true);
+			//UN2-T38 - include tax in user's budget
 			if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
 				$tax =  WC()->cart->get_subtotal_tax();
 			}else {

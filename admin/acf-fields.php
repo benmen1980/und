@@ -496,6 +496,7 @@ if (function_exists('acf_add_local_field_group')) :
                 'ui_on_text' => '',
                 'ui_off_text' => '',
             ),
+            
             array(
                 'key' => 'field_hide_phone_on_checkout',
                 'label' => __('Hide Phone on Checkout page', 'unidress'),
