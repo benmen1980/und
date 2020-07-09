@@ -637,7 +637,12 @@ p.no-comments a {
     /* max-width: 150px; */
 }
 
-
+/*UN2-T53- Update coupon amount on cart update
+*hide coupon form from cart page
+*/
+/*.woocommerce-cart div.coupon{
+    display: none !important;
+}*/
 
 
 

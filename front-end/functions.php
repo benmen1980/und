@@ -206,7 +206,7 @@ function woocommerce_show_info()
  * Required products check
  */
 
-add_filter('woocommerce_update_cart_action_cart_updated', 'unidress_update_cart_validation', 1, 10);
+add_filter('woocommerce_update_cart_action_cart_updated', 'unidress_update_cart_validation', 10, 1);
 function unidress_update_cart_validation($passed_validation)
 {
 	update_user_meta(1, '$passed_validation', $passed_validation);
@@ -2455,6 +2455,7 @@ function unidress_required_products($data)
 /*
 //NIPL UN2-T39 coupon code
 add_action('woocommerce_cart_coupon', 'discount_on_order', 1);
+add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25);
 function discount_on_order( ) {
 	global $woocommerce;
 	global $order,$wpdb;
@@ -2586,6 +2587,11 @@ function discount_on_order( ) {
 	         
 }
 */
+//T39
+/*add_action( 'woocommerce_before_checkout_form', 'remove_checkout_coupon_form', 9 );
+function remove_checkout_coupon_form(){
+    remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
+}*/
 
 
 //UN2-T48 NIPL hide phone field on checkout page
