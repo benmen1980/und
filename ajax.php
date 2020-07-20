@@ -689,7 +689,15 @@ if (wp_doing_ajax()) {
             }
 
             $total = WC()->cart->get_totals('total')['total'];
-            $budget_total = (int)$budget_in_kit - (int)$user_budget_left - (int)$total;
+            $subtotal = WC()->cart->get_subtotal(true);
+            if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
+                $tax =  WC()->cart->get_subtotal_tax();
+            }else {
+                $tax = 0;
+            }
+            $amount = $subtotal + $tax;
+
+            $budget_total = (int)$budget_in_kit - (int)$user_budget_left - (int)$amount;
 
             echo $budget_total;
         }

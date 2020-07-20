@@ -283,20 +283,29 @@ function unidress_update_cart_validation($passed_validation)
 	if ($customer_ordering_style == 'standard' && $customer_type == 'campaign') {
 
 		$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
-		//$private_purchase_amount = get_post_meta($campaign_id, 'private_purchase_amount',  true);
-
-		$total = WC()->cart->get_totals('total')['total'];
-		// if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
-		// 	$private_amt = $private_purchase_amount;
-		// }
-		// else{
-		// 	$private_amt = 0;
-		// }
+		$private_purchase_amount = get_post_meta($campaign_id, 'private_purchase_amount',  true);
+		$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
 		
-		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total; // + $private_amt;
-
+		$subtotal = WC()->cart->get_subtotal(true);
+		if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
+			$tax =  WC()->cart->get_subtotal_tax();
+		}else {
+			$tax = 0;
+		}
+		$amount = $subtotal + $tax;
+		$total = WC()->cart->get_totals('total')['total'];
+		if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
+			$private_amt = $private_purchase_amount;
+		}
+		else{
+			$private_amt = 0;
+		}
+		$new_budget_in_kit = (float)($budget_in_kit + $private_amt);
+		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$amount;
 		if ($user_roles != 'hr_manager') {
-			if ($budget_in_kit <= $new_budget_limits) {
+			// echo 'new_budget_in_kit :'.$new_budget_in_kit;
+			// echo 'new_budget_ limit :'.$new_budget_limits; die;
+			if ( $new_budget_in_kit < $new_budget_limits) {
 				$passed_validation = false;
 				wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
 			}
@@ -375,8 +384,8 @@ function unidress_update_cart_validation($passed_validation)
 			WC()->cart->set_quantity($cart_item_key, $quantity, false);
 		}
 	}
-
 	return $passed_validation;
+	
 }
 
 
@@ -854,12 +863,19 @@ if ((get_ordering_style($current_customer) == 'standard') && (get_customer_type(
 		$campaign_id    = get_post_meta($customer_id, 'active_campaign', true);
 
 		$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+		$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
 
 		$total = WC()->cart->get_totals('total')['total'];
-
+		$subtotal = WC()->cart->get_subtotal(true);
+		if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
+			$tax =  WC()->cart->get_subtotal_tax();
+		}else {
+			$tax = 0;
+		}
+		$amount = $subtotal + $tax;
 		//Clear another campaign budget limit
 		$new_budget_limits = array();
-		$new_budget_limits[$campaign_id][$kit_id] = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total;
+		$new_budget_limits[$campaign_id][$kit_id] = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$amount;
 		update_user_meta($user_id, 'user_budget_limits', $new_budget_limits);
 	}
 }
@@ -922,17 +938,17 @@ function check_group_limit()
 	if ($customer_type == 'campaign' && $customer_ordering_style == 'standard') {
 
 		$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
-		//$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
+		$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 		$total = WC()->cart->get_totals('total')['total'];
 
-		/*if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
+		if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
 			$private_amt = $private_purchase_amount;
 		}
 		else{
 			$private_amt = 0;
-		}*/
-		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total ;//+ $private_amt;
+		}
+		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
 
 		if ($user_roles != 'hr_manager') {
 			if ($budget_in_kit < $new_budget_limits)
@@ -1353,7 +1369,7 @@ function get_budget_banner()
 			$budget_by_point = get_post_meta($campaign_id, 'budget_by_points',  true);
 
 			$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
-			//$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
+			$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 			$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
 			$user_budget_left = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
@@ -1373,7 +1389,6 @@ function get_budget_banner()
 			//$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0;
 			$total = WC()->cart->get_totals('total')['total'];
 			$subtotal = WC()->cart->get_subtotal(true);
-			//UN2-T38 - include tax in user's budget
 			if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
 				$tax =  WC()->cart->get_subtotal_tax();
 			}else {
@@ -1677,7 +1692,7 @@ add_action('woocommerce_after_checkout_form', function () {
 				if ($customer_ordering_style == 'standard' && $customer_type == 'campaign') {
 					$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
 					$budget_by_point 	= get_post_meta($campaign_id, 'budget_by_points',  true);
-					//$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
+					$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 					$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
 					
 					//$budget_in_kit = $budgets_in_campaign[$kit_id] ?: 0;
@@ -1705,30 +1720,30 @@ add_action('woocommerce_after_checkout_form', function () {
 					}
 					$ordertotal = $subtotal + $tax;
 
-					/*if(!empty($private_purchase_amount) && $private_purchase_amount > 0 ) {
+					if(!empty($private_purchase_amount) && $private_purchase_amount > 0 ) {
 						//$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal + $private_purchase_amount; // - $product_price_added_total ;
 						$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal - $product_price_added_total + $private_purchase_amount ;
 						
-						// $halfbalance = $budget_in_kit - (int)$user_budget_left + $private_purchase_amount;
+						/*$halfbalance = $budget_in_kit - (int)$user_budget_left + $private_purchase_amount;
 						
-						// if($ordertotal > $halfbalance) {
-						// 	$show_error = 1;
-						// }else{
-						// 	$show_error = 0;
-						// }
+						if($ordertotal > $halfbalance) {
+							$show_error = 1;
+						}else{
+							$show_error = 0;
+						}*/
 					}else {
-					*/
+
 						//$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal; //- $product_price_added_total;
 						$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal - $product_price_added_total;
 
-						// if($ordertotal > $balance  && (empty($private_purchase_amount) || $private_purchase_amount == 0)) {
-						// 	$show_error = 1;
-						// }else{
-						// 	$show_error = 0;
-						// }
+						/*if($ordertotal > $balance  && (empty($private_purchase_amount) || $private_purchase_amount == 0)) {
+							$show_error = 1;
+						}else{
+							$show_error = 0;
+						}*/
 						
 
-					//}
+					}
 					// pr($user_roles);
 					// pr($user_roles);
 					// pr($balance);
@@ -1882,19 +1897,19 @@ add_action('woocommerce_after_checkout_form', function () {
 				if (empty($campaign_id) || empty($kit_id)) {
 					return;
 				}
-				//$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
+				$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 				$total = WC()->cart->get_totals('total')['total'];
-				$balance = $budget_in_kit - (int)$user_budget_left - $total;// + $private_purchase_amount;
+				$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
 
-				/*if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
+				if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
 					$private_amt = $private_purchase_amount;
 				}
 				else{
 					$private_amt = 0;
-				}*/
+				}
 				
-				$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total;// + $private_amt;
+				$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
 
 				if ($user_roles != 'hr_manager') {
 					if ($budget_in_kit <= $new_budget_limits) {
@@ -2452,11 +2467,11 @@ function unidress_required_products($data)
 // Show budget on cart
 // Cart validation
 
-/*
 //NIPL UN2-T39 coupon code
-add_action('woocommerce_cart_coupon', 'discount_on_order', 1);
+add_action('woocommerce_cart_coupon', 'discount_on_order', 10);
 add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25);
-function discount_on_order( ) {
+
+function discount_on_order() {
 	global $woocommerce;
 	global $order,$wpdb;
     
@@ -2493,7 +2508,7 @@ function discount_on_order( ) {
 		$tax = 0;
 	}
 	$amount = $subtotal + $tax;
-	$displybudget = (float)($budget_in_kit - (int)$user_budget_left );
+	$displaybudget = (float)($budget_in_kit - (int)$user_budget_left );
 	//$amount = WC()->cart->get_totals('total')['total']; // Amount
 	$rdnm = mt_rand(1111,9999);
     $coupon_code = 'uni_budget_'.$rdnm; 
@@ -2510,27 +2525,28 @@ function discount_on_order( ) {
 				 	
 				 	$finalamt = $amount;
 				 }
-				 else if($amount < $displybudget && (empty($private_purchase_amount) || $private_purchase_amount == 0) ) { //case1
+				 else if($amount <= $displybudget && (empty($private_purchase_amount) || $private_purchase_amount == 0) ) { //case1
 				 	
 				 	$finalamt = $amount;
 				 }
 				 else if($amount > $displybudget && (!empty($private_purchase_amount) || $private_purchase_amount > 0 )){
-				 	$finalamt = $displybudget;
+				 	
+				 	$finalamt = $displaybudget;
 				 }
 				 else {
-				 	
-					 if($displybudget < 0) {
-						$finalamt = $displybudget;
+				 	 if($displybudget < 0) {
+				 	 	
+					 	$finalamt = $displaybudget;
 						//$finalamt = $amount - abs($displybudget);
 					}
 					else {
-						
-						$finalamt = $amount + $preamount;
+						$finalamt = $amount + $preamount; 
 					}
 				}
 				update_post_meta( $coupon_results[0]['ID'], 'coupon_amount', $finalamt );
 			    WC()->cart->apply_coupon( $usercoupon );
 
+			    
 			}else {
 				$coupon = array(
 				    'post_title' => $coupon_code,
@@ -2549,13 +2565,11 @@ function discount_on_order( ) {
 				update_post_meta( $new_coupon_id, 'usage_limit_per_user', '1' );
 				update_post_meta( $new_coupon_id, 'usage_count', '0' );
 				update_user_meta($user_id,'last_used_coupon',$coupon_code);
-				//update_post_meta( $new_coupon_id, 'individual_use', 'yes' );
-				//update_post_meta( $new_coupon_id, 'product_ids', '' );
-				//update_post_meta( $new_coupon_id, 'exclude_product_ids', '' );
-				//update_post_meta( $new_coupon_id, 'expiry_date', '' );
+				
 
 			    WC()->cart->apply_coupon( $coupon_code );
 			}
+
 
 	}else{
 		//echo 'coupon created';
@@ -2576,23 +2590,17 @@ function discount_on_order( ) {
 		update_post_meta( $new_coupon_id, 'usage_limit_per_user', '1' );
 		update_post_meta( $new_coupon_id, 'usage_count', '0' );
 		update_user_meta($user_id,'last_used_coupon',$coupon_code);
-		//update_post_meta( $new_coupon_id, 'individual_use', 'yes' );
-		//update_post_meta( $new_coupon_id, 'product_ids', '' );
-		//update_post_meta( $new_coupon_id, 'exclude_product_ids', '' );
-		//update_post_meta( $new_coupon_id, 'expiry_date', '' );
-
+		
 	    WC()->cart->apply_coupon( $coupon_code );
-		//update_post_meta( $new_coupon_id, 'usage_count', '1' );
+		
 	}
-	         
+	
 }
-*/
 //T39
-/*add_action( 'woocommerce_before_checkout_form', 'remove_checkout_coupon_form', 9 );
+add_action( 'woocommerce_before_checkout_form', 'remove_checkout_coupon_form', 9 );
 function remove_checkout_coupon_form(){
     remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
-}*/
-
+}
 
 //UN2-T48 NIPL hide phone field on checkout page
 add_filter( 'woocommerce_checkout_fields', 'unidress_unset_wc_phone_field',99);
