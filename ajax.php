@@ -653,7 +653,7 @@ if (wp_doing_ajax()) {
         $product_in_campaign    = get_post_meta($campaign_id, 'product_option', true);
         $customer_type          = get_post_meta($customer_id, 'customer_type', true);
         $customer_ordering_style   = get_ordering_style($customer_id);
-
+        $price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
         if (empty($campaign_id) || empty($kit_id)) {
             return;
         }
