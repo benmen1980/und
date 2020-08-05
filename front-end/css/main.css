@@ -640,9 +640,15 @@ p.no-comments a {
 /*UN2-T53- Update coupon amount on cart update
 *hide coupon form from cart page
 */
-/*.woocommerce-cart div.coupon{
+.woocommerce-cart div.coupon{
     display: none !important;
-}*/
+}
+/*
+UN2-T55 - On the cart page, hide the button "Remove"
+*/
+.woocommerce-remove-coupon{
+    display: none;
+}
 
 
 
