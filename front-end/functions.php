@@ -2019,13 +2019,14 @@ function unidress_shopping_redirect_to_shop($url, $adding_to_cart)
 add_filter('woocommerce_enable_order_notes_field', 'unidress_enable_order_notes_field', 10, 2);
 function unidress_enable_order_notes_field($enable)
 {
+	if(!is_admin()){
 	$user_id                = get_current_user_id();
 	$customer_id            = get_user_meta($user_id, 'user_customer', true);
 	$campaign_id            = get_post_meta($customer_id, 'active_campaign', true);
 	$enable_order_notes     = get_post_meta($campaign_id, 'enable_order_notes', true);
 
 	$enable = $enable_order_notes ? true : false;
-
+	}
 	return $enable;
 }
 
