@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Unidress\n"
-"POT-Creation-Date: 2020-04-27 13:02+0000\n"
-"PO-Revision-Date: 2020-04-27 13:04+0000\n"
-"Last-Translator: Sunil Narola\n"
-"Language-Team: Hebrew\n"
+"POT-Creation-Date: 2020-04-02 07:27+0000\n"
+"PO-Revision-Date: 2020-04-02 07:27+0000\n"
+"Last-Translator: oren vardi\n"
+"Language-Team: עִבְרִית\n"
 "Language: he_IL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,38 +19,38 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: admin/include\n"
 "Report-Msgid-Bugs-To: \n"
-"X-Loco-Version: 2.3.3; wp-5.4"
+"X-Loco-Version: 2.3.2; wp-5.3.2"
 
-#: ajax.php:622 admin/meta-boxes/meta-box-assign-product.php:195
+#: ajax.php:619 admin/meta-boxes/meta-box-assign-product.php:195
 #: admin/meta-boxes/meta-box-assign-product.php:226
 msgid "del"
 msgstr "מחיקה"
 
-#: ajax.php:627
+#: ajax.php:622
 msgid "Group name can't be empty"
 msgstr "שם קבוצה אינו יכול להיות ריק"
 
-#: ajax.php:770 admin/class/class-Unidress_User_Import.php:112
+#: ajax.php:766 admin/class/class-Unidress_User_Import.php:112
 #: admin/class/class-Unidress_User_Report.php:47
 #: admin/class/class-Unidress_User_Report.php:251
 #: admin/meta-boxes/meta-box-assign-product.php:156
 msgid "Budget"
 msgstr "תקציב"
 
-#: ajax.php:775 admin/class/class-Unidress_User_Report.php:55
+#: ajax.php:771 admin/class/class-Unidress_User_Report.php:55
 #: admin/class/class-Unidress_User_Report.php:918
 msgid "Remaining"
 msgstr "יתרת תקציב"
 
-#: ajax.php:804
+#: ajax.php:800
 msgid "Required"
 msgstr "כמות מינימלית להזמנה"
 
-#: ajax.php:805
+#: ajax.php:801
 msgid "Amount"
 msgstr "כמות שהוזמנה"
 
-#: ajax.php:853 front-end/functions.php:645
+#: ajax.php:849 front-end/functions.php:644
 #: admin/class/class-Unidress_User_Report.php:53
 #: admin/class/class-Unidress_User_Report.php:916
 msgid "Limit"
@@ -347,7 +347,7 @@ msgstr "הוספת קמפיין חדש"
 msgid "Edit Campaign"
 msgstr "עריכת קמפיין"
 
-#: admin/functions.php:275 front-end/functions.php:511
+#: admin/functions.php:275 front-end/functions.php:510
 #: admin/meta-boxes/meta-box-assign-product.php:307
 #: admin/meta-boxes/meta-box-assign-product.php:663
 msgid "Graphics"
@@ -519,23 +519,23 @@ msgstr "פרטים אישיים של המשתמש"
 msgid "Username"
 msgstr "שם משתמש"
 
-#: front-end/functions.php:245 front-end/functions.php:818
-#: front-end/functions.php:1564
+#: front-end/functions.php:245 front-end/functions.php:817
+#: front-end/functions.php:1547
 msgid "\" not available for sale"
 msgstr ""
 
-#: front-end/functions.php:263 front-end/functions.php:750
-#: front-end/functions.php:1594
+#: front-end/functions.php:263 front-end/functions.php:749
+#: front-end/functions.php:1577
 msgid "The total amount of the purchase exceeds the balance of your budget"
 msgstr "הסכום הכולל של הזמנה חורג מיתרת התקציב שלך"
 
-#: front-end/functions.php:316 front-end/functions.php:801
-#: front-end/functions.php:1545
+#: front-end/functions.php:316 front-end/functions.php:800
+#: front-end/functions.php:1528
 msgid "You have exceeded the limit by product group"
 msgstr "חרגת מהכמות המותרת לקבוצת הקצאה"
 
-#: front-end/functions.php:327 front-end/functions.php:809
-#: front-end/functions.php:1555
+#: front-end/functions.php:327 front-end/functions.php:808
+#: front-end/functions.php:1538
 msgid "You already buy something"
 msgstr "ביצעת הזמנה אחת, לא ניתן לבצע הזמנה נוספת."
 
@@ -543,7 +543,7 @@ msgstr "ביצעת הזמנה אחת, לא ניתן לבצע הזמנה נוספ
 msgid "Pts"
 msgstr "נק'"
 
-#: front-end/functions.php:774 front-end/functions.php:1519
+#: front-end/functions.php:773 front-end/functions.php:1502
 #, php-format
 msgid ""
 "Need More Essential Products. Go to <a href=\"%s\">Cart</a> or <a "
@@ -552,36 +552,31 @@ msgstr ""
 "חסרים לך פרטי חובה נוספים כדי לבצע את ההזמנה. עבור ל<a href=\"%s\">עגלת "
 "הקניות</a> או <a href=\"%s\">לחנות</a>"
 
-#: front-end/functions.php:1126
+#: front-end/functions.php:1121
 msgid "Budget Balance"
 msgstr "יתרת התקציב"
 
-#: front-end/functions.php:1236
+#: front-end/functions.php:1230
 msgid "Go to Marketplace"
 msgstr "לחנות"
 
-#: front-end/functions.php:1278
+#: front-end/functions.php:1272
 msgid "Choose Shipping"
 msgstr "בחירת משלוח / נקודת איסוף "
 
-#: front-end/functions.php:1409
+#: front-end/functions.php:1398
 msgid "You are not allowed to order more"
 msgstr ". אסור לך להזמין עוד"
 
-#: front-end/functions.php:1443
+#: front-end/functions.php:1426
 msgid "You are exceeding your budget, this product cannot be added to cart."
 msgstr "אתה חורג מהתקציב שלך,  לא ניתן להוסיף לסל מוצר זה."
 
-#: front-end/functions.php:1606
-#, php-format
-msgid "You can not complete the order if the total price is less than %d"
-msgstr ""
-
-#: front-end/functions.php:1622
+#: front-end/functions.php:1605
 msgid "&larr; To Unidress Main Site"
 msgstr "&larr; לאתר הראשי של Unidress"
 
-#: front-end/functions.php:1745
+#: front-end/functions.php:1728
 #: front-end/templates/woocommerce/cart/proceed-to-checkout-button.php:61
 msgid ""
 "Dear employee, only one order can be placed. Please make sure you have "
@@ -589,15 +584,15 @@ msgid ""
 msgstr ""
 "עובד/ת יקר/ה, ניתן לבצע רק הזמנה אחת. נא וודא/י שבחרת את כל הפריטים הרצויים."
 
-#: front-end/functions.php:1869
+#: front-end/functions.php:1852
 msgid "Choose an option"
 msgstr ""
 
-#: front-end/functions.php:1920
+#: front-end/functions.php:1903
 msgid "Simple Option"
 msgstr ""
 
-#: front-end/functions.php:1976
+#: front-end/functions.php:1959
 #: admin/meta-boxes/meta-box-assign-product.php:208
 #: admin/meta-boxes/meta-box-assign-product.php:212
 #: admin/meta-boxes/meta-box-assign-product.php:417

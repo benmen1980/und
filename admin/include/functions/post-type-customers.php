@@ -1,22 +1,16 @@
 <?php 
 
-// ACTION
-add_action( 'admin_enqueue_scripts', 'unid_load_admin_scripts' );
+add_action( 'admin_enqueue_scripts', 'unid_load_admin_scripts_post_type_customers' );
 
-
-
-
-
-// Load admin scripts & styles
-function unid_load_admin_scripts( $hook ) {
-	// If the post we're editing isn't a project_summary type, exit this function.
-	// var_dump(get_post_type());
-	if ( 'customers' === get_post_type() && ($hook == 'post-new.php' || $hook == 'post.php') ) {
-		wp_enqueue_script( 'admin_scripts',  plugins_url(MY_PLUGIN_NAME.'/admin/js/functions/post-type-customers.js'), array( 'jquery' ), false );
+// LOAD ADMIN SCRIPTS & STYLES
+function unid_load_admin_scripts_post_type_customers( $hook ) {
+	global $translatePluginsAdmin;
+	$post_type = array('customers');
+	if ( in_array(get_post_type(), $post_type) && ($hook == 'post-new.php' || $hook == 'post.php') ) {
+		wp_enqueue_script( 'admin-scripts-assign-product',  plugins_url(MY_PLUGIN_NAME.'/admin/js/functions/post-type-customers.js'), array( 'jquery' ), '',true );
+		wp_localize_script( 'jquery', 'dataCustomers', 
+			$translatePluginsAdmin['type']['customers']
+		  );  
 	}
-	// // If we're creating/updating the post, exit this function.
-	// if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
-	// 	return;
-	// }
-	// Enqueue JS.
 }
+

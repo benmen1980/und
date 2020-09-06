@@ -322,6 +322,13 @@ p.no-comments a {
 .woocommerce-active .site-header .unidress-logo {
     margin-bottom: 5px;
 }
+
+.single .nipl_simple_option_wrp select {
+    display: block;
+    margin-bottom: 14px;
+    padding: 7px;
+}
+
 @media (min-width: 768px) {
     .data-item-row.display-none {display: flex!important;}
 
@@ -445,6 +452,9 @@ p.no-comments a {
     transform: translate(0,-50%);
     top: 40%;
 }
+
+.single_variation_wrap .nipl_simple_option_wrp{display: block;margin-bottom: 20px;}
+
 
 @media (min-width: 768px) {
 
@@ -625,4 +635,35 @@ p.no-comments a {
 
 .variations {
     /* max-width: 150px; */
+}
+
+/*UN2-T53- Update coupon amount on cart update
+*hide coupon form from cart page
+*/
+.woocommerce-cart div.coupon{
+    display: none !important;
+}
+/*
+UN2-T55 - On the cart page, hide the button "Remove"
+*/
+.woocommerce-remove-coupon{
+    display: none;
+}
+
+
+
+/*NEW STYLE*/
+.d-block{
+    display: block;
+}
+span.woocommerce-Price-amount.amount {
+    display: flex;    
+}
+li.product span.woocommerce-Price-amount.amount {
+    justify-content: center;
+}
+span.woocommerce-Price-currencySymbol {
+    display: inline-block;
+    margin-right: 3px;
+    order: 1;
 }

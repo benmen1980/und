@@ -15,7 +15,7 @@
  * @version     2.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 $user_id            = get_current_user_id();
@@ -27,9 +27,8 @@ $campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
 $one_order_toggle   = get_post_meta($campaign_id, 'one_order_toggle', true);
 
 // You already buy something check
-if ($one_order_toggle && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id] ) {
-    echo '<p class="woocommerce-info">' . __( "Dear employee, An order has already been placed on the system. No further booking can be made.", "unidress" ) . '</p>';
+if ($one_order_toggle[$kit_id] == 'on' && isset($one_order_value[$campaign_id][$kit_id]) && $one_order_value[$campaign_id][$kit_id]) {
+	echo '<p class="woocommerce-info">' . __("Dear employee, An order has already been placed on the system. No further booking can be made.", "unidress") . '</p>';
 } else {
-	echo '<p class="woocommerce-info">' . __( "No products were found matching your selection.", "unidress" ) . '</p>';
+	echo '<p class="woocommerce-info">' . __("No products were found matching your selection.", "unidress") . '</p>';
 }
-

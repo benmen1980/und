@@ -87,6 +87,7 @@ class Unidress_User_Import extends WP_List_Table {
 				'department'            =>  $user_data['department']    ,
 				'kit'                   =>  $user_data['kit']    ,
 				'status'                =>  $user_data['status']    ,
+				'budget_value'          =>  $user_data['budget_value']    ,
 			);
 
 		}
@@ -108,6 +109,7 @@ class Unidress_User_Import extends WP_List_Table {
 			'department'            => esc_attr__( 'Department', 'unidress' ),
 			'kit'                   => esc_attr__( 'Kit', 'unidress' ),
 			'status'                => esc_attr__( 'Status', 'unidress' ),
+			'budget_value'          => esc_attr__( 'Budget', 'unidress' ),
 		);
 	}
 
@@ -175,6 +177,7 @@ class Unidress_User_Import extends WP_List_Table {
 		$department         = get_user_meta($user->ID, 'user_department', true);
 		$kit_id             = get_user_meta($user->ID, 'user_kit', true);
 		$billing_phone      = get_user_meta($user->ID, 'billing_phone', true);
+		$budget_value       = get_user_meta($user->ID, 'unidress_budget', true);
 
 		$customer           = get_the_title($customer_id);
 		$branch             = get_the_title($branch_id);
@@ -192,6 +195,7 @@ class Unidress_User_Import extends WP_List_Table {
 		$output['department']           = $department;
 		$output['kit']                  = $kit;
 		$output['status']               = $this->get_status($user->ID);
+		$output['budget_value']         = $budget_value;
 
 		return $output;
 	}
