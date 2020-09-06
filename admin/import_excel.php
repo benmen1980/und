@@ -22,6 +22,15 @@ function render_form($page_type){
 
     <form id="featured_upload" method="post" action="#" enctype="multipart/form-data">
         <input type="file" name="import_file" id="import_file"  multiple="false" />
+	<?php
+        if('users'==$page_type){
+            ?>
+                <br><br>
+            <input type="checkbox" name="is_reset_user_data" id="is_reset_user_data" />
+            <label>Reset user history?</label><br><br>
+            <?php
+        }
+        ?>    
         <input type="hidden" name="import_type" id="import_type" value="<?php echo $page_type ?>" />
 		<?php wp_nonce_field( 'import_file', 'import_file_nonce' ); ?>
         <input id="submit_import_file" name="submit_import_file" type="submit" value="Upload" />
@@ -201,6 +210,13 @@ function import_users($page_type){
 				$users[$user_id]['error'][] = $user_id->get_error_message();
 			}
 		}
+		// reset user budget and order
+		$user_meta = get_user_meta($user_id);
+		if(isset($_POST['is_reset_user_data'])){
+		    update_user_meta($user_id, 'user_budget_limits', []);
+		    update_user_meta($user->ID,'one_order_value',[]);
+		}
+		$user_meta = get_user_meta($user_id);
 	}
 
 	require_once __DIR__ . '/class/class-Unidress_User_Import.php';
