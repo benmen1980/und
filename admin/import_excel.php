@@ -213,6 +213,7 @@ function import_users($page_type){
 		// reset user budget and order
 		$user_meta = get_user_meta($user_id);
 		if(isset($_POST['is_reset_user_data'])){
+            delete_user_meta($user->ID,'user_limits');
 		    update_user_meta($user_id, 'user_budget_limits', []);
 		    update_user_meta($user->ID,'one_order_value',[]);
 		}
@@ -559,4 +560,3 @@ function import_meta_data($user_id, $data, $columnName, $users) {
 add_filter( 'set-screen-option', function( $status, $option, $value ){
 	return ( $option == 'user_import_per_page' ) ? (int) $value : $status;
 }, 10, 3 );
-
