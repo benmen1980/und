@@ -1913,7 +1913,7 @@ add_action('woocommerce_after_checkout_form', function () {
 				$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
 
 				if ($user_roles != 'hr_manager') {
-					if ($budget_in_kit <= $new_budget_limits) {
+					if ($budget_in_kit < $new_budget_limits) {
 					//if ($balance < 0) {
 						wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
 						$output = true;
