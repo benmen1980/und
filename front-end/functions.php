@@ -1899,7 +1899,7 @@ add_action('woocommerce_after_checkout_form', function () {
 					return;
 				}
 				$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
-
+				$subtotal = WC()->cart->get_subtotal(true);
 				$total = WC()->cart->get_totals('total')['total'];
 				$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
 
@@ -1927,11 +1927,11 @@ add_action('woocommerce_after_checkout_form', function () {
 			$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 
 			if ($min_order_value > 0) {
-				if ($total < $min_order_value) {
+				if ($subtotal < $min_order_value) {
 					wc_add_notice(wp_sprintf(__("You can not complete the order if the total price is less than %d", "unidress"), $min_order_value), 'error');
 					$output = true;
 				}
-				if ($min_order_charge > 0 && $total < $min_order_charge) {
+				if ($min_order_charge > 0 && $subtotal < $min_order_charge) {
 					WC()->cart->add_fee('Shipping Price', $shipping_price, true, 'standard');
 				}
 			}
