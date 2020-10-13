@@ -75,7 +75,12 @@
         }
         let select = jQuery(updateTarget);
         select.empty();
-        let arrayChoosen = jQuery.parseJSON(alreadyChoosen);
+        let arrayChoosen = '';
+        if(alreadyChoosen.length === 0) {
+             arrayChoosen = alreadyChoosen; 
+        }else{
+             arrayChoosen = jQuery.parseJSON(alreadyChoosen); 
+        }
 
         let data = {
             action: 'get_data_for_select',
