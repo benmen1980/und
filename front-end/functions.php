@@ -1684,7 +1684,9 @@ add_action('woocommerce_after_checkout_form', function () {
 						if ($balance < 0) {
 							wc_add_notice(__('You are not allowed to order more', 'unidress') . ' "' . $groups_in_kit[$group_id]['name'] . '"', 'error');
 							$output = false;
-							break;
+							wp_redirect(site_url().'/shop/');
+							exit;
+							//break;
 						}
 					}
 
