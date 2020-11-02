@@ -38,6 +38,31 @@ function can_user_checkout_check()
 	}
 }
 
+/*add shipping fee on cart and checkout page, if subtotal is less than minimum order value */
+//add_action( 'woocommerce_before_calculate_totals', 'bbloomer_add_checkout_fee' );
+
+add_action( 'woocommerce_cart_calculate_fees', 'bbloomer_add_checkout_fee',20,1 );
+function bbloomer_add_checkout_fee($cart) {
+   // Edit "Fee" and "5" below to control Label and Amount
+	
+   $user_id = get_current_user_id();
+	$user = get_userdata($user_id);
+
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$kit_id             = get_user_meta($user_id, 'user_kit', true);
+	$user_limits        = get_user_meta($user_id, 'user_limits', true);
+	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+
+	$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
+	$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
+	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
+	$subtotal = WC()->cart->get_subtotal(true);
+	if($min_order_charge > 0 && $subtotal < $min_order_charge ){
+		
+		$cart->add_fee('Shipping Price', $shipping_price,true,'standard');
+	}
+}
+
 /**
  * Output the variable product add to cart area.
  * show only assign variation
@@ -1933,9 +1958,7 @@ add_action('woocommerce_after_checkout_form', function () {
 					wc_add_notice(wp_sprintf(__("You can not complete the order if the total price is less than %d", "unidress"), $min_order_value), 'error');
 					$output = true;
 				}
-				if ($min_order_charge > 0 && $subtotal < $min_order_charge) {
-					WC()->cart->add_fee('Shipping Price', $shipping_price, true, 'standard');
-				}
+				
 			}
 
 			return $output;
