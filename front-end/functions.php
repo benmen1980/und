@@ -53,7 +53,7 @@ function bbloomer_add_checkout_fee($cart) {
 	$user_limits        = get_user_meta($user_id, 'user_limits', true);
 	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
 
-	$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
+	//$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
 	$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
 	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 	$subtotal = WC()->cart->get_subtotal(true);
@@ -1949,7 +1949,7 @@ add_action('woocommerce_after_checkout_form', function () {
 			}
 
 			// UN2-T10 : Shipping price per campaign
-			$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
+			$min_order_value = get_post_meta($campaign_id, 'min_order_value_nisl', true) ?: 0;
 			$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
 			$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 

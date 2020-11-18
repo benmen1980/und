@@ -27,7 +27,7 @@ function unidress_shipping_option($post) {
 
 function render_shipping_to_user_brunch($campaign_id) {
 	get_post_meta($campaign_id, 'shipping_allow', true) ? $checked = 'checked="checked"' : $checked='';
-	$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
+	$min_order_value = get_post_meta($campaign_id, 'min_order_value_nisl', true) ?: 0;
 	$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
 	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 
@@ -218,7 +218,7 @@ function save_shipping_option( $post_id ) {
 	update_post_meta($post_id, 'shops', $shops);
 	update_post_meta($post_id, 'shipping_allow', $shipping_allow);
 
-	update_post_meta($post_id, 'min_order_value', $min_order_value);
+	update_post_meta($post_id, 'min_order_value_nisl', $min_order_value);
 	update_post_meta($post_id, 'min_order_charge', $min_order_charge);
 	update_post_meta($post_id, 'shipping_price', $shipping_price);
 
