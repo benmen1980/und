@@ -1736,7 +1736,7 @@ add_action('woocommerce_after_checkout_form', function () {
 					$price_filed = ($budget_by_point == 1) ? 'points' : 'price';
 
 					$product_price_added        = (isset($product_in_kit[$add_product_id][$price_filed]) &&  $product_in_kit[$add_product_id][$price_filed]) ? $product_in_kit[$add_product_id][$price_filed] : get_post_meta($add_product_id, '_price', true);
-					$vat_rate = $price_list_include_vat == 1 ? 1.17 : 1.17;
+					$vat_rate = $price_list_include_vat == 1 ? 1.17 : 1.0;
 					$product_price_added_total  = $vat_rate * $product_price_added * $add_quantity;
 					$total = WC()->cart->get_totals('total')['total'];
 
