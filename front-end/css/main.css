@@ -78,7 +78,7 @@ table.budget_table {
 /* UN1-T32: Further to T14 */
 #user-data-container {
     width: auto;
-    border: 1px solid #fa1800;
+    border: 1px solid #8b8b8f;
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
     margin-bottom: 20px;
@@ -95,7 +95,7 @@ table.budget_table {
     font-size: 18px;
     font-weight: 600;
     color: white;
-    background-color: #fa1800;
+    background-color: #8b8b8f;
     text-align: center;
 }
 .user-data-header {
@@ -161,7 +161,7 @@ table.budget_table {
     font-size: 21px;
     font-weight: bold;
     border-radius: 15px;
-    background-color: #e51b1b;
+    background-color: #8b8b8f;
     color: white;
     white-space: nowrap;
 }
@@ -337,10 +337,10 @@ p.no-comments a {
     }
 
     table.table-container > tbody > tr > td:nth-of-type(2) {
-        border-left: 1px solid #fa1800;
+        border-left: 1px solid #8b8b8f;
     }
     body.rtl table.table-container > tbody > tr > td:nth-of-type(2) {
-        border-right: 1px solid #fa1800;
+        border-right: 1px solid #8b8b8f;
         border-left: unset;
     }
     .woocommerce-active .site-header  > .col-full {
