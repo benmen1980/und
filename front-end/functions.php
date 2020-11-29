@@ -1409,6 +1409,7 @@ function get_budget_banner()
 add_filter('get_custom_logo',  'custom_logo_url', 0);
 function custom_logo_url($html)
 {
+	$html = '';
 	$current_id = get_current_user_id();
 	$current_customer = get_user_meta($current_id, 'user_customer', true);
 	$user_id = get_current_user_id();
