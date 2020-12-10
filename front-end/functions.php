@@ -1180,7 +1180,7 @@ add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
 
 // Show the cart total excluding tax.
 function wc_exclude_tax_cart_total( $total, $instance ) {
-
+	global $wpdb;
 	$user_id            = get_current_user_id();
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
 	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
@@ -1188,7 +1188,7 @@ function wc_exclude_tax_cart_total( $total, $instance ) {
 	$product_option     = get_post_meta($active_campaign, 'product_option', true);
 	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
 	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
-
+	$min_order_charge = get_post_meta($active_campaign, 'min_order_charge', true) ?: 0;
 	if ($customer_type == "project") {
 		$kit_id      = 0;
 	} else {
@@ -1200,6 +1200,13 @@ function wc_exclude_tax_cart_total( $total, $instance ) {
 
 		$total = round( WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp );
 
+	}
+	$subtotal = WC()->cart->get_subtotal(true);
+	$addfee = get_user_meta($user_id,'additional_shipping_fee',true);
+	if($min_order_charge > 0 && $subtotal < $min_order_charge) {
+		$total = round($total - ($subtotal +  WC()->cart->fee_total));
+	}else{
+		$total = round($total - $subtotal);
 	}
 
 	return $total;
@@ -1379,7 +1386,7 @@ function storefront_site_branding()
 }
 function get_budget_banner()
 {
-
+	global $wpdb;
 	$user_id = get_current_user_id();
 	$user = get_userdata($user_id);
 	$user_roles = $user->roles[0];
@@ -1419,12 +1426,21 @@ function get_budget_banner()
 			}else {
 				$tax = 0;
 			}
+			$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
 
-
+			$addfee = get_user_meta( $user_id, 'additional_shipping_fee', true );
+			
+			if($min_order_charge > 0 && $subtotal < $min_order_charge && $subtotal != 0) {
+				
+				$finaltotal = $subtotal + WC()->cart->fee_total;
+			}else{
+				
+				$finaltotal = $subtotal;
+			}
 
 			if ($user_roles != 'hr_manager') {
 				?>
-				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo (float)($budget_in_kit - (int)$user_budget_left - ($subtotal + $tax)  ); ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
+				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo (float)($budget_in_kit - (int)$user_budget_left - ($finaltotal + $tax)  ); ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
 			<?php
 		}
 	}
@@ -1747,7 +1763,18 @@ add_action('woocommerce_after_checkout_form', function () {
 					}else {
 						$tax = 0;
 					}
-					$ordertotal = $subtotal + $tax;
+					global $wpdb;
+					$usercoupon = get_user_meta($user_id,'last_used_coupon',true);
+					//echo $usercoupon;
+					$coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$usercoupon}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ",ARRAY_A);
+					$additionalfee = get_post_meta( $coupon_results[0]['ID'], 'coupon_amount' ,true);
+					
+					if($subtotal == 0) {
+						$ordertotal = $subtotal + $tax;
+					}else{
+						
+						$ordertotal = $additionalfee + $tax;
+					}
 
 					if(!empty($private_purchase_amount) && $private_purchase_amount > 0 ) {
 						//$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal + $private_purchase_amount; // - $product_price_added_total ;
@@ -2497,6 +2524,7 @@ function unidress_required_products($data)
 
 //NIPL UN2-T39 coupon code
 add_action('woocommerce_cart_coupon', 'discount_on_order', 10);
+//add_action('woocommerce_ajax_added_to_cart', 'discount_on_order',20);
 add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25);
 
 function discount_on_order() {
@@ -2535,7 +2563,19 @@ function discount_on_order() {
 	}else {
 		$tax = 0;
 	}
-	$amount = $subtotal + $tax;
+	
+	foreach(WC()->cart->get_fees() as $fee) :
+		$additionalfee = (float)$fee->amount;
+	endforeach;
+
+	if(!empty($additionalfee)){
+		update_user_meta( $user_id, 'additional_shipping_fee', $additionalfee);
+	}else{
+		update_user_meta( $user_id, 'additional_shipping_fee', '0' );
+	}
+
+	$amount = ($subtotal + $tax + $additionalfee );
+
 	$displaybudget = (float)($budget_in_kit - (int)$user_budget_left );
 	//$amount = WC()->cart->get_totals('total')['total']; // Amount
 	$rdnm = mt_rand(1111,9999);
@@ -2568,7 +2608,7 @@ function discount_on_order() {
 						//$finalamt = $amount - abs($displybudget);
 					}
 					else {
-						$finalamt = $amount + $preamount; 
+						$finalamt = (float)$amount; //+ (float)$preamount; 
 					}
 				}
 				update_post_meta( $coupon_results[0]['ID'], 'coupon_amount', $finalamt );
