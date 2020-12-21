@@ -882,6 +882,7 @@ if ((get_ordering_style($current_customer) == 'standard') && (get_customer_type(
 	add_action('woocommerce_checkout_update_order_meta', 'update_budget_to_user');
 	function update_budget_to_user()
 	{
+		global $wpdb;
 		$user_id        = get_current_user_id();
 		$customer_id    = get_user_meta($user_id, 'user_customer', true);
 		$kit_id         = get_user_meta($user_id, 'user_kit', true);
@@ -897,7 +898,15 @@ if ((get_ordering_style($current_customer) == 'standard') && (get_customer_type(
 		}else {
 			$tax = 0;
 		}
-		$amount = $subtotal + $tax;
+		$addfee = get_user_meta( $user_id, 'additional_shipping_fee', true );
+		if($subtotal == 0) {
+			
+			$finaltotal = $subtotal ;
+		}else{
+			
+			$finaltotal = $subtotal + $addfee;
+		}
+		$amount = $finaltotal + $tax;
 		//Clear another campaign budget limit
 		$new_budget_limits = array();
 		$new_budget_limits[$campaign_id][$kit_id] = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$amount;
