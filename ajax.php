@@ -639,8 +639,8 @@ if (wp_doing_ajax()) {
     add_action('wp_ajax_update_unidress_budget', 'update_unidress_budget');
     function update_unidress_budget()
     {
-
-        //user data
+        global $wpdb;
+    	//user data
         $user_id            = get_current_user_id();
         $customer_id        = get_user_meta($user_id, 'user_customer', true);
         $kit_id             = get_user_meta($user_id, 'user_kit', true);
@@ -695,7 +695,18 @@ if (wp_doing_ajax()) {
             }else {
                 $tax = 0;
             }
-            $amount = $subtotal + $tax;
+            
+            $usercoupon = get_user_meta($user_id,'last_used_coupon',true);
+	        //echo $usercoupon;
+            $coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$usercoupon}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ",ARRAY_A);
+			$additionalfee = get_post_meta( $coupon_results[0]['ID'], 'coupon_amount' ,true);
+                //echo 'additional fee'; print_r($additionalfee);
+            if($subtotal == 0) {
+				$finaltotal = $subtotal;
+			}else{
+				$finaltotal = $additionalfee;
+			}
+            $amount = $finaltotal + $tax ;
 
             $budget_total = (int)$budget_in_kit - (int)$user_budget_left - (int)$amount;
 

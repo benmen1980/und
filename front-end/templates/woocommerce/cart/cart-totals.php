@@ -38,13 +38,7 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 
 		<?php endif; ?>
 
-		<?php foreach ( WC()->cart->get_coupons() as $code => $coupon ) : ?>
-			<tr class="cart-discount coupon-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
-				<th><?php wc_cart_totals_coupon_label( $coupon ); ?></th>
-				<td data-title="<?php echo esc_attr( wc_cart_totals_coupon_label( $coupon, false ) ); ?>"><?php wc_cart_totals_coupon_html( $coupon ); ?></td>
-			</tr>
-		<?php endforeach; ?>
-
+		
 		<?php if ( WC()->cart->needs_shipping() && WC()->cart->show_shipping() ) : ?>
 
 			<?php do_action( 'woocommerce_cart_totals_before_shipping' ); ?>
@@ -62,12 +56,17 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 
 		<?php endif; ?>
 
-		<?php foreach ( WC()->cart->get_fees() as $fee ) : ?>
-			<tr class="fee">
-				<th><?php echo esc_html( $fee->name ); ?></th>
-				<td data-title="<?php echo esc_attr( $fee->name ); ?>"><?php wc_cart_totals_fee_html( $fee ); ?></td>
-			</tr>
-		<?php endforeach; ?>
+		<?php 
+		
+			foreach ( WC()->cart->get_fees() as $fee ) : ?>
+				<tr class="fee">
+					<th><?php echo esc_html( $fee->name ); ?></th>
+					<td data-title="<?php echo esc_attr( $fee->name ); ?>"><?php wc_cart_totals_fee_html( $fee ); ?></td>
+				</tr>
+		<?php 
+			endforeach; 
+		
+		?>
 
 		<?php if ( wc_tax_enabled() && ! WC()->cart->display_prices_including_tax() ) :
 			$taxable_address = WC()->customer->get_taxable_address();
@@ -90,6 +89,12 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 			<?php endif; ?>
 		<?php endif; ?>
 
+		<?php foreach ( WC()->cart->get_coupons() as $code => $coupon ) : ?>
+			<tr class="cart-discount coupon-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
+				<th><?php wc_cart_totals_coupon_label( $coupon ); ?></th>
+				<td data-title="<?php echo esc_attr( wc_cart_totals_coupon_label( $coupon, false ) ); ?>"><?php echo wc_price($coupon->amount);//wc_cart_totals_coupon_html( $coupon ); ?></td>
+			</tr>
+		<?php endforeach; ?>
 		<?php do_action( 'woocommerce_cart_totals_before_order_total' ); ?>
 
 		<?php if ( get_ordering_style($current_customer) != 'closed_list' ) : ?>

@@ -38,6 +38,31 @@ function can_user_checkout_check()
 	}
 }
 
+/*add shipping fee on cart and checkout page, if subtotal is less than minimum order value */
+//add_action( 'woocommerce_before_calculate_totals', 'bbloomer_add_checkout_fee' );
+
+add_action( 'woocommerce_cart_calculate_fees', 'bbloomer_add_checkout_fee',20,1 );
+function bbloomer_add_checkout_fee($cart) {
+   // Edit "Fee" and "5" below to control Label and Amount
+	
+   $user_id = get_current_user_id();
+	$user = get_userdata($user_id);
+
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$kit_id             = get_user_meta($user_id, 'user_kit', true);
+	$user_limits        = get_user_meta($user_id, 'user_limits', true);
+	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+
+	//$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
+	$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
+	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
+	$subtotal = WC()->cart->get_subtotal(true);
+	if($min_order_charge > 0 && $subtotal < $min_order_charge ){
+		
+		$cart->add_fee('Shipping Price', $shipping_price,true,'standard');
+	}
+}
+
 /**
  * Output the variable product add to cart area.
  * show only assign variation
@@ -857,6 +882,7 @@ if ((get_ordering_style($current_customer) == 'standard') && (get_customer_type(
 	add_action('woocommerce_checkout_update_order_meta', 'update_budget_to_user');
 	function update_budget_to_user()
 	{
+		global $wpdb;
 		$user_id        = get_current_user_id();
 		$customer_id    = get_user_meta($user_id, 'user_customer', true);
 		$kit_id         = get_user_meta($user_id, 'user_kit', true);
@@ -872,7 +898,15 @@ if ((get_ordering_style($current_customer) == 'standard') && (get_customer_type(
 		}else {
 			$tax = 0;
 		}
-		$amount = $subtotal + $tax;
+		$addfee = get_user_meta( $user_id, 'additional_shipping_fee', true );
+		if($subtotal == 0) {
+			
+			$finaltotal = $subtotal ;
+		}else{
+			
+			$finaltotal = $subtotal + $addfee;
+		}
+		$amount = $finaltotal + $tax;
 		//Clear another campaign budget limit
 		$new_budget_limits = array();
 		$new_budget_limits[$campaign_id][$kit_id] = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$amount;
@@ -1155,7 +1189,7 @@ add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
 
 // Show the cart total excluding tax.
 function wc_exclude_tax_cart_total( $total, $instance ) {
-
+	global $wpdb;
 	$user_id            = get_current_user_id();
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
 	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
@@ -1163,7 +1197,7 @@ function wc_exclude_tax_cart_total( $total, $instance ) {
 	$product_option     = get_post_meta($active_campaign, 'product_option', true);
 	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
 	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
-
+	$min_order_charge = get_post_meta($active_campaign, 'min_order_charge', true) ?: 0;
 	if ($customer_type == "project") {
 		$kit_id      = 0;
 	} else {
@@ -1175,6 +1209,13 @@ function wc_exclude_tax_cart_total( $total, $instance ) {
 
 		$total = round( WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp );
 
+	}
+	$subtotal = WC()->cart->get_subtotal(true);
+	$addfee = get_user_meta($user_id,'additional_shipping_fee',true);
+	if($min_order_charge > 0 && $subtotal < $min_order_charge) {
+		$total = round($total - ($subtotal +  WC()->cart->fee_total));
+	}else{
+		$total = round($total - $subtotal);
 	}
 
 	return $total;
@@ -1354,7 +1395,7 @@ function storefront_site_branding()
 }
 function get_budget_banner()
 {
-
+	global $wpdb;
 	$user_id = get_current_user_id();
 	$user = get_userdata($user_id);
 	$user_roles = $user->roles[0];
@@ -1394,12 +1435,21 @@ function get_budget_banner()
 			}else {
 				$tax = 0;
 			}
+			$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
 
-
+			$addfee = get_user_meta( $user_id, 'additional_shipping_fee', true );
+			
+			if($min_order_charge > 0 && $subtotal < $min_order_charge && $subtotal != 0) {
+				
+				$finaltotal = $subtotal + WC()->cart->fee_total;
+			}else{
+				
+				$finaltotal = $subtotal;
+			}
 
 			if ($user_roles != 'hr_manager') {
 				?>
-				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo (float)($budget_in_kit - (int)$user_budget_left - ($subtotal + $tax)  ); ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
+				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo (float)($budget_in_kit - (int)$user_budget_left - ($finaltotal + $tax)  ); ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
 			<?php
 		}
 	}
@@ -1685,7 +1735,9 @@ add_action('woocommerce_after_checkout_form', function () {
 						if ($balance < 0) {
 							wc_add_notice(__('You are not allowed to order more', 'unidress') . ' "' . $groups_in_kit[$group_id]['name'] . '"', 'error');
 							$output = false;
-							break;
+							wp_redirect(site_url().'/shop/');
+							exit;
+							//break;
 						}
 					}
 
@@ -1710,7 +1762,7 @@ add_action('woocommerce_after_checkout_form', function () {
 					$price_filed = ($budget_by_point == 1) ? 'points' : 'price';
 
 					$product_price_added        = (isset($product_in_kit[$add_product_id][$price_filed]) &&  $product_in_kit[$add_product_id][$price_filed]) ? $product_in_kit[$add_product_id][$price_filed] : get_post_meta($add_product_id, '_price', true);
-					$vat_rate = $price_list_include_vat == 1 ? 1.17 : 1.17;
+					$vat_rate = $price_list_include_vat == 1 ? 1.17 : 1.0;
 					$product_price_added_total  = $vat_rate * $product_price_added * $add_quantity;
 					$total = WC()->cart->get_totals('total')['total'];
 
@@ -1720,7 +1772,18 @@ add_action('woocommerce_after_checkout_form', function () {
 					}else {
 						$tax = 0;
 					}
-					$ordertotal = $subtotal + $tax;
+					global $wpdb;
+					$usercoupon = get_user_meta($user_id,'last_used_coupon',true);
+					//echo $usercoupon;
+					$coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$usercoupon}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ",ARRAY_A);
+					$additionalfee = get_post_meta( $coupon_results[0]['ID'], 'coupon_amount' ,true);
+					
+					if($subtotal == 0) {
+						$ordertotal = $subtotal + $tax;
+					}else{
+						
+						$ordertotal = $additionalfee + $tax;
+					}
 
 					if(!empty($private_purchase_amount) && $private_purchase_amount > 0 ) {
 						//$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal + $private_purchase_amount; // - $product_price_added_total ;
@@ -1900,7 +1963,7 @@ add_action('woocommerce_after_checkout_form', function () {
 					return;
 				}
 				$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
-
+				$subtotal = WC()->cart->get_subtotal(true);
 				$total = WC()->cart->get_totals('total')['total'];
 				$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
 
@@ -1923,18 +1986,16 @@ add_action('woocommerce_after_checkout_form', function () {
 			}
 
 			// UN2-T10 : Shipping price per campaign
-			$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
+			$min_order_value = get_post_meta($campaign_id, 'min_order_value_nisl', true) ?: 0;
 			$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
 			$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 
 			if ($min_order_value > 0) {
-				if ($total < $min_order_value) {
+				if ($subtotal < $min_order_value) {
 					wc_add_notice(wp_sprintf(__("You can not complete the order if the total price is less than %d", "unidress"), $min_order_value), 'error');
 					$output = true;
 				}
-				if ($min_order_charge > 0 && $total < $min_order_charge) {
-					WC()->cart->add_fee('Shipping Price', $shipping_price, true, 'standard');
-				}
+				
 			}
 
 			return $output;
@@ -2472,6 +2533,7 @@ function unidress_required_products($data)
 
 //NIPL UN2-T39 coupon code
 add_action('woocommerce_cart_coupon', 'discount_on_order', 10);
+//add_action('woocommerce_ajax_added_to_cart', 'discount_on_order',20);
 add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25);
 
 function discount_on_order() {
@@ -2510,7 +2572,19 @@ function discount_on_order() {
 	}else {
 		$tax = 0;
 	}
-	$amount = $subtotal + $tax;
+	
+	foreach(WC()->cart->get_fees() as $fee) :
+		$additionalfee = (float)$fee->amount;
+	endforeach;
+
+	if(!empty($additionalfee)){
+		update_user_meta( $user_id, 'additional_shipping_fee', $additionalfee);
+	}else{
+		update_user_meta( $user_id, 'additional_shipping_fee', '0' );
+	}
+
+	$amount = ($subtotal + $tax + $additionalfee );
+
 	$displaybudget = (float)($budget_in_kit - (int)$user_budget_left );
 	//$amount = WC()->cart->get_totals('total')['total']; // Amount
 	$rdnm = mt_rand(1111,9999);
@@ -2543,7 +2617,7 @@ function discount_on_order() {
 						//$finalamt = $amount - abs($displybudget);
 					}
 					else {
-						$finalamt = $amount + $preamount; 
+						$finalamt = (float)$amount; //+ (float)$preamount; 
 					}
 				}
 				update_post_meta( $coupon_results[0]['ID'], 'coupon_amount', $finalamt );
