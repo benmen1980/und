@@ -7,7 +7,7 @@ function get_ordering_style($current_customer)
 {
 	global $wpdb;
 
-	$ordering_style = $wpdb->get_row('SELECT t.slug FROM wp_postmeta pm INNER JOIN wp_terms t ON t.term_id = pm.meta_value WHERE pm.post_id = "' . $current_customer . '" and pm.meta_key = "ordering_style"');
+	$ordering_style = $wpdb->get_row("SELECT t.slug FROM {$wpdb->prefix}postmeta pm INNER JOIN {$wpdb->prefix}terms t ON t.term_id = pm.meta_value WHERE pm.post_id = $current_customer and pm.meta_key = 'ordering_style'");
 
 	if (isset($ordering_style->slug))
 		return $ordering_style->slug;

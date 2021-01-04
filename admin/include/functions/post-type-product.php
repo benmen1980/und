@@ -134,7 +134,7 @@ class UnidPostTypeProduct {
 				// phpcs:disable
 				"SELECT DISTINCT posts.ID as product_id, posts.post_parent as parent_id FROM {$wpdb->posts} posts
 				 LEFT JOIN {$wpdb->wc_product_meta_lookup} wc_product_meta_lookup ON posts.ID = wc_product_meta_lookup.product_id
-				 LEFT JOIN wp_postmeta postmeta ON posts.ID = postmeta.post_id 
+				 LEFT JOIN {$wpdb->prefix}postmeta postmeta ON posts.ID = postmeta.post_id 
 				WHERE posts.post_type IN ('" . implode( "','", $post_types ) . "')
 				$search_where
 				$status_where

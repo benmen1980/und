@@ -160,8 +160,7 @@ function edit_product_option() {
 
     $edit = absint( $_GET['edit'] );
 
-    $attribute_to_edit = $wpdb->get_row( "SELECT * FROM wp_posts WHERE post_type = 'product_options' and ID = " . $edit);
-
+    $attribute_to_edit = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}posts WHERE post_type = 'product_options' and ID = " . $edit);
     ?>
     <div class="wrap woocommerce">
         <h1><?php echo 'Edit option'; ?></h1>
@@ -320,7 +319,7 @@ function get_options_taxonomies() {
 
     global $wpdb;
 
-    $attribute_taxonomies = $wpdb->get_results( "SELECT * FROM wp_posts WHERE post_type = 'product_options' ORDER BY post_name ASC;" );
+    $attribute_taxonomies = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}posts WHERE post_type = 'product_options' ORDER BY post_name ASC;" );
     return (array) array_filter( apply_filters( 'product_option_taxonomies', $attribute_taxonomies ) );
 }
 
@@ -415,7 +414,7 @@ function create_product_option( $args ) {
             $new_taxonomy_name = 'po_' . $data['attribute_name'];
             $metadatas         = $wpdb->get_results(
                 $wpdb->prepare(
-                    "SELECT post_id, meta_value FROM {$wpdb->postmeta} WHERE meta_key = '_product_attributes' AND meta_value LIKE %s",
+                    "SELECT post_id, meta_value FROM {$wpdb->prefix}postmeta WHERE meta_key = '_product_attributes' AND meta_value LIKE %s",
                     '%' . $wpdb->esc_like( $old_taxonomy_name ) . '%'
                 ),
                 ARRAY_A );
