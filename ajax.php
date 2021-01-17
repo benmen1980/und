@@ -142,7 +142,7 @@ if (wp_doing_ajax()) {
 
         if (isset($_POST['post_id'])) {
             $selectedoption = get_post_meta($_POST['post_id'], $_POST['meta_key'], true);
-            $query = $wpdb->get_results('SELECT ID, post_title FROM '.$wpdb->prefix.'posts WHERE post_type = "' . $_POST["post_type"] . '"');
+            $query = $wpdb->get_results("SELECT ID, post_title FROM {$wpdb->prefix}posts WHERE post_type = '" . $_POST["post_type"] . "'");
         }
 
         $option = array();
@@ -201,7 +201,7 @@ if (wp_doing_ajax()) {
         if (isset($_POST['post_id'])) {
             $selectedoption = '';
             $table_name = $wpdb->prefix . 'posts';
-            $query = $wpdb->get_results("SELECT p.ID, p.post_title FROM $table_name p INNER JOIN wp_postmeta pm ON p.ID = pm.post_id WHERE pm.meta_value = '" . $_POST['affecting_value'] . "' AND pm.meta_key = '" . $_POST['depending_key'] . "'");
+            $query = $wpdb->get_results("SELECT p.ID, p.post_title FROM $table_name p INNER JOIN {$wpdb->prefix}postmeta pm ON p.ID = pm.post_id WHERE pm.meta_value = '" . $_POST['affecting_value'] . "' AND pm.meta_key = '" . $_POST['depending_key'] . "'");
         }
 
         $option = array();
@@ -242,7 +242,7 @@ if (wp_doing_ajax()) {
 
         if (isset($_POST['customer'])) {
             $table_name = $wpdb->prefix . 'posts';
-            $query = $wpdb->get_results("SELECT c.ID, c.post_title FROM $table_name c INNER JOIN wp_postmeta a ON c.ID = a.post_id WHERE a.meta_value = '" . $_POST['customer'] . "' AND a.meta_key = 'branch_customer'");
+            $query = $wpdb->get_results("SELECT c.ID, c.post_title FROM $table_name c INNER JOIN {$wpdb->prefix}postmeta a ON c.ID = a.post_id WHERE a.meta_value = '" . $_POST['customer'] . "' AND a.meta_key = 'branch_customer'");
         }
         $choices = array();
 
@@ -274,7 +274,7 @@ if (wp_doing_ajax()) {
         global $wpdb;
         if (isset($_POST['customer'])) {
             $table_name = $wpdb->prefix . 'posts';
-            $query = $wpdb->get_results("SELECT c.ID, c.post_title FROM $table_name c INNER JOIN wp_postmeta a ON c.ID = a.post_id WHERE a.meta_value = '" . $_POST['customer'] . "' AND a.meta_key = 'kit_customer'");
+            $query = $wpdb->get_results("SELECT c.ID, c.post_title FROM $table_name c INNER JOIN {$wpdb->prefix}postmeta a ON c.ID = a.post_id WHERE a.meta_value = '" . $_POST['customer'] . "' AND a.meta_key = 'kit_customer'");
         }
 
         $choices = array();
@@ -297,10 +297,10 @@ if (wp_doing_ajax()) {
         $table_name = $wpdb->prefix . 'postmeta';
         if (isset($_POST['user_id'])) {
             $kit_selected = get_user_meta($_POST['user_id'], $_POST['user_data'], true);
-            $kits = $wpdb->get_results("SELECT b.ID, b.post_title FROM $table_name a INNER JOIN wp_posts b on a.post_id = b.ID WHERE a.meta_value = '" . $_POST['customer'] . "' and a.meta_key = '" . $_POST['data_name'] . "'");
+            $kits = $wpdb->get_results("SELECT b.ID, b.post_title FROM $table_name a INNER JOIN {$wpdb->prefix}posts b on a.post_id = b.ID WHERE a.meta_value = '" . $_POST['customer'] . "' and a.meta_key = '" . $_POST['data_name'] . "'");
         } else {
             $kit_selected = get_post_meta($_POST['meta_id'], $_POST['user_data']);
-            $kits = $wpdb->get_results("SELECT b.ID, b.post_title FROM $table_name a INNER JOIN wp_posts b on a.post_id = b.ID WHERE a.meta_value = '" . $_POST['customer'] . "' and a.meta_key = '" . $_POST['data_name'] . "'");
+            $kits = $wpdb->get_results("SELECT b.ID, b.post_title FROM $table_name a INNER JOIN {$wpdb->prefix}posts b on a.post_id = b.ID WHERE a.meta_value = '" . $_POST['customer'] . "' and a.meta_key = '" . $_POST['data_name'] . "'");
         }
 
         foreach ($kits as $post) {
@@ -332,8 +332,8 @@ if (wp_doing_ajax()) {
 
         global $wpdb;
         $table_name = $wpdb->prefix . 'postmeta';
-        $query_posts_meta = $wpdb->get_results('SELECT meta_key, meta_value FROM `wp_postmeta` WHERE `post_id` = ' . $_POST['post_id']);
-        $kits = $wpdb->get_results("SELECT b.ID, b.post_title FROM $table_name a INNER JOIN wp_posts b on a.post_id = b.ID WHERE a.meta_value = '" . $_POST['customer'] . "' and a.meta_key = '" . $_POST['data_name'] . "'");
+        $query_posts_meta = $wpdb->get_results("SELECT meta_key, meta_value FROM {$wpdb->prefix}postmeta WHERE 'post_id' = " . $_POST['post_id']);
+        $kits = $wpdb->get_results("SELECT b.ID, b.post_title FROM $table_name a INNER JOIN {$wpdb->prefix}posts b on a.post_id = b.ID WHERE a.meta_value = '" . $_POST['customer'] . "' and a.meta_key = '" . $_POST['data_name'] . "'");
 
         foreach ($query_posts_meta as $post_meta) {
             $posts_meta[$post_meta->meta_key] = $post_meta->meta_value;
@@ -544,7 +544,7 @@ if (wp_doing_ajax()) {
         }
 
         if ($_POST['stock_status']) {
-            $has_stock_status = $wpdb->get_results("SELECT a.ID FROM  {$wpdb->prefix}postmeta m INNER JOIN wp_posts a ON m.post_id = a.ID WHERE m.meta_key = '_stock_status' AND a.post_status = 'publish' AND m.meta_value = '" . $_POST['stock_status'] . "'");
+            $has_stock_status = $wpdb->get_results("SELECT a.ID FROM  {$wpdb->prefix}postmeta m INNER JOIN {$wpdb->prefix}posts a ON m.post_id = a.ID WHERE m.meta_key = '_stock_status' AND a.post_status = 'publish' AND m.meta_value = '" . $_POST['stock_status'] . "'");
             foreach ($has_stock_status as $post) {
                 $posts_stock_status[] = $post->ID;
             }
@@ -609,7 +609,7 @@ if (wp_doing_ajax()) {
             post_type = 'product' 
             AND post_status = 'publish' 
             AND post_title LIKE '"% $searchText %"' 
-            UNION (SELECT p.* FROM {$wpdb->prefix}posts as p JOIN wp_postmeta as pm on p.ID = pm.post_id 
+            UNION (SELECT p.* FROM {$wpdb->prefix}posts as p JOIN {$wpdb->prefix}postmeta as pm on p.ID = pm.post_id 
             WHERE p.post_type = 'product' 
             AND p.post_status = 'publish' AND pm.meta_key = '_sku' 
             AND pm.meta_value LIKE '"% $searchText %"')");
