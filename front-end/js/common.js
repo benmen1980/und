@@ -1,4 +1,7 @@
 jQuery(function ($) {
+    
+    //Show shipping select in checkout
+    jQuery('#cart-shipping-list').select2();
 
     $('.unidress-mobile-header').on('click', '.search', function () {
         $('.unidress-mobile-header').find('.site-search').toggle()
