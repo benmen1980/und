@@ -234,110 +234,177 @@ function show_shipping_option_in_checkout() {
 	if (!is_user_logged_in())
 		return;
 
-	$user_id        = get_current_user_id();
+    $user_id        = get_current_user_id();
 	$customer_id    = get_user_meta($user_id, 'user_customer', true);
 	$campaign_id    = get_post_meta($customer_id, 'active_campaign', true);
 	$shops_checked  = get_post_meta($campaign_id, 'shops', true);
-	$shipping_allow = get_post_meta($campaign_id, 'shipping_allow', true);
+    $shipping_allow = get_post_meta($campaign_id, 'shipping_allow', true);
+    
 
-	if (empty($customer_id) || empty($campaign_id) || empty($shops_checked)) {
+    
+    $user = wp_get_current_user();
+    $list = get_field('field_5fd9d7c5bb008', 'user_' . $user->ID);
+    $select_all = get_field('field_600689fd97935', 'user_' . $user->ID);
+    if (empty($shops_checked) && ($shipping_allow==0) && empty($list) && !$select_all) {
 		return;
 	}
+    if (!empty($shops_checked)){
+        $shops = get_posts( array(
+            'numberposts' => -1,
+            'include' => $shops_checked,
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'post_type' => 'shop',
+            'suppress_filters' => true,
+        ) );
+    }
 
-	$shops = get_posts( array(
-		'numberposts' => -1,
-		'include' => $shops_checked,
-		'orderby' => 'date',
-		'order' => 'DESC',
-		'post_type' => 'shop',
-		'suppress_filters' => true,
-	) );
-	$output = '';
+    if($select_all || $list){
+        if($select_all){
+            $shops_branch = get_posts( array(
+                'numberposts' => -1,
+                'orderby'     => 'date',
+                'order'       => 'DESC',
+                'post_type'   => 'branch',
+                'suppress_filters' => true,
+            ) );
+        }
+        else{
+            if ($list) {
+                foreach($list as $key=>$value){
+                    $branches[] = $value->ID;
+                }
+                $shops_branch = get_posts( array(
+                    'numberposts' => -1,
+                    'orderby'     => 'date',
+                    'order'       => 'DESC',
+                    'include'     => $branches,
+                    'post_type'   => 'branch',
+                    'suppress_filters' => true,
+                ) );
+            }
+        }
+        $output = '';
 
-	$output .= '<table>';
-	$output .= '<tbody>';
+        $output .= '<table>';
+        $output .= '<tbody>';
+        $output .= '<tr class="order-shipping">';
+        $output .= '<th>'. esc_html__( 'Shipping to your Branch', 'unidress' ) .'</th>';
+        $output .= '<td>';
+        $output .= '<select class="cart-shipping-list" id="cart-shipping-list">';
+    
+        foreach( $shops_branch as $key => $shop ){
+            $output .= '<option value="' . $shop->ID . '">';
+            $output .=			$shop->post_title;
+            $output .= '</option>';
+        }
+        $output .= '</select>';
+        $output .= '</td>';
+        $output .= '</tr>';
+        $output .= '</tbody>';
+        $output .= '</table>';
 
-	if (!empty($shops)) {
+    }
+    else{
+        if (!empty($shops)) {
+            $output .= '<table>';
+            $output .= '<tbody>';
+            $output .= '<tr class="order-shipping">';
+            $output .= '<th>'. esc_html__( 'Shipping to Unidress Shop', 'unidress' ) .'</th>';
+            $output .= '<td>';
+    
+            foreach( $shops as $shop ){
+    
+                $output .= '<ul class="cart-shipping-list">';
+                $output .= '	<li>';
+                $output .= '		<label>';
+                $output .= '			<input type="radio" name="unidress_shipping" value="' . $shop->ID . '">';
+                $output .=				$shop->post_title;
+                $output .= '		</label>';
+                $output .= '	</li>';
+                $output .= '</ul>';
+    
+            }
+    
+            $output .= '</td>';
+            $output .= '</tr>';
+            $output .= '</tbody>';
+            $output .= '</table>';
+        }
+    
+        if ($shipping_allow) {
+    
+            $user_branch = get_user_meta($user_id, 'user_branch', true);
 
-		$output .= '<tr class="order-shipping">';
-		$output .= '<th>'. esc_html__( 'Shipping to Unidress Shop', 'unidress' ) .'</th>';
-		$output .= '<td>';
+            if (!$user_branch){
+                return;
+            }
+            $shop = get_post($user_branch);
+            
+            $output = '';
 
-		foreach( $shops as $shop ){
+            $output .= '<table>';
+            $output .= '<tbody>';
+            $output .= '<tr class="order-shipping hh">';
+            $output .= '<th>'. esc_html__( 'Shipping to your Branch', 'unidress' ) .'</th>';
+            $output .= '<td>';
+    
+            $title = $shop->post_title . ' - ' . get_post_meta($user_branch, 'branch_address', true);
+    
+            $output .= '<ul class="cart-shipping-list">';
+            $output .= '	<li>';
+            $output .= '		<label>';
+            $output .= '			<input type="radio" name="unidress_shipping" value="' . $user_branch . '" checked="checked">';
+            $output .=				$title;
+            $output .= '		</label>';
+            $output .= '	</li>';
+            $output .= '</ul>';
+    
+            $output .= '</td>';
+            $output .= '</tr>';
+            $output .= '</tbody>';
+            $output .= '</table>';
+    
+        } else {
+    
+            $shops_branch = get_posts( array(
+                'numberposts' => -1,
+                'orderby'     => 'date',
+                'order'       => 'DESC',
+                'include'     => $shops_checked,
+                'post_type'   => 'branch',
+                'suppress_filters' => true,
+            ) );
+    
+            if (!empty($shops_branch)) {
+                $output = '';
+                $output .= '<table>';
+                $output .= '<tbody>';
+                $output .= '<tr class="order-shipping">';
+                $output .= '<th>'. esc_html__( 'Shipping to your Branch', 'unidress' ) .'</th>';
+                $output .= '<td>';
+                $output .= '<ul class="cart-shipping-list">';
+    
+                foreach( $shops_branch as $key => $shop ){
+                    $output .= '<li>';
+                    $output .= '	<label>';
+                    $output .= '		<input type="radio" name="unidress_shipping" value="' . $shop->ID . '">';
+                    $output .=			$shop->post_title;
+                    $output .= '	</label>';
+                    $output .= '</li>';
+                }
+    
+                $output .= '</ul>';
+                $output .= '</td>';
+                $output .= '</tr>';
+                $output .= '</tbody>';
+	            $output .= '</table>';
+            }
+    
+        }
+    }
 
-			$output .= '<ul class="cart-shipping-list">';
-			$output .= '	<li>';
-			$output .= '		<label>';
-			$output .= '			<input type="radio" name="unidress_shipping" value="' . $shop->ID . '">';
-			$output .=				$shop->post_title;
-			$output .= '		</label>';
-			$output .= '	</li>';
-			$output .= '</ul>';
-
-		}
-
-		$output .= '</td>';
-	}
-
-
-	if ($shipping_allow) {
-
-		$user_branch = get_user_meta($user_id, 'user_branch', true);
-		$shop = get_post($user_branch);
-
-		$output .= '<tr class="order-shipping">';
-		$output .= '<th>'. esc_html__( 'Shipping to your Branch', 'unidress' ) .'</th>';
-		$output .= '<td>';
-
-		$title = $shop->post_title . ' - ' . get_post_meta($user_branch, 'branch_address', true);
-
-		$output .= '<ul class="cart-shipping-list">';
-		$output .= '	<li>';
-		$output .= '		<label>';
-		$output .= '			<input type="radio" name="unidress_shipping" value="' . $user_branch . '" checked="checked">';
-		$output .=				$title;
-		$output .= '		</label>';
-		$output .= '	</li>';
-		$output .= '</ul>';
-
-		$output .= '</td>';
-		$output .= '</tr>';
-
-	} else {
-
-		$shops_branch = get_posts( array(
-			'numberposts' => -1,
-			'orderby'     => 'date',
-			'order'       => 'DESC',
-			'include'     => $shops_checked,
-			'post_type'   => 'branch',
-			'suppress_filters' => true,
-		) );
-
-		if (!empty($shops_branch)) {
-			$output .= '<tr class="order-shipping">';
-			$output .= '<th>'. esc_html__( 'Shipping to your Branch', 'unidress' ) .'</th>';
-			$output .= '<td>';
-			$output .= '<ul class="cart-shipping-list">';
-
-			foreach( $shops_branch as $key => $shop ){
-				$output .= '<li>';
-				$output .= '	<label>';
-				$output .= '		<input type="radio" name="unidress_shipping" value="' . $shop->ID . '">';
-				$output .=			$shop->post_title;
-				$output .= '	</label>';
-				$output .= '</li>';
-			}
-
-			$output .= '</ul>';
-			$output .= '</td>';
-			$output .= '</tr>';
-		}
-
-	}
-
-	$output .= '</tbody>';
-	$output .= '</table>';
+	
 
 	echo $output;
 }
