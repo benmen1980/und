@@ -307,7 +307,8 @@ function unidress_update_cart_validation($passed_validation)
 	// budget limits check
 	if ($customer_ordering_style == 'standard' && $customer_type == 'campaign') {
 
-		$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+        $user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+        $user_budget_left   = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
 		$private_purchase_amount = get_post_meta($campaign_id, 'private_purchase_amount',  true);
 		$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
 		
@@ -326,10 +327,12 @@ function unidress_update_cart_validation($passed_validation)
 			$private_amt = 0;
 		}
 		$new_budget_in_kit = (float)($budget_in_kit + $private_amt);
-		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$amount;
+        $new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$amount;
+        $balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
 		if ($user_roles != 'hr_manager') {
 			// echo 'new_budget_in_kit :'.$new_budget_in_kit;
-			// echo 'new_budget_ limit :'.$new_budget_limits; die;
+            // echo 'new_budget_ limit :'.$new_budget_limits; die;
+            
 			if ( $new_budget_in_kit < $new_budget_limits) {
 				$passed_validation = false;
 				wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
@@ -918,7 +921,6 @@ if ((get_ordering_style($current_customer) == 'standard') && (get_customer_type(
 add_action('woocommerce_checkout_process', 'check_group_limit');
 function check_group_limit()
 {
-
 	//user data
 	$user_id = get_current_user_id();
 	$user = get_userdata($user_id);
@@ -971,7 +973,8 @@ function check_group_limit()
 	// budget limits check
 	if ($customer_type == 'campaign' && $customer_ordering_style == 'standard') {
 
-		$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+        $user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+        $user_budget_left   = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
 		$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
 		$total = WC()->cart->get_totals('total')['total'];
@@ -982,11 +985,16 @@ function check_group_limit()
 		else{
 			$private_amt = 0;
 		}
-		$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
+        $new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
+
+        $subtotal = WC()->cart->get_subtotal(true);
+        $balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
 
 		if ($user_roles != 'hr_manager') {
-			if ($budget_in_kit < $new_budget_limits)
-				throw new Exception(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'));
+            //if ($budget_in_kit < $new_budget_limits) {
+            //change 21/01 - elicheva- condition was not right - i don't understand what is new budget limit
+            if ($balance < 0) 
+                throw new Exception(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'));
 		}
 	}
 
@@ -1441,12 +1449,12 @@ function get_budget_banner()
 			
 			if($min_order_charge > 0 && $subtotal < $min_order_charge && $subtotal != 0) {
 				
-				$finaltotal = $subtotal + WC()->cart->fee_total;
+                $finaltotal = $subtotal + WC()->cart->fee_total;
+               
 			}else{
 				
 				$finaltotal = $subtotal;
 			}
-
 			if ($user_roles != 'hr_manager') {
 				?>
 				<div class="user-budget-bar"><?php echo esc_attr__('Budget Balance', 'unidress') ?>: <span class="remaining-budget"><?php echo (float)($budget_in_kit - (int)$user_budget_left - ($finaltotal + $tax)  ); ?></span><span class="woocommerce-Price-currencySymbol"> <?php echo get_woocommerce_currency_symbol() ?> </span></div>
@@ -1670,6 +1678,8 @@ add_action('woocommerce_after_checkout_form', function () {
 		add_action('woocommerce_add_to_cart_validation', 'unidress_add_to_cart_validation', 20, 3);
 		function unidress_add_to_cart_validation($output, $add_product_id, $add_quantity)
 		{
+
+
 			$user_id = get_current_user_id();
 			$user = get_userdata($user_id);
 			$user_roles = $user->roles[0];
@@ -1786,9 +1796,11 @@ add_action('woocommerce_after_checkout_form', function () {
 					}
 
 					if(!empty($private_purchase_amount) && $private_purchase_amount > 0 ) {
-						//$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal + $private_purchase_amount; // - $product_price_added_total ;
-						$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal - $product_price_added_total + $private_purchase_amount ;
-						
+                        
+                        // elicheva - 20/01 the balance was not right,
+                        //i don't understand how they calculate the balance
+                        $balance = $budget_in_kit - (int)$user_budget_left - $subtotal - $product_price_added_total + $private_purchase_amount ;
+
 						/*$halfbalance = $budget_in_kit - (int)$user_budget_left + $private_purchase_amount;
 						
 						if($ordertotal > $halfbalance) {
@@ -1797,10 +1809,10 @@ add_action('woocommerce_after_checkout_form', function () {
 							$show_error = 0;
 						}*/
 					}else {
-
-						//$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal; //- $product_price_added_total;
-						$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal - $product_price_added_total;
-
+                        //$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal - $product_price_added_total;
+                        // elicheva - 20/01 the balance was not right,
+                        //i don't understand how they calculate the balnce
+                        $balance = $budget_in_kit - (int)$user_budget_left - $subtotal - $product_price_added_total;
 						/*if($ordertotal > $balance  && (empty($private_purchase_amount) || $private_purchase_amount == 0)) {
 							$show_error = 1;
 						}else{
@@ -1809,14 +1821,11 @@ add_action('woocommerce_after_checkout_form', function () {
 						
 
 					}
-					// pr($user_roles);
-					// pr($user_roles);
-					// pr($balance);
-					// die;
-
+					//pr($balance);
 					if ($user_roles != 'hr_manager') {
 						//if ($show_error == 1) {
 						if($balance < 0) {
+                            //echo 'enter balance negative';
 							wc_add_notice(__('You are exceeding your budget, this product cannot be added to cart.', 'unidress'), 'error');
 							$output = false;
 						}
@@ -1964,8 +1973,12 @@ add_action('woocommerce_after_checkout_form', function () {
 				}
 				$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 				$subtotal = WC()->cart->get_subtotal(true);
-				$total = WC()->cart->get_totals('total')['total'];
-				$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
+                $total = WC()->cart->get_totals('total')['total'];
+                
+                //$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
+                //change 21/01 - balance was not right
+                $balance = $budget_in_kit - (int)$user_budget_left - $subtotal - $product_price_added_total + $private_purchase_amount ;
+        
 
 				if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
 					$private_amt = $private_purchase_amount;
@@ -1973,12 +1986,14 @@ add_action('woocommerce_after_checkout_form', function () {
 				else{
 					$private_amt = 0;
 				}
-				
-				$new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
+                $unidress_budget =  $budget_in_kit + $private_amt;
 
+                $new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
+                
 				if ($user_roles != 'hr_manager') {
-					if ($budget_in_kit < $new_budget_limits) {
-					//if ($balance < 0) {
+					//if ($budget_in_kit < $new_budget_limits) {
+                    //change 21/01 - elicheva- condition was not right - i don't understand what is new budget limit
+					if ($balance < 0) {
 						wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
 						$output = true;
 					}
