@@ -720,7 +720,6 @@ if (wp_doing_ajax()) {
             }
             
             $usercoupon = get_user_meta($user_id,'last_used_coupon',true);
-	        //echo $usercoupon;
             $coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$usercoupon}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ",ARRAY_A);
 			$additionalfee = get_post_meta( $coupon_results[0]['ID'], 'coupon_amount' ,true);
                 //echo 'additional fee'; print_r($additionalfee);
@@ -731,8 +730,20 @@ if (wp_doing_ajax()) {
 			}
             $amount = $finaltotal + $tax ;
 
-            $budget_total = (int)$budget_in_kit - (int)$user_budget_left - (int)$amount;
+            // echo 'budgets_in_campaign ='.$budgets_in_campaign.'<br>';
+            // echo 'unidress_budget = '.$unidress_budget.'<br>'; 
+            // echo 'budget in kit ='.$budget_in_kit.'<br>';
+            // echo 'budget left = '.$user_budget_left.'<br>'; 
+            // echo 'bubget limit';
+            // var_dump($user_budget_limits);
+            
+            // echo 'amount ='.$amount.'<br>';
+            // echo 'total = '.$total.'<br>';
+            // echo 'subtotal = '.$subtotal.'<br>';
 
+            //$budget_total = (int)$budget_in_kit - (int)$user_budget_left - (int)$amount;
+            // change 21/01/2021
+            $budget_total = (float)($budget_in_kit - (int)$user_budget_left - ($subtotal + $tax));
             echo $budget_total;
         }
         die();
