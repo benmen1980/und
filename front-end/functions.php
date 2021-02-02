@@ -1,4 +1,6 @@
 <?php
+
+
 define('MY_PLUGIN_ROOT_FRONT', MY_PLUGIN_ROOT . '/front-end');
 $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 require_once MY_PLUGIN_ROOT_FRONT . '/include/functions/functions.php';
@@ -45,7 +47,7 @@ add_action( 'woocommerce_cart_calculate_fees', 'bbloomer_add_checkout_fee',20,1 
 function bbloomer_add_checkout_fee($cart) {
    // Edit "Fee" and "5" below to control Label and Amount
 	
-   $user_id = get_current_user_id();
+    $user_id = get_current_user_id();
 	$user = get_userdata($user_id);
 
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
@@ -57,11 +59,80 @@ function bbloomer_add_checkout_fee($cart) {
 	$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
 	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 	$subtotal = WC()->cart->get_subtotal(true);
+
+
+
 	if($min_order_charge > 0 && $subtotal < $min_order_charge ){
 		
 		$cart->add_fee('Shipping Price', $shipping_price,true,'standard');
 	}
 }
+
+// define the woocommerce_before_calculate_totals callback 
+function recalculate_totals( $cart ) { 
+
+	$user_id = get_current_user_id();
+	$user = get_userdata($user_id);
+	$kit_id             = get_user_meta($user_id, 'user_kit', true);
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+	$user_budget_left = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
+	
+	$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
+	$unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
+	if ($unidress_budget > 0) {
+		$budget_in_kit = $unidress_budget;
+	} else {
+		$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0;
+	}
+	$amount_total = (int)WC()->cart->get_subtotal();
+	$private_purchase_amount = get_post_meta($campaign_id, 'private_purchase_amount',  true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
+
+	if(($user_budget_left) > $budget_in_kit){
+		//that means that we already used all the budget
+		$final_total = $amount_total;
+		if( WC()->cart->fee_total){
+			$fee = (int)WC()->cart->fee_total;
+			$final_total+= $fee;
+		}
+		if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
+			$tax =  WC()->cart->get_subtotal_tax();
+			$final_total+= $tax;
+		}
+	}
+	else{
+		if($private_purchase_amount){
+			if($amount_total > ((int)$budget_in_kit - (int)$user_budget_left)){
+				$final_total = $amount_total;
+				if( WC()->cart->fee_total){
+					$fee = (int)WC()->cart->fee_total;
+					$final_total+= $fee;
+				}
+				if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
+					$tax =  WC()->cart->get_subtotal_tax();
+					$final_total+= $tax;
+				}
+			}
+			else{
+				$final_total = 0;
+			}
+		   
+		}
+		else{
+			$final_total = 0;
+		} 
+		
+	}
+
+	$amount_total = $final_total ;
+	
+
+}; 
+         
+// add the action 
+add_action( 'woocommerce_before_calculate_totals', 'recalculate_totals', 20, 1 ); 
 
 /**
  * Output the variable product add to cart area.
@@ -690,6 +761,7 @@ function filter_woocommerce_cart_product_subtotal( $product_subtotal, $product, 
 			}
 		}
 	} else {
+		$price = $product->get_price();
 		$row_price        = $price * $quantity;
 		$product_subtotal = wc_price( $row_price );
 	}
@@ -1228,7 +1300,8 @@ function wc_exclude_tax_cart_total( $total, $instance ) {
 
 	return $total;
 }
-add_filter( 'woocommerce_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
+//add_filter( 'woocommerce_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
+
 //add_filter( 'woocommerce_subscriptions_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
 
 
@@ -1479,7 +1552,9 @@ function custom_logo_url($html)
 	if (is_user_logged_in()) {
 		if ($image) {
 			$url = $image['url'];
-			$html .= '<center><img src="' . $url . '" />' . $customer_name . '</center>';
+			// T 167- remove customer name below logo 27/01/2021
+			//$html .= '<center><img src="' . $url . '" />' . $customer_name . '</center>';
+			$html .= '<center><img src="' . $url . '" /></center>';
 		} else {
 			if ($customer_logo) {
 				$url = network_site_url();
@@ -1606,10 +1681,11 @@ add_filter('woocommerce_checkout_fields', function ($field) {
 	unset($field['billing']['billing_city']);
 	unset($field['billing']['billing_state']);
 	unset($field['billing']['billing_postcode']);
+	unset($field['billing']['billing_company']);
 	$field['unidress_shipping'] = array(
 		'unidress_shipping' => array(
 			'class'       => array('notes'),
-			'required'    => $required,
+			'required'    => true,
 			'label'       => __('Choose Shipping', 'unidress'),
 		),
 	);
@@ -1973,8 +2049,8 @@ add_action('woocommerce_after_checkout_form', function () {
 				}
 				$private_purchase_amount 	= get_post_meta($campaign_id, 'private_purchase_amount',  true);
 				$subtotal = WC()->cart->get_subtotal(true);
-                $total = WC()->cart->get_totals('total')['total'];
-                
+                //$total = WC()->cart->get_totals('total')['total'];
+                $total = WC()->cart->get_cart_total();
                 //$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
                 //change 21/01 - balance was not right
                 $balance = $budget_in_kit - (int)$user_budget_left - $subtotal - $product_price_added_total + $private_purchase_amount ;
@@ -2056,7 +2132,9 @@ function unidress_header_template()
 {
 	//add unidress logo
 	add_action('storefront_header', function () {
-		echo '<div class="unidress-logo"><img src="' . plugins_url('/unidress/unidress-logo.png') . '"></div>';
+        $custom_logo_id = get_theme_mod( 'custom_logo' );
+		$image = wp_get_attachment_image_src( $custom_logo_id , 'full' );
+		echo '<div class="unidress-logo"><img src="'.$image[0].'" alt=""></div>';
 	}, 40);
 
 	//move search bat to cart
@@ -2600,92 +2678,91 @@ function discount_on_order() {
 
 	$amount = ($subtotal + $tax + $additionalfee );
 
+	if(($user_budget_left) > $budget_in_kit){
+		$final_amount = 0;
+	}
+	else{
+		if($private_purchase_amount){
+			if($amount > ((int)$budget_in_kit - (int)$user_budget_left)){
+				$final_amount = (int)$budget_in_kit - (int)$user_budget_left;
+			}
+			else{
+				$final_amount = $amount;
+			}
+			
+		}
+		else{
+			$final_amount = $amount;
+		}    
+	}
+
+
 	$displaybudget = (float)($budget_in_kit - (int)$user_budget_left );
 	//$amount = WC()->cart->get_totals('total')['total']; // Amount
 	$rdnm = mt_rand(1111,9999);
     $coupon_code = 'uni_budget_'.$rdnm; 
 	$discount_type = 'fixed_cart'; // Type: fixed_cart, percent, fixed_product, percent_product
 	$usercoupon = get_user_meta($user_id,'last_used_coupon',true);
-	//echo $usercoupon;
+	//echo $usercoupon; 
 	$coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$usercoupon}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ", ARRAY_A);
-	
 	if(!empty($coupon_results)) {
-			
+
 		if(get_post_meta($coupon_results[0]['ID'],'usage_count',true) == '0') {
-				$preamount = get_post_meta($coupon_results[0]['ID'],'coupon_amount',true);
-				 if($preamount == $amount) {
-				 	
-				 	$finalamt = $amount;
-				 }
-				 else if($amount <= $displybudget && (empty($private_purchase_amount) || $private_purchase_amount == 0) ) { //case1
-				 	
-				 	$finalamt = $amount;
-				 }
-				 else if($amount > $displybudget && (!empty($private_purchase_amount) || $private_purchase_amount > 0 )){
-				 	
-				 	$finalamt = $displaybudget;
-				 }
-				 else {
-				 	 if($displybudget < 0) {
-				 	 	
-					 	$finalamt = $displaybudget;
-						//$finalamt = $amount - abs($displybudget);
-					}
-					else {
-						$finalamt = (float)$amount; //+ (float)$preamount; 
-					}
-				}
-				update_post_meta( $coupon_results[0]['ID'], 'coupon_amount', $finalamt );
-			    WC()->cart->apply_coupon( $usercoupon );
+            update_post_meta( $coupon_results[0]['ID'], 'coupon_amount', $final_amount );
+ 
+			WC()->cart->apply_coupon( $usercoupon );
+		}
+		else {
+			$coupon = array(
+				'post_title' => $coupon_code,
+				'post_content' => '',
+				'post_author' => $user_id,
+				'post_status' => 'publish',
+				'post_type' => 'shop_coupon'
+            );  
+            
+            $new_coupon_id = wp_insert_post( $coupon );
 
-			    
-			}else {
-				$coupon = array(
-				    'post_title' => $coupon_code,
-				    'post_content' => '',
-				    'post_author' => $user_id,
-				    'post_status' => 'publish',
-				    'post_type' => 'shop_coupon'
-				);    
+			// Add meta
+			update_post_meta( $new_coupon_id, 'discount_type', $discount_type );
+			update_post_meta( $new_coupon_id, 'coupon_amount', $final_amount );
+			update_post_meta( $new_coupon_id, 'usage_limit', '1' );
+			update_post_meta( $new_coupon_id, 'usage_limit_per_user', '1' );
+			update_post_meta( $new_coupon_id, 'usage_count', '0' );
+			update_user_meta($user_id,'last_used_coupon',$coupon_code);
+			
 
-				$new_coupon_id = wp_insert_post( $coupon );
-
-				// Add meta
-				update_post_meta( $new_coupon_id, 'discount_type', $discount_type );
-				update_post_meta( $new_coupon_id, 'coupon_amount', $amount );
-				update_post_meta( $new_coupon_id, 'usage_limit', '1' );
-				update_post_meta( $new_coupon_id, 'usage_limit_per_user', '1' );
-				update_post_meta( $new_coupon_id, 'usage_count', '0' );
-				update_user_meta($user_id,'last_used_coupon',$coupon_code);
-				
-
-			    WC()->cart->apply_coupon( $coupon_code );
-			}
+			WC()->cart->apply_coupon( $coupon_code );
+		}
 
 
-	}else{
+	}
+	//first time - user doesn't have any coupon 
+	//create coupon and insert total tocoupon amount
+	else{
 		//echo 'coupon created';
 		$coupon = array(
-		    'post_title' => $coupon_code,
-		    'post_content' => '',
-		    'post_author' => $user_id,
-		    'post_status' => 'publish',
-		    'post_type' => 'shop_coupon'
+			'post_title' => $coupon_code,
+			'post_content' => '',
+			'post_author' => $user_id,
+			'post_status' => 'publish',
+			'post_type' => 'shop_coupon'
 		);    
 
 		$new_coupon_id = wp_insert_post( $coupon );
 
 		// Add meta
 		update_post_meta( $new_coupon_id, 'discount_type', $discount_type );
-		update_post_meta( $new_coupon_id, 'coupon_amount', $amount );
+		update_post_meta( $new_coupon_id, 'coupon_amount', $final_amount );
 		update_post_meta( $new_coupon_id, 'usage_limit', '1' );
 		update_post_meta( $new_coupon_id, 'usage_limit_per_user', '1' );
 		update_post_meta( $new_coupon_id, 'usage_count', '0' );
 		update_user_meta($user_id,'last_used_coupon',$coupon_code);
 		
-	    WC()->cart->apply_coupon( $coupon_code );
+		WC()->cart->apply_coupon( $coupon_code );
 		
 	}
+	
 	
 }
 //T39
@@ -2711,4 +2788,24 @@ function unidress_unset_wc_phone_field( $fields ) {
 		$fields['billing']['billing_phone']['required'] = true;
 	}
 	return $fields;
+}
+
+
+//  Redirect User Login to Homepage
+add_action('login_form','my_added_login_field');
+function my_added_login_field(){
+    //Output your HTML
+?>
+	<input type="hidden" name="redirect" value="<?php echo get_home_url(); ?>" />
+<?php
+}
+
+
+// remove error: "Coupon code already applied!"
+// the error code of this message is 103
+
+add_filter( 'woocommerce_coupon_error', 'wp_coupon_error', 10, 2 );
+
+function wp_coupon_error( $err, $err_code ) {
+	return ( '103' == $err_code ) ? '' : $err;
 }
