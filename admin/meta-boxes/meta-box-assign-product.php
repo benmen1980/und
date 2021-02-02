@@ -57,6 +57,8 @@ function table_product_to_campaign()
     global $post;
     wp_nonce_field(basename(__FILE__), 'table_product_to_campaign_nonce');
     wp_enqueue_script('product-assign-campaign-js', plugins_url('/unidress/admin/js/product-assign-campaign.js'), array('jquery'));
+    // The wp_localize_script allows us to output the ajax_url path for our script to use.
+    //wp_localize_script('product-assign-campaign-js', 'ajax_obj', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ));
 
     $post_meta  = get_post_meta($post->ID, '', true);
     foreach ($post_meta as $key => $meta) {

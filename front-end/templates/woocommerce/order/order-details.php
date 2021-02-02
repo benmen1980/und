@@ -87,7 +87,6 @@ if ( $show_downloads ) {
 			<?php
 			
 			$get_order_item_totals = $order->get_order_item_totals();
-			
 			foreach ( $get_order_item_totals as $key => $total ) {
 				
 				if ( get_ordering_style($customer_id)=='closed_list' && $key === 'order_total' ){
@@ -100,7 +99,7 @@ if ( $show_downloads ) {
                 <tr>
 
                     <th scope="row"><?php echo $total['label']; ?></th>
-                    <td><?php echo ( 'payment_method' === $key ) ? esc_html( $total['value'] ) : $total['value']; ?></td>
+                    <td><?php echo ( 'payment_method' === $key ) ? esc_html( $total['value'] ) : wp_kses_post( $total['value'] ); ?></td>
                 </tr>
                 <?php
             	//endif;

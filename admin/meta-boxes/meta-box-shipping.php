@@ -291,8 +291,8 @@ function show_shipping_option_in_checkout() {
         $output .= '<tr class="order-shipping">';
         $output .= '<th>'. esc_html__( 'Shipping to your Branch', 'unidress' ) .'</th>';
         $output .= '<td>';
-        $output .= '<select class="cart-shipping-list" id="cart-shipping-list">';
-    
+        $output .= '<select name="unidress_shipping" class="cart-shipping-list" id="cart-shipping-list" data-placeholder="'.__('Choose Shipping','unidress').'">';
+		$output .= '<option></option>';
         foreach( $shops_branch as $key => $shop ){
             $output .= '<option value="' . $shop->ID . '">';
             $output .=			$shop->post_title;

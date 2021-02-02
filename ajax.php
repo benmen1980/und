@@ -410,13 +410,15 @@ if (wp_doing_ajax()) {
         if (isset($_POST['donor']) && $_POST['donor'] && isset($_POST['recipient']) && $_POST['recipient']) {
             $donor = $_POST['donor'];
             $recipient = $_POST['recipient'];
-
+            print_r($data);
             if (isset($data['product_option'][$recipient]))
                 unset($data['product_option'][$recipient]);
             if (isset($data['add_product_to_campaign'][$recipient]))
                 unset($data['add_product_to_campaign'][$recipient]);
             if (isset($data['groups'][$recipient]))
                 unset($data['groups'][$recipient]);
+            if (isset($data['required_products'][$recipient]))
+                unset($data['required_products'][$recipient]);
             if (isset($data['budget'][$recipient]))
                 unset($data['budget'][$recipient]);
 
@@ -424,7 +426,9 @@ if (wp_doing_ajax()) {
             $data['product_option'][$recipient]                 = $data['product_option'][$donor];
             $data['add_product_to_campaign'][$recipient]        = $data['add_product_to_campaign'][$donor];
 
+
             $new_group_id = array();
+            $new_required_id = array();
             if (isset($data['groups'][$donor]) && $data['groups'][$donor]) {
                 foreach ($data['groups'][$donor] as $key => $group) {
                     $new_group_id[$key] = rand();
@@ -436,6 +440,22 @@ if (wp_doing_ajax()) {
                     if (isset($data['groups'][$donor]) && $data['groups'][$donor] && isset($data['product_option'][$donor][$product_id]['groups']) && isset($new_group_id[$data['product_option'][$donor][$product_id]['groups']]))
                         $data['product_option'][$recipient][$product_id]['groups'] = $new_group_id[$data['product_option'][$donor][$product_id]['groups']];
                 }
+            }
+
+            if (isset($data['required_products'][$donor]) && $data['required_products'][$donor]) {
+
+                foreach ($data['required_products'][$donor] as $key => $required_products) {
+                    $new_required_id[$key] = rand();
+                    $data['required_products'][$recipient][$new_required_id[$key]]             = $data['required_products'][$donor][$key];
+                    unset($data['required_products'][$recipient][$key]);
+                }
+
+                foreach ($data['product_option'][$donor] as $pdt_id => $product_option) {
+                    if (isset($data['required_products'][$donor]) && $data['required_products'][$donor] && isset($data['product_option'][$donor][$pdt_id]['required_products']) && isset($new_required_id[$data['product_option'][$donor][$pdt_id]['required_products']]))
+                        $data['product_option'][$recipient][$pdt_id]['required_products'] = $new_required_id[$data['product_option'][$donor][$pdt_id]['required_products']];
+                }
+
+       
             }
         }
 
@@ -720,7 +740,6 @@ if (wp_doing_ajax()) {
             }
             
             $usercoupon = get_user_meta($user_id,'last_used_coupon',true);
-	        //echo $usercoupon;
             $coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$usercoupon}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ",ARRAY_A);
 			$additionalfee = get_post_meta( $coupon_results[0]['ID'], 'coupon_amount' ,true);
                 //echo 'additional fee'; print_r($additionalfee);
@@ -731,8 +750,20 @@ if (wp_doing_ajax()) {
 			}
             $amount = $finaltotal + $tax ;
 
-            $budget_total = (int)$budget_in_kit - (int)$user_budget_left - (int)$amount;
+            // echo 'budgets_in_campaign ='.$budgets_in_campaign.'<br>';
+            // echo 'unidress_budget = '.$unidress_budget.'<br>'; 
+            // echo 'budget in kit ='.$budget_in_kit.'<br>';
+            // echo 'budget left = '.$user_budget_left.'<br>'; 
+            // echo 'bubget limit';
+            // var_dump($user_budget_limits);
+            
+            // echo 'amount ='.$amount.'<br>';
+            // echo 'total = '.$total.'<br>';
+            // echo 'subtotal = '.$subtotal.'<br>';
 
+            //$budget_total = (int)$budget_in_kit - (int)$user_budget_left - (int)$amount;
+            // change 21/01/2021
+            $budget_total = (float)($budget_in_kit - (int)$user_budget_left - ($subtotal + $tax));
             echo $budget_total;
         }
         die();

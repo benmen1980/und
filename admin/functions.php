@@ -1002,7 +1002,12 @@ function unidress_editable_order_meta_general($order) {
 	?>
 
         <br class="clear" />
-        <h4>Shop <a href="#" class="edit_address">Edit</a></h4>
+        <h4>
+			<?php echo esc_html__('Branch', 'unidress')?> 
+			<a href="#" class="edit_address">
+				<?php echo esc_html__('Edit', 'unidress')?> 
+			</a>
+		</h4>
         <?php
 /*
 	 * get all the meta data values we need
@@ -1019,43 +1024,43 @@ function unidress_editable_order_meta_general($order) {
         <div class="edit_address">
 
             <?php //echo do_action('unidress_shipping_select');
-	$customer_id = get_user_meta($user_id, 'user_customer', true);
-	$campaign_id = get_post_meta($customer_id, 'active_campaign', true);
+				$customer_id = get_user_meta($user_id, 'user_customer', true);
+				$campaign_id = get_post_meta($customer_id, 'active_campaign', true);
 
-	$shops_checked = get_post_meta($campaign_id, 'shops', true);
-	$shipping_allow = get_post_meta($campaign_id, 'shipping_allow', true);
+				$shops_checked = get_post_meta($campaign_id, 'shops', true);
+				$shipping_allow = get_post_meta($campaign_id, 'shipping_allow', true);
 
-	$shops = get_posts(array(
-		'numberposts' => -1,
-		'include' => $shops_checked,
-		'orderby' => 'date',
-		'order' => 'DESC',
-		'post_type' => 'shop',
-		'suppress_filters' => true,
-	));
-	$output = '';
-	if (!empty($shops)) {
-		$output .= '<div class="order-shipping">';
-		$output .= '<label><strong>' . esc_html__('Shipping to Unidress Shop', 'unidress') . '</strong></label>';
+				$shops = get_posts(array(
+					'numberposts' => -1,
+					//'include' => $shops_checked,
+					'orderby' => 'date',
+					'order' => 'DESC',
+					'post_type' => 'branch',
+					//'suppress_filters' => true,
+				));
+				$output = '';
+				if (!empty($shops)) {
+					$output .= '<div class="order-shipping">';
+					$output .= '<label><strong>' . esc_html__('Shipping to Branch', 'unidress') . '</strong></label>';
 
-		$output .= '<select class="cart-shipping-list" aria-hidden="true" name="unidress_shipping">';
-		foreach ($shops as $shop) {
+					$output .= '<select class="cart-shipping-list" aria-hidden="true" name="unidress_shipping">';
+					foreach ($shops as $shop) {
 
-			$checked = ($shopdetail->ID == $shop->ID) ? 'selected="selected"' : '';
-			/*$output .= '  <li>';
-            $output .= '        <label>';*/
-			$output .= '            <option  value="' . $shop->ID . '" ' . $checked . ' >';
-			$output .= $shop->post_title;
-			/*$output .= '      </label>';
-            $output .= '    </li>';*/
+						$checked = ($shopdetail->ID == $shop->ID) ? 'selected="selected"' : '';
+						/*$output .= '  <li>';
+						$output .= '        <label>';*/
+						$output .= '            <option  value="' . $shop->ID . '" ' . $checked . ' >';
+						$output .= $shop->post_title;
+						/*$output .= '      </label>';
+						$output .= '    </li>';*/
 
-		}
-		$output .= '</select>';
+					}
+					$output .= '</select>';
 
-		$output .= '</div>';
-	}
+					$output .= '</div>';
+				}
 
-	echo $output;
+				echo $output;
 	?>
 
             </div>
@@ -1069,3 +1074,4 @@ function unidress_save_general_details($ord_id) {
 	update_post_meta($ord_id, 'unidress_shipping', wc_clean($_POST['unidress_shipping']));
 
 }
+
