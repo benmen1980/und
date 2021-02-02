@@ -2792,7 +2792,7 @@ function unidress_unset_wc_phone_field( $fields ) {
 
 
 //  Redirect User Login to Homepage
-
+//this one not working
 add_filter('woocommerce_login_redirect', 'wc_login_redirect');
 function wc_login_redirect( $redirect_to ) {
      $redirect_to = get_home_url();
