@@ -99,6 +99,7 @@ if ($product->get_type() == 'variable') {
                                 <?php 
                                 
                                     foreach ( $attributes as $attribute_name => $options ) : 
+                    
                                         //pr($options);
                                         ?>
                                         <div class="select-wrapper">
@@ -110,10 +111,13 @@ if ($product->get_type() == 'variable') {
                                                         $arr[] = $val;
                                                     }
                                                 }
+                                                    //$selected = isset( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ? wc_clean( urldecode( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ) : $product->get_variation_default_attribute( $attribute_name );
+                                                    $selected = isset( $_POST['submit-'.absint($product->get_id())] ) ? wc_clean( urldecode( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ) : $product->get_variation_default_attribute( $attribute_name );
                                                     wc_dropdown_variation_attribute_options( array(
                                                         'options'   => (!empty($arr)) ? $arr : $options,
                                                         'attribute' => $attribute_name,
                                                         'product'   => $product,
+                                                        'selected' => $selected
                                                     ) );
                                                     echo end( $attribute_keys ) === $attribute_name ? wp_kses_post( apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#">' . esc_html__( 'Clear', 'woocommerce' ) . '</a>' ) ) : '';
                                                 
@@ -128,7 +132,7 @@ if ($product->get_type() == 'variable') {
                     </div>
                 </div>
 
-                <div class="product-add">
+                <div class="product-add" id="product-add-<?php echo  $product->get_id();?>">
 		            <?php
 		            do_action( 'woocommerce_before_single_variation' );
 		            do_action( 'woocommerce_single_variation_closed_list' );

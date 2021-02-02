@@ -77,25 +77,40 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 		?>
 	</tbody>
 	<tfoot>
+        <?php
+        $user_id = get_current_user_id();
+        $kit_id             = get_user_meta($user_id, 'user_kit', true);
+        $customer_id        = get_user_meta($user_id, 'user_customer', true);
+        $campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+        $budgets_in_campaign = implode(get_post_meta($campaign_id, 'budget', true));
+        $user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+        $user_budget_left   = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
+        $subtotal =WC()->cart->get_cart_subtotal();
+        $total = WC()->cart->get_cart_total();
+        //$amount_total = (int)WC()->cart->cart_contents_total;
+        $amount_total = (int)WC()->cart->get_subtotal();
+        $private_purchase_amount = get_post_meta($campaign_id, 'private_purchase_amount',  true);
 
-	<?php if ( get_ordering_style($current_customer) != 'closed_list' ) : ?>
 
-        <tr class="cart-subtotal">
-            <th colspan="2" ><?php _e( 'Subtotal', 'woocommerce' ); ?></th>
-            <td><?php wc_cart_totals_subtotal_html(); ?></td>
-        </tr>
+        ?>
+        <?php if ( get_ordering_style($current_customer) != 'closed_list' ) : ?>
 
-	<?php endif; ?>
+            <tr class="cart-subtotal">
+                <th colspan="2" ><?php _e( 'Subtotal', 'woocommerce' ); ?></th>
+                <td><?php wc_cart_totals_subtotal_html(); ?></td>
+            </tr>
 
-		<?php if ( WC()->cart->needs_shipping() && WC()->cart->show_shipping() ) : ?>
+        <?php endif; ?>
 
-			<?php do_action( 'woocommerce_review_order_before_shipping' ); ?>
+        <?php if ( WC()->cart->needs_shipping() && WC()->cart->show_shipping() ) :?>
+            
+            <?php do_action( 'woocommerce_review_order_before_shipping' ); ?>
 
-			<?php wc_cart_totals_shipping_html(); ?>
+            <?php wc_cart_totals_shipping_html(); ?>
 
-			<?php do_action( 'woocommerce_review_order_after_shipping' ); ?>
+            <?php do_action( 'woocommerce_review_order_after_shipping' ); ?>
 
-		<?php endif; ?>
+        <?php endif; ?>
 
 		<?php foreach ( WC()->cart->get_fees() as $fee ) : ?>
 			<tr class="fee">
@@ -103,10 +118,13 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 				<td><?php wc_cart_totals_fee_html( $fee ); ?></td>
 			</tr>
 		<?php endforeach; ?>
-		<?php foreach ( WC()->cart->get_coupons() as $code => $coupon ) : ?>
+        <?php foreach ( WC()->cart->get_coupons() as $code => $coupon ) : ?>
 			<tr class="cart-discount coupon-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
 				<th colspan="2" ><?php wc_cart_totals_coupon_label( $coupon ); ?></th>
-				<td><?php  echo wc_price($coupon->amount); //wc_cart_totals_coupon_html( $coupon ); ?></td>
+                <?php if(true):?>
+                    <td><?php  echo wc_price($coupon->amount); //wc_cart_totals_coupon_html( $coupon ); ?>
+                    </td>
+                <?php endif;?>
 			</tr>
 		<?php endforeach; ?>
 		<?php if ( wc_tax_enabled() && ! WC()->cart->display_prices_including_tax() ) : ?>
@@ -128,11 +146,15 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 		<?php do_action( 'woocommerce_review_order_before_order_total' ); ?>
 
 	<?php if ( get_ordering_style($current_customer) != 'closed_list' ) : ?>
-
         <tr class="order-total">
-            <th colspan="2" ><?php _e( 'Total', 'woocommerce' ); ?></th>
-            <td><?php wc_cart_totals_order_total_html(); ?></td>
-        </tr>
+                <th colspan="2"><?php _e( 'Total', 'woocommerce' ); ?></th>
+                <td>
+                    <?php
+                    //echo $total;
+                     wc_cart_totals_order_total_html(); 
+                    ?>
+                </td>
+            </tr>
 
 	<?php endif; ?>
 

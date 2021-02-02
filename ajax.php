@@ -410,13 +410,15 @@ if (wp_doing_ajax()) {
         if (isset($_POST['donor']) && $_POST['donor'] && isset($_POST['recipient']) && $_POST['recipient']) {
             $donor = $_POST['donor'];
             $recipient = $_POST['recipient'];
-
+            print_r($data);
             if (isset($data['product_option'][$recipient]))
                 unset($data['product_option'][$recipient]);
             if (isset($data['add_product_to_campaign'][$recipient]))
                 unset($data['add_product_to_campaign'][$recipient]);
             if (isset($data['groups'][$recipient]))
                 unset($data['groups'][$recipient]);
+            if (isset($data['required_products'][$recipient]))
+                unset($data['required_products'][$recipient]);
             if (isset($data['budget'][$recipient]))
                 unset($data['budget'][$recipient]);
 
@@ -424,7 +426,9 @@ if (wp_doing_ajax()) {
             $data['product_option'][$recipient]                 = $data['product_option'][$donor];
             $data['add_product_to_campaign'][$recipient]        = $data['add_product_to_campaign'][$donor];
 
+
             $new_group_id = array();
+            $new_required_id = array();
             if (isset($data['groups'][$donor]) && $data['groups'][$donor]) {
                 foreach ($data['groups'][$donor] as $key => $group) {
                     $new_group_id[$key] = rand();
@@ -436,6 +440,22 @@ if (wp_doing_ajax()) {
                     if (isset($data['groups'][$donor]) && $data['groups'][$donor] && isset($data['product_option'][$donor][$product_id]['groups']) && isset($new_group_id[$data['product_option'][$donor][$product_id]['groups']]))
                         $data['product_option'][$recipient][$product_id]['groups'] = $new_group_id[$data['product_option'][$donor][$product_id]['groups']];
                 }
+            }
+
+            if (isset($data['required_products'][$donor]) && $data['required_products'][$donor]) {
+
+                foreach ($data['required_products'][$donor] as $key => $required_products) {
+                    $new_required_id[$key] = rand();
+                    $data['required_products'][$recipient][$new_required_id[$key]]             = $data['required_products'][$donor][$key];
+                    unset($data['required_products'][$recipient][$key]);
+                }
+
+                foreach ($data['product_option'][$donor] as $pdt_id => $product_option) {
+                    if (isset($data['required_products'][$donor]) && $data['required_products'][$donor] && isset($data['product_option'][$donor][$pdt_id]['required_products']) && isset($new_required_id[$data['product_option'][$donor][$pdt_id]['required_products']]))
+                        $data['product_option'][$recipient][$pdt_id]['required_products'] = $new_required_id[$data['product_option'][$donor][$pdt_id]['required_products']];
+                }
+
+       
             }
         }
 
