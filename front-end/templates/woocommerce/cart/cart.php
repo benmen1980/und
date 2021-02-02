@@ -1,5 +1,6 @@
 <?php
 
+
 defined( 'ABSPATH' ) || exit;
 $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 

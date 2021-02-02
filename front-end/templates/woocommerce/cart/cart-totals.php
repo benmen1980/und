@@ -30,12 +30,16 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 	<table cellspacing="0" class="shop_table shop_table_responsive">
         <?php 
             $user_id = get_current_user_id();
+            $kit_id             = get_user_meta($user_id, 'user_kit', true);
             $customer_id        = get_user_meta($user_id, 'user_customer', true);
             $campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
             $budgets_in_campaign = implode(get_post_meta($campaign_id, 'budget', true));
+            $user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
+            $user_budget_left   = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
             $subtotal =WC()->cart->get_cart_subtotal();
             $total = WC()->cart->get_cart_total();
-            $amount_total = (int)WC()->cart->cart_contents_total;
+            //$amount_total = (int)WC()->cart->cart_contents_total;
+            $amount_total = (int)WC()->cart->get_subtotal();
             $private_purchase_amount = get_post_meta($campaign_id, 'private_purchase_amount',  true);
         ?>
 		<?php if ( get_ordering_style($current_customer) != 'closed_list' ) : ?>
@@ -98,26 +102,15 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 			<?php endif; ?>
 		<?php endif; ?>
 
-        <?php foreach ( WC()->cart->get_coupons() as $code => $coupon ) : 
-            //if $coupon->amount = 0 that means that we already used the coupon
-            if($coupon->amount == 0){
-                $coupon_amount = wc_price(0);
-            }
-            else{
-                if($amount_total == 0){
-                    $coupon_amount = $subtotal;
-                }
-                else{
-                    //that means that we have private purchase
-                    $coupon_amount = wc_price($budgets_in_campaign);
-                }
-            }
+        <?php foreach ( WC()->cart->get_coupons() as $code => $coupon ) :
             ?>
 			<tr class="cart-discount coupon-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
 				<th><?php wc_cart_totals_coupon_label( $coupon ); ?></th>
 				<td data-title="<?php echo esc_attr( wc_cart_totals_coupon_label( $coupon, false ) ); ?>">
-                    <?//php echo wc_price($coupon->amount);//wc_cart_totals_coupon_html( $coupon ); ?>
-                    <?php echo $coupon_amount ?>
+                    <?php if(true):?>
+                        <?php echo wc_price($coupon->amount);//wc_cart_totals_coupon_html( $coupon ); ?>
+                    <?php endif;?>
+                    <?//php echo wc_price($coupon_amount) ?>
                 </td>
 			</tr>
 		<?php endforeach; ?>
@@ -127,10 +120,12 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
             <tr class="order-total">
                 <th><?php _e( 'Total', 'woocommerce' ); ?></th>
                 <td data-title="<?php esc_attr_e( 'Total', 'woocommerce' ); ?>">
-                    <?//php wc_cart_totals_order_total_html();  elicheva- 20/01 
-                    // i think this is a mistake:
-                    // the total is supposed to be: or 0 or the amount of private purchase if has it ?>
-                    <?php echo $total; ?>
+                    <?php
+                    //echo $total;
+                    wc_cart_totals_order_total_html(); 
+                    ?>
+                
+                    
                 </td>
             </tr>
 

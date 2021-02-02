@@ -1,7 +1,12 @@
 jQuery(function ($) {
     
     //Show shipping select in checkout
-    jQuery('#cart-shipping-list').select2();
+    $('#cart-shipping-list').each(function() {
+        var placeholder = $(this).data('placeholder');
+        $(this).select2({
+            placeholder:placeholder,
+        }); 
+    });
 
     $('.unidress-mobile-header').on('click', '.search', function () {
         $('.unidress-mobile-header').find('.site-search').toggle()

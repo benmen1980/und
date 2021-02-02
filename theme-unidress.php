@@ -154,8 +154,9 @@ final class Theme_unidress {
 	 * @return void
 	 */
 	public function theme_unidress_js() {
-		 wp_enqueue_script( 'select2', plugins_url( '/admin/js/select2/js/select2.min.js', __FILE__ ) );
-		wp_enqueue_script( 'common-js', plugins_url( '/unidress/front-end/js/common.js' ), array( 'jquery' ) );
+		wp_enqueue_script( 'select2', plugins_url( '/admin/js/select2/js/select2.min.js', __FILE__ ) );
+        wp_enqueue_script( 'common-js', plugins_url( '/unidress/front-end/js/common.js' ), array( 'jquery' ) );
+        //wp_enqueue_script('View_Campaign_Status-js', plugins_url('/unidress/front-end/js/View_Campaign_Status.js'), array('jquery'));
 	}
 
 	/**

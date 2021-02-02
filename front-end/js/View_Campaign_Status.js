@@ -1,6 +1,5 @@
 console.log('asdasdasd');
 jQuery(document).ready(function(jQuery){
-
     /* update budget on add new product */
     jQuery('.product').on('click', '.ajax_add_to_cart', function () {
         update_unidress_budget();
@@ -29,7 +28,8 @@ function update_unidress_budget() {
     setTimeout(function() {
         jQuery.ajax({
             type: "POST",
-            url: '/wp-admin/admin-ajax.php',
+            //url: '/wp-admin/admin-ajax.php',
+            url: admin_url('admin-ajax.php'),
             data: {
                 action: 'update_unidress_budget',
             },

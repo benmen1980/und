@@ -417,7 +417,8 @@ jQuery('.inside').on('click', '.btn-add-option', function () {
 
     jQuery.ajax({
         type: "POST",
-        url: '/wp-admin/admin-ajax.php',
+        url: admin_url( 'admin-ajax.php' ),
+        //url: '/wp-admin/admin-ajax.php',
         data: {
             'action': 'get_option_row',
             'random_id': random_ID,
