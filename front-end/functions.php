@@ -45,7 +45,7 @@ add_action( 'woocommerce_before_calculate_totals', 'bbloomer_add_checkout_fee' )
 
 add_action( 'woocommerce_cart_calculate_fees', 'bbloomer_add_checkout_fee',20,1 );
 function bbloomer_add_checkout_fee($cart) {
-	echo 'enter hereee';
+	echo 'enter here';
    // Edit "Fee" and "5" below to control Label and Amount
 	
     $user_id = get_current_user_id();
