@@ -41,10 +41,11 @@ function can_user_checkout_check()
 }
 
 /*add shipping fee on cart and checkout page, if subtotal is less than minimum order value */
-//add_action( 'woocommerce_before_calculate_totals', 'bbloomer_add_checkout_fee' );
+add_action( 'woocommerce_before_calculate_totals', 'bbloomer_add_checkout_fee' );
 
 add_action( 'woocommerce_cart_calculate_fees', 'bbloomer_add_checkout_fee',20,1 );
 function bbloomer_add_checkout_fee($cart) {
+	echo 'enter hereee';
    // Edit "Fee" and "5" below to control Label and Amount
 	
     $user_id = get_current_user_id();
@@ -128,11 +129,13 @@ function recalculate_totals( $cart ) {
 
 	$amount_total = $final_total ;
 	
+	$cart->cart_contents_total = $amount_total;
+	
 
 }; 
          
 // add the action 
-add_action( 'woocommerce_before_calculate_totals', 'recalculate_totals', 20, 1 ); 
+//add_action( 'woocommerce_before_calculate_totals', 'recalculate_totals', 20, 1 ); 
 
 /**
  * Output the variable product add to cart area.
