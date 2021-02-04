@@ -60,8 +60,6 @@ function bbloomer_add_checkout_fee($cart) {
 	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 	$subtotal = WC()->cart->get_subtotal(true);
 
-
-
 	if($min_order_charge > 0 && $subtotal < $min_order_charge ){
 		
 		$cart->add_fee('Shipping Price', $shipping_price,true,'standard');

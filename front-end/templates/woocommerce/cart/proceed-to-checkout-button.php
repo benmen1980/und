@@ -24,7 +24,8 @@ if (!defined('ABSPATH')) {
 $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 
 if (get_customer_type($current_customer) == "campaign") {
-	wp_enqueue_script('View_Campaign_Status-js', plugins_url('/unidress/front-end/js/View_Campaign_Status.js'), array('jquery'));
+    wp_enqueue_script('View_Campaign_Status-js', plugins_url('/unidress/front-end/js/View_Campaign_Status.js'), array('jquery'));
+    wp_localize_script('View_Campaign_Status-js', 'ajax_obj', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ));
 	wp_enqueue_script('bootstrap-modal-js', plugins_url('/unidress/front-end/js/bootstrap.modal.min.js'), array('jquery'));
 	wp_enqueue_style('bootstrap-modal-css', plugins_url('/unidress/front-end/css/bootstrap.modal.min.css'));
 
