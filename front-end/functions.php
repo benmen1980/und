@@ -41,11 +41,10 @@ function can_user_checkout_check()
 }
 
 /*add shipping fee on cart and checkout page, if subtotal is less than minimum order value */
-add_action( 'woocommerce_before_calculate_totals', 'bbloomer_add_checkout_fee' );
+//add_action( 'woocommerce_before_calculate_totals', 'bbloomer_add_checkout_fee' );
 
 add_action( 'woocommerce_cart_calculate_fees', 'bbloomer_add_checkout_fee',20,1 );
 function bbloomer_add_checkout_fee($cart) {
-	echo 'enter here';
    // Edit "Fee" and "5" below to control Label and Amount
 	
     $user_id = get_current_user_id();
@@ -69,8 +68,10 @@ function bbloomer_add_checkout_fee($cart) {
 	}
 }
 
-// define the woocommerce_before_calculate_totals callback 
-function recalculate_totals( $cart ) { 
+
+
+function custom_cart_totals_order_total_html( $amount_total ){
+    //$value = '<strong>' . WC()->cart->get_total() . '</strong> ';
 
 	$user_id = get_current_user_id();
 	$user = get_userdata($user_id);
@@ -105,16 +106,18 @@ function recalculate_totals( $cart ) {
 	}
 	else{
 		if($private_purchase_amount){
-			if($amount_total > ((int)$budget_in_kit - (int)$user_budget_left)){
-				$final_total = $amount_total;
-				if( WC()->cart->fee_total){
-					$fee = (int)WC()->cart->fee_total;
-					$final_total+= $fee;
-				}
-				if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
-					$tax =  WC()->cart->get_subtotal_tax();
-					$final_total+= $tax;
-				}
+			$final_total = $amount_total;
+			if( WC()->cart->fee_total){
+				$fee = (int)WC()->cart->fee_total;
+				$final_total+= $fee;
+			}
+			if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
+				$tax =  WC()->cart->get_subtotal_tax();
+				$final_total+= $tax;
+			}
+			if($final_total > ((int)$budget_in_kit - (int)$user_budget_left)){
+				$final_total = $final_total - ((int)$budget_in_kit - (int)$user_budget_left);
+				
 			}
 			else{
 				$final_total = 0;
@@ -127,15 +130,15 @@ function recalculate_totals( $cart ) {
 		
 	}
 
-	$amount_total = $final_total ;
-	
-	$cart->cart_contents_total = $amount_total;
-	
+	$amount_total = wc_price($final_total) ;
 
-}; 
+
+    return $amount_total;
+}
+
+add_filter( 'woocommerce_cart_totals_order_total_html', 'custom_cart_totals_order_total_html', 20, 1 );
          
-// add the action 
-//add_action( 'woocommerce_before_calculate_totals', 'recalculate_totals', 20, 1 ); 
+
 
 /**
  * Output the variable product add to cart area.
@@ -2267,9 +2270,14 @@ function unidress_add_header_bar()
 				<span></span>
 				<span></span>
 			</div>
-			<div class="menu-logo">
-				<img src="<?php echo plugins_url('/unidress/unidress-logo-white.png') ?>">
-			</div>
+			<!-- <div class="menu-logo">
+				<img src="<?//php echo plugins_url('/unidress/unidress-logo-white.png') ?>">
+			</div> -->
+			<?php
+				$custom_logo_id = get_theme_mod( 'custom_logo' );
+				$image = wp_get_attachment_image_src( $custom_logo_id , 'full' );
+				echo '<div class="menu-logo"><img src="'.$image[0].'" alt=""></div>';
+			?>
 			<div class="my-account">
 				<a href="<?php echo esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))) ?>"></a>
 			</div>
