@@ -41,9 +41,11 @@ function can_user_checkout_check()
 }
 
 /*add shipping fee on cart and checkout page, if subtotal is less than minimum order value */
-//add_action( 'woocommerce_before_calculate_totals', 'bbloomer_add_checkout_fee' );
 
-add_action( 'woocommerce_cart_calculate_fees', 'bbloomer_add_checkout_fee',20,1 );
+
+//add_action( 'woocommerce_cart_calculate_fees', 'bbloomer_add_checkout_fee',20,1 );
+//remove fee and transform fee nto new iten in product
+//because woocommerce can not include fee in coupon if total is 0
 function bbloomer_add_checkout_fee($cart) {
    // Edit "Fee" and "5" below to control Label and Amount
 	
@@ -52,19 +54,76 @@ function bbloomer_add_checkout_fee($cart) {
 
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
 	$kit_id             = get_user_meta($user_id, 'user_kit', true);
-	$user_limits        = get_user_meta($user_id, 'user_limits', true);
+	$user_budget_limits = get_user_meta($user_id, 'user_budget_limits', true);
 	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
 
+	$user_budget_left = isset($user_budget_limits[$campaign_id][$kit_id]) ? $user_budget_limits[$campaign_id][$kit_id] : 0;
+	
+	$budgets_in_campaign = get_post_meta($campaign_id, 'budget', true);
+	$unidress_budget = get_user_meta($user_id, 'unidress_budget', true) ? get_user_meta($user_id, 'unidress_budget', true) : 0;
+	if ($unidress_budget > 0) {
+		$budget_in_kit = $unidress_budget;
+	} else {
+		$budget_in_kit = $budgets_in_campaign[$kit_id] ? $budgets_in_campaign[$kit_id] : 0;
+	}
 	//$min_order_value = get_post_meta($campaign_id, 'min_order_value', true) ?: 0;
 	$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
-	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 	$subtotal = WC()->cart->get_subtotal(true);
+	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
+	if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
+		$tax =  WC()->cart->get_subtotal_tax();
+	}else {
+		$tax = 0;
+	}
+
+	//  $amount = ($subtotal + $tax + $shipping_price);
+	// if($amount < ((int)$budget_in_kit - (int)$user_budget_left)){
+
+	// }
 	if($min_order_charge > 0 && $subtotal < $min_order_charge ){
 		
 		$cart->add_fee('Shipping Price', $shipping_price,true,'standard');
 	}
 }
+
+//hide quantity to product item : shipping price
+add_filter( 'woocommerce_quantity_input_args', 'hide_quantity_input_field', 20, 2 );
+function hide_quantity_input_field( $args, $product ) {
+	global $wpdb;
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$ship_price = $ship_price[0]['ID'];
+    // Here set your product IDs in the array
+    $product_ids = array($ship_price);
+
+    // Handling product variation
+    $the_id = $product->is_type('variation') ? $product->get_parent_id() : $product->get_id();
+
+    // Only on cart page for a specific product category
+    if( is_cart() && in_array( $the_id, $product_ids ) ){
+        $input_value = $args['input_value'];
+        $args['min_value'] = $args['max_value'] = $input_value;
+    }
+    return $args;
+}
+
+//add remove button to product item : shiping price
+add_filter('woocommerce_cart_item_remove_link', 'customized_cart_item_remove_link', 20, 2 );
+function customized_cart_item_remove_link( $button_link, $cart_item_key ){
+
+	global $wpdb;
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$ship_price = $ship_price[0]['ID'];
+	// Get the current cart item
+	$cart_item = WC()->cart->get_cart()[$cart_item_key];
+    // If the targeted product is in cart we remove the button link
+    if ($cart_item['data']->get_id() == $ship_price) 
+        $button_link = '';
+
+    return $button_link;
+}
+
 
 
 
@@ -134,9 +193,14 @@ function custom_cart_totals_order_total_html( $amount_total ){
     return $amount_total;
 }
 
-add_filter( 'woocommerce_cart_totals_order_total_html', 'custom_cart_totals_order_total_html', 20, 1 );
-         
+//add_filter( 'woocommerce_cart_totals_order_total_html', 'custom_cart_totals_order_total_html', 20, 1 );
 
+
+
+
+
+
+    
 
 /**
  * Output the variable product add to cart area.
@@ -366,10 +430,13 @@ function unidress_update_cart_validation($passed_validation)
 		$user_limits = array();
 	update_user_meta(1, '$passed_validation2', $passed_validation);
 
+	global $wpdb;
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$ship_price = $ship_price[0]['ID'];
 	// Product list check in cart
 	if ($product_in_cart && $product_in_kit) {
 		foreach ($product_in_cart as $product_id => $product_option) {
-			if (!array_key_exists($product_id, $product_in_kit)) {
+			if (!array_key_exists($product_id, $product_in_kit) && ($product_id != $ship_price)) {
 				$passed_validation = false;
 				$product = wc_get_product($product_id);
 				$product_title = $product->get_title();
@@ -1132,10 +1199,13 @@ function check_group_limit()
 		throw new Exception(__('You already buy something', 'unidress'));
 	}
 
+	global $wpdb;
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$ship_price = $ship_price[0]['ID'];
 	// Product list check in cart
 	if ($product_in_cart && $product_in_kit) {
 		foreach ($product_in_cart as $product_id => $product_option) {
-			if (!array_key_exists($product_id, $product_in_kit)) {
+			if (!array_key_exists($product_id, $product_in_kit) && ($product_id != $ship_price)) {
 				$product = wc_get_product($product_id);
 				$product_title = $product->get_title();
 				throw new Exception(__('Product "' . $product_title . '" not available for sale', 'unidress'));
@@ -2020,11 +2090,13 @@ add_action('woocommerce_after_checkout_form', function () {
 				$output = true;
 				wc_add_notice(__('You already buy something', 'unidress'), 'error');
 			}
-
+			global $wpdb;
+			$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+			$ship_price = $ship_price[0]['ID'];
 			// Product list check in cart
 			if ($product_in_cart && $product_in_kit) {
 				foreach ($product_in_cart as $product_id => $product_option) {
-					if (!array_key_exists($product_id, $product_in_kit)) {
+					if (!array_key_exists($product_id, $product_in_kit) && ($product_id != $ship_price)) {
 						$product = wc_get_product($product_id);
 						$product_title = $product->get_title();
 						wc_add_notice(__('Product "' . $product_title . '" not available for sale', 'unidress'), 'error');
@@ -2634,11 +2706,11 @@ function unidress_required_products($data)
 // Cart validation
 
 //NIPL UN2-T39 coupon code
-add_action('woocommerce_cart_coupon', 'discount_on_order', 10);
+add_action('woocommerce_cart_coupon', 'discount_on_order', 10, 1);
 //add_action('woocommerce_ajax_added_to_cart', 'discount_on_order',20);
-add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25);
+add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25, 1);
 
-function discount_on_order() {
+function discount_on_order($cart_updated) {
 	global $woocommerce;
 	global $order,$wpdb;
     
@@ -2681,6 +2753,14 @@ function discount_on_order() {
 
 	if(!empty($additionalfee)){
 		update_user_meta( $user_id, 'additional_shipping_fee', $additionalfee);
+		// if($additionalfee > ((int)$budget_in_kit - (int)$user_budget_left)){
+		// 	$additionalfee -= ((int)$budget_in_kit - (int)$user_budget_left);
+		// 	update_user_meta( $user_id, 'additional_shipping_fee', $additionalfee);
+		// }
+		// else{
+		// 	update_user_meta( $user_id, 'additional_shipping_fee', 0);
+		// }
+		
 	}else{
 		update_user_meta( $user_id, 'additional_shipping_fee', '0' );
 	}
@@ -2688,20 +2768,20 @@ function discount_on_order() {
 	$amount = ($subtotal + $tax + $additionalfee );
 
 	if(($user_budget_left) > $budget_in_kit){
-		$final_amount = 0;
+		$discounted = 0;
 	}
 	else{
 		if($private_purchase_amount){
 			if($amount > ((int)$budget_in_kit - (int)$user_budget_left)){
-				$final_amount = (int)$budget_in_kit - (int)$user_budget_left;
+				$discounted = (int)$budget_in_kit - (int)$user_budget_left;
 			}
 			else{
-				$final_amount = $amount;
+				$discounted = $amount;
 			}
 			
 		}
 		else{
-			$final_amount = $amount;
+			$discounted = $amount;
 		}    
 	}
 
@@ -2717,7 +2797,7 @@ function discount_on_order() {
 	if(!empty($coupon_results)) {
 
 		if(get_post_meta($coupon_results[0]['ID'],'usage_count',true) == '0') {
-            update_post_meta( $coupon_results[0]['ID'], 'coupon_amount', $final_amount );
+            update_post_meta( $coupon_results[0]['ID'], 'coupon_amount', $discounted );
  
 			WC()->cart->apply_coupon( $usercoupon );
 		}
@@ -2734,7 +2814,7 @@ function discount_on_order() {
 
 			// Add meta
 			update_post_meta( $new_coupon_id, 'discount_type', $discount_type );
-			update_post_meta( $new_coupon_id, 'coupon_amount', $final_amount );
+			update_post_meta( $new_coupon_id, 'coupon_amount', $discounted );
 			update_post_meta( $new_coupon_id, 'usage_limit', '1' );
 			update_post_meta( $new_coupon_id, 'usage_limit_per_user', '1' );
 			update_post_meta( $new_coupon_id, 'usage_count', '0' );
@@ -2762,7 +2842,7 @@ function discount_on_order() {
 
 		// Add meta
 		update_post_meta( $new_coupon_id, 'discount_type', $discount_type );
-		update_post_meta( $new_coupon_id, 'coupon_amount', $final_amount );
+		update_post_meta( $new_coupon_id, 'coupon_amount', $discounted );
 		update_post_meta( $new_coupon_id, 'usage_limit', '1' );
 		update_post_meta( $new_coupon_id, 'usage_limit_per_user', '1' );
 		update_post_meta( $new_coupon_id, 'usage_count', '0' );
@@ -2771,9 +2851,77 @@ function discount_on_order() {
 		WC()->cart->apply_coupon( $coupon_code );
 		
 	}
+
+	$new_value = $amount - $discounted;
+	WC()->cart->set_total( $new_value );
+
+	// Recalc our totals
+	WC()->cart->calculate_totals();
+	
 	
 	
 }
+
+add_action( 'woocommerce_add_to_cart', 'custom_add_to_cart', 25 ); 
+add_action('woocommerce_calculate_totals', 'custom_add_to_cart', 999);
+function custom_add_to_cart($cart_object ) {
+	$post_title = __( 'shipping_cost', 'woocommerce' ) ;
+	$new_post = array(
+	'post_title'    => $post_title,
+	'post_status'   => 'publish',
+	'post_author'   => 1,
+	'post_type'     =>'product'
+	);
+
+	$user_id = get_current_user_id();
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+	$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
+	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
+	$subtotal = WC()->cart->get_subtotal(true);
+	$total_w_shipping = $subtotal - $shipping_price;
+
+
+	global $wpdb;
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	 
+	if(!empty($ship_price)) {
+		$product_ID = $ship_price[0]['ID'];
+		$product_cart_id = WC()->cart->generate_cart_id( $product_ID );
+		$cart_item_key = WC()->cart->find_product_in_cart( $product_cart_id );
+		if($min_order_charge > 0 && $total_w_shipping < $min_order_charge ){
+			update_post_meta($product_ID, '_regular_price', $shipping_price );
+			update_post_meta($product_ID, '_price', $shipping_price );
+			update_post_meta($product_ID, '_stock_status', 'instock' );
+			if ( !$cart_item_key  && WC()->cart->cart_contents_count!=0) { 
+				WC()->cart->add_to_cart( $product_ID, $quantity=1 );
+			}
+			elseif($cart_item_key && WC()->cart->cart_contents_count==1){
+				WC()->cart->remove_cart_item( $cart_item_key );
+			}
+		}
+		else{
+			if ( $cart_item_key) { 
+				 WC()->cart->remove_cart_item( $cart_item_key );
+			}
+		}
+
+	}
+	else{
+		if($min_order_charge > 0 && $total_w_shipping < $min_order_charge ){
+			$product_ID = wp_insert_post( $new_post );
+			add_post_meta($product_ID, '_regular_price', $shipping_price );
+			add_post_meta($product_ID, '_price', $shipping_price );
+			add_post_meta($product_ID, '_stock_status', 'instock' );
+			WC()->cart->add_to_cart( $product_ID, $quantity=1 );
+		}
+	} 
+
+	return $cart_object;
+
+}
+
+
 //T39
 add_action( 'woocommerce_before_checkout_form', 'remove_checkout_coupon_form', 9 );
 function remove_checkout_coupon_form(){
