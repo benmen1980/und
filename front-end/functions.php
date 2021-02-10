@@ -108,7 +108,7 @@ function hide_quantity_input_field( $args, $product ) {
     return $args;
 }
 
-//add remove button to product item : shiping price
+//add remove button to product item : shiping
 add_filter('woocommerce_cart_item_remove_link', 'customized_cart_item_remove_link', 20, 2 );
 function customized_cart_item_remove_link( $button_link, $cart_item_key ){
 
@@ -2882,6 +2882,7 @@ function custom_add_to_cart($cart_object ) {
 	$total_w_shipping = $subtotal - $shipping_price;
 
 
+
 	global $wpdb;
 	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
 	 
@@ -2889,7 +2890,7 @@ function custom_add_to_cart($cart_object ) {
 		$product_ID = $ship_price[0]['ID'];
 		$product_cart_id = WC()->cart->generate_cart_id( $product_ID );
 		$cart_item_key = WC()->cart->find_product_in_cart( $product_cart_id );
-		if($min_order_charge > 0 && $total_w_shipping < $min_order_charge ){
+		if($min_order_charge > 0 && $subtotal < $min_order_charge ){
 			update_post_meta($product_ID, '_regular_price', $shipping_price );
 			update_post_meta($product_ID, '_price', $shipping_price );
 			update_post_meta($product_ID, '_stock_status', 'instock' );
@@ -2901,14 +2902,14 @@ function custom_add_to_cart($cart_object ) {
 			}
 		}
 		else{
-			if ( $cart_item_key) { 
+			if ( $cart_item_key && (($total_w_shipping > $min_order_charge) || ($total_w_shipping == $min_order_charge)) ) { 
 				 WC()->cart->remove_cart_item( $cart_item_key );
 			}
 		}
 
 	}
 	else{
-		if($min_order_charge > 0 && $total_w_shipping < $min_order_charge ){
+		if($min_order_charge > 0 && $subtotal < $min_order_charge ){
 			$product_ID = wp_insert_post( $new_post );
 			add_post_meta($product_ID, '_regular_price', $shipping_price );
 			add_post_meta($product_ID, '_price', $shipping_price );
@@ -2917,9 +2918,26 @@ function custom_add_to_cart($cart_object ) {
 		}
 	} 
 
-	return $cart_object;
+	//return $cart_object;
 
 }
+
+// add class to shipping cost item
+add_filter( 'woocommerce_cart_item_class', 'additional_class_to_cart_item_classes', 10, 3 );
+function additional_class_to_cart_item_classes ( $class, $cart_item, $cart_item_key ) {
+	global $wpdb;
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$product_ID = $ship_price[0]['ID'];
+	$product_cart_id = WC()->cart->generate_cart_id( $product_ID );
+	$cart_item_key1 = WC()->cart->find_product_in_cart( $product_cart_id );
+    if ( $cart_item_key ==  $cart_item_key1) {
+        $class .= ' shipping_cost_item';
+    }
+
+    return $class;
+}
+
+
 
 
 //T39

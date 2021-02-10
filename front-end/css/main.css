@@ -670,3 +670,14 @@ span.woocommerce-Price-currencySymbol {
     margin-right: 3px;
     order: 1;
 }
+
+/* shipping cost item*/
+
+.woocommerce-cart-form .shop_table .cart_item.shipping_cost_item .product-thumbnail{
+    max-width: 100%;
+    height: auto;
+    display: none;
+}
+.woocommerce-cart-form .shop_table .cart_item.shipping_cost_item .product-name{
+    pointer-events: none;
+}
