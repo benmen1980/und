@@ -12,6 +12,7 @@ jQuery(document).ready(function(jQuery){
 
     /* update budget on change numbers product */
     jQuery('.woocommerce').on('click', 'button', function () {
+        console.log('asdasdasd');
         update_unidress_budget();
     });
 
@@ -28,8 +29,9 @@ function update_unidress_budget() {
     setTimeout(function() {
         jQuery.ajax({
             type: "POST",
-            //url: '/wp-admin/admin-ajax.php',
-            url: admin_url('admin-ajax.php'),
+            url: '/wp-admin/admin-ajax.php',
+            //url: ajax_obj.ajaxurl,
+            //url: admin_url('admin-ajax.php'),
             data: {
                 action: 'update_unidress_budget',
             },
