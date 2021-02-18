@@ -996,77 +996,86 @@ function clear_one_order_limit($order_id) {
 
 	}
 }
-add_action('woocommerce_admin_order_data_after_order_details', 'unidress_editable_order_meta_general');
 
-function unidress_editable_order_meta_general($order) {
-	?>
+$user_id            = get_current_user_id();
+$customer_id        = get_user_meta($user_id, 'user_customer', true);
+$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+$shipping_private_address     = get_post_meta($campaign_id, 'shipping_private_address', true);
+if ($shipping_private_address == "") {
+	add_action('woocommerce_admin_order_data_after_order_details', 'unidress_editable_order_meta_general');
 
-        <br class="clear" />
-        <h4>
-			<?php echo esc_html__('Branch', 'unidress')?> 
-			<a href="#" class="edit_address">
-				<?php echo esc_html__('Edit', 'unidress')?> 
-			</a>
-		</h4>
-        <?php
-/*
-	 * get all the meta data values we need
-	 */
-	$shopid = get_post_meta($order->id, 'unidress_shipping', true);
-	$shopdetail = get_post($shopid);
+	function unidress_editable_order_meta_general($order) {
+		?>
 
-	$user_id = $order->customer_id;
-	?>
-        <div class="address">
-            <p><strong><?php echo $shopdetail->post_title; ?></strong></p>
+			<br class="clear" />
+			<h4>
+				<?php echo esc_html__('Branch', 'unidress')?> 
+				<a href="#" class="edit_address">
+					<?php echo esc_html__('Edit', 'unidress')?> 
+				</a>
+			</h4>
+			<?php
+	/*
+		* get all the meta data values we need
+		*/
+		$shopid = get_post_meta($order->id, 'unidress_shipping', true);
+		$shopdetail = get_post($shopid);
 
-        </div>
-        <div class="edit_address">
+		$user_id = $order->customer_id;
+		?>
+			<div class="address">
+				<p><strong><?php echo $shopdetail->post_title; ?></strong></p>
 
-            <?php //echo do_action('unidress_shipping_select');
-				$customer_id = get_user_meta($user_id, 'user_customer', true);
-				$campaign_id = get_post_meta($customer_id, 'active_campaign', true);
+			</div>
+			<div class="edit_address">
 
-				$shops_checked = get_post_meta($campaign_id, 'shops', true);
-				$shipping_allow = get_post_meta($campaign_id, 'shipping_allow', true);
+				<?php //echo do_action('unidress_shipping_select');
+					$customer_id = get_user_meta($user_id, 'user_customer', true);
+					$campaign_id = get_post_meta($customer_id, 'active_campaign', true);
 
-				$shops = get_posts(array(
-					'numberposts' => -1,
-					//'include' => $shops_checked,
-					'orderby' => 'date',
-					'order' => 'DESC',
-					'post_type' => 'branch',
-					//'suppress_filters' => true,
-				));
-				$output = '';
-				if (!empty($shops)) {
-					$output .= '<div class="order-shipping">';
-					$output .= '<label><strong>' . esc_html__('Shipping to Branch', 'unidress') . '</strong></label>';
+					$shops_checked = get_post_meta($campaign_id, 'shops', true);
+					$shipping_allow = get_post_meta($campaign_id, 'shipping_allow', true);
 
-					$output .= '<select class="cart-shipping-list" aria-hidden="true" name="unidress_shipping">';
-					foreach ($shops as $shop) {
+					$shops = get_posts(array(
+						'numberposts' => -1,
+						//'include' => $shops_checked,
+						'orderby' => 'date',
+						'order' => 'DESC',
+						'post_type' => 'branch',
+						//'suppress_filters' => true,
+					));
+					$output = '';
+					if (!empty($shops)) {
+						$output .= '<div class="order-shipping">';
+						$output .= '<label><strong>' . esc_html__('Shipping to Branch', 'unidress') . '</strong></label>';
 
-						$checked = ($shopdetail->ID == $shop->ID) ? 'selected="selected"' : '';
-						/*$output .= '  <li>';
-						$output .= '        <label>';*/
-						$output .= '            <option  value="' . $shop->ID . '" ' . $checked . ' >';
-						$output .= $shop->post_title;
-						/*$output .= '      </label>';
-						$output .= '    </li>';*/
+						$output .= '<select class="cart-shipping-list" aria-hidden="true" name="unidress_shipping">';
+						foreach ($shops as $shop) {
 
+							$checked = ($shopdetail->ID == $shop->ID) ? 'selected="selected"' : '';
+							/*$output .= '  <li>';
+							$output .= '        <label>';*/
+							$output .= '            <option  value="' . $shop->ID . '" ' . $checked . ' >';
+							$output .= $shop->post_title;
+							/*$output .= '      </label>';
+							$output .= '    </li>';*/
+
+						}
+						$output .= '</select>';
+
+						$output .= '</div>';
 					}
-					$output .= '</select>';
 
-					$output .= '</div>';
-				}
+					echo $output;
+		?>
 
-				echo $output;
-	?>
-
-            </div>
+				</div>
 
 
-<?php }
+	<?php }
+}
+
+
 
 add_action('woocommerce_process_shop_order_meta', 'unidress_save_general_details');
 

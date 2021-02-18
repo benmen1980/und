@@ -1731,69 +1731,77 @@ function storefront_page_content2()
 add_filter('woocommerce_cart_needs_shipping', function ($field) {
 	return 0;
 }, 1, 10);
-add_filter('woocommerce_checkout_fields', function ($field) {
-	global $woocommerce;
 
-	$user_id                = get_current_user_id();
-	$customer_id            = get_user_meta($user_id,     'user_customer', true);
-	$campaign_id            = get_post_meta($customer_id, 'active_campaign', true);
-	$shops_checked          = get_post_meta($campaign_id, 'shops', true);
-	$required               = $shops_checked ? true : false;
-	$user_first_name        = get_user_meta($user_id, 'first_name', true);
-	$user_last_name         = get_user_meta($user_id, 'last_name', true);
-	$user_billing_email     = get_user_meta($user_id, 'billing_email', true);
-	$user_billing_phone     = get_user_meta($user_id, 'billing_phone', true);
+$user_id            = get_current_user_id();
+$customer_id        = get_user_meta($user_id, 'user_customer', true);
+$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+$shipping_allow     = get_post_meta($campaign_id, 'shipping_allow', true);
+$shipping_private_address     = get_post_meta($campaign_id, 'shipping_private_address', true);
+if ($shipping_private_address == "") {
+	add_filter('woocommerce_checkout_fields', function ($field) {
+		global $woocommerce;
 
-	$billing_clear_first_last = get_post_meta($campaign_id, 'billing_clear_first_last', true) ? 'on' : 'off';
-	$billing_clear_email = get_post_meta($campaign_id, 'billing_clear_email', true) ? 'on' : 'off';
-	$billing_clear_phone = get_post_meta($campaign_id, 'billing_clear_phone', true) ? 'on' : 'off';
+		$user_id                = get_current_user_id();
+		$customer_id            = get_user_meta($user_id,     'user_customer', true);
+		$campaign_id            = get_post_meta($customer_id, 'active_campaign', true);
+		$shops_checked          = get_post_meta($campaign_id, 'shops', true);
+		$required               = $shops_checked ? true : false;
+		$user_first_name        = get_user_meta($user_id, 'first_name', true);
+		$user_last_name         = get_user_meta($user_id, 'last_name', true);
+		$user_billing_email     = get_user_meta($user_id, 'billing_email', true);
+		$user_billing_phone     = get_user_meta($user_id, 'billing_phone', true);
 
-	if (isset($field['billing']['billing_country']))
-		unset($field['billing']['billing_country']);
-	unset($field['billing']['billing_address_1']);
-	unset($field['billing']['billing_address_2']);
-	unset($field['billing']['billing_city']);
-	unset($field['billing']['billing_state']);
-	unset($field['billing']['billing_postcode']);
-	unset($field['billing']['billing_company']);
-	$field['unidress_shipping'] = array(
-		'unidress_shipping' => array(
-			'class'       => array('notes'),
-			'required'    => true,
-			'label'       => __('Choose Shipping', 'unidress'),
-		),
-	);
+		$billing_clear_first_last = get_post_meta($campaign_id, 'billing_clear_first_last', true) ? 'on' : 'off';
+		$billing_clear_email = get_post_meta($campaign_id, 'billing_clear_email', true) ? 'on' : 'off';
+		$billing_clear_phone = get_post_meta($campaign_id, 'billing_clear_phone', true) ? 'on' : 'off';
 
-	if ($billing_clear_first_last == 'on') {
-		$field['billing']['billing_first_name']['default'] = NULL;
-		$field['billing']['billing_last_name']['default'] = NULL;
-		$woocommerce->session->customer['first_name'] = '';
-		$woocommerce->session->customer['last_name'] = '';
-	} else {
-		$field['billing']['billing_first_name']['custom_attributes']['readonly'] = 'readonly';
-		$field['billing']['billing_last_name']['custom_attributes']['readonly'] = 'readonly';
-		$field['billing']['billing_first_name']['default'] = $user_first_name;
-		$field['billing']['billing_last_name']['default'] = $user_last_name;
-	}
+		if (isset($field['billing']['billing_country']))
+			unset($field['billing']['billing_country']);
+		unset($field['billing']['billing_address_1']);
+		unset($field['billing']['billing_address_2']);
+		unset($field['billing']['billing_city']);
+		unset($field['billing']['billing_state']);
+		unset($field['billing']['billing_postcode']);
+		unset($field['billing']['billing_company']);
+		$field['unidress_shipping'] = array(
+			'unidress_shipping' => array(
+				'class'       => array('notes'),
+				'required'    => true,
+				'label'       => __('Choose Shipping', 'unidress'),
+			),
+		);
 
-	if ($billing_clear_email == 'on') {
-		$field['billing']['billing_email']['default'] = NULL;
-		$field['billing']['billing_email']['required'] = true;
-		$woocommerce->session->customer['email'] = '';
-	} else {
-		$field['billing']['billing_email']['default'] = $user_billing_email;
-		$field['billing']['billing_email']['required'] = false;
-	}
+		if ($billing_clear_first_last == 'on') {
+			$field['billing']['billing_first_name']['default'] = NULL;
+			$field['billing']['billing_last_name']['default'] = NULL;
+			$woocommerce->session->customer['first_name'] = '';
+			$woocommerce->session->customer['last_name'] = '';
+		} else {
+			$field['billing']['billing_first_name']['custom_attributes']['readonly'] = 'readonly';
+			$field['billing']['billing_last_name']['custom_attributes']['readonly'] = 'readonly';
+			$field['billing']['billing_first_name']['default'] = $user_first_name;
+			$field['billing']['billing_last_name']['default'] = $user_last_name;
+		}
 
-	if ($billing_clear_phone == 'on') {
-		$field['billing']['billing_phone']['default'] = NULL;
-		$woocommerce->session->customer['phone'] = '';
-	} else {
-		$field['billing']['billing_phone']['default'] = $user_billing_phone;
-	}
+		if ($billing_clear_email == 'on') {
+			$field['billing']['billing_email']['default'] = NULL;
+			$field['billing']['billing_email']['required'] = true;
+			$woocommerce->session->customer['email'] = '';
+		} else {
+			$field['billing']['billing_email']['default'] = $user_billing_email;
+			$field['billing']['billing_email']['required'] = false;
+		}
 
-	return $field;
-}, 4, 10);
+		if ($billing_clear_phone == 'on') {
+			$field['billing']['billing_phone']['default'] = NULL;
+			$woocommerce->session->customer['phone'] = '';
+		} else {
+			$field['billing']['billing_phone']['default'] = $user_billing_phone;
+		}
+
+		return $field;
+	}, 4, 10);
+}
 
 // CHANGE EMAIL UN1-T130
 add_action('woocommerce_after_checkout_form', function () {
