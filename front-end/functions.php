@@ -1803,6 +1803,25 @@ if ($shipping_private_address == "") {
 	}, 4, 10);
 }
 
+//remove company and country field for private shipping address
+function custom_override_checkout_fields( $fields ) {
+	$user_id            = get_current_user_id();
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+	$shipping_allow     = get_post_meta($campaign_id, 'shipping_allow', true);
+	$shipping_private_address     = get_post_meta($campaign_id, 'shipping_private_address', true);
+	if($shipping_private_address == "on"){
+		unset($fields['billing']['billing_country']);
+		unset($fields['billing']['billing_company']);
+	}
+	return $fields;
+}
+	
+add_filter('woocommerce_checkout_fields','custom_override_checkout_fields');
+
+
+
+
 // CHANGE EMAIL UN1-T130
 add_action('woocommerce_after_checkout_form', function () {
 	?><script type="text/javascript">
@@ -2928,40 +2947,14 @@ function custom_add_to_cart($cart_object ) {
 	//return $cart_object;
 
 }
-add_action( 'woocommerce_after_cart_item_quantity_update', 'custom_cart_items_prices', 10, 1 );
-add_action( 'woocommerce_before_calculate_totals', 'custom_cart_items_prices', 10, 1 );
-function custom_cart_items_prices( $cart ) {
-    if ( is_admin() && ! defined( 'DOING_AJAX' ) )
-        return;
 
-    if ( did_action( 'woocommerce_before_calculate_totals' ) >= 2 )
-        return;
-
-    // Loop through cart items
-    foreach ( $cart->get_cart() as $cart_item ) {
-
-        // Get an instance of the WC_Product object
-        $product = $cart_item['data'];
-
-        // Get the product name (Added Woocommerce 3+ compatibility)
-        $original_name = method_exists( $product, 'get_name' ) ? $product->get_name() : $product->post->post_title;
-		$post_title = __( 'shipping_cost', 'unidress' ) ;
-        // SET THE NEW NAME
-		if($original_name == 'shipping_cost' )
-        $new_name = $post_title;
-
-        // Set the new name (WooCommerce versions 2.5.x to 3+)
-        if( method_exists( $product, 'set_name' ) )
-            $product->set_name( $new_name );
-        else
-            $product->post->post_title = $new_name;
-    }
-}
 
 
 
 // add class to shipping cost item
+add_filter( 'woocommerce_mini_cart_item_class', 'additional_class_to_cart_item_classes', 10, 3 );
 add_filter( 'woocommerce_cart_item_class', 'additional_class_to_cart_item_classes', 10, 3 );
+add_filter( 'woocommerce_order_item_class', 'additional_class_to_cart_item_classes', 10, 3 );
 function additional_class_to_cart_item_classes ( $class, $cart_item, $cart_item_key ) {
 	global $wpdb;
 	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
@@ -2974,6 +2967,8 @@ function additional_class_to_cart_item_classes ( $class, $cart_item, $cart_item_
 
     return $class;
 }
+
+
 
 
 
