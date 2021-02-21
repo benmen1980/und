@@ -2873,14 +2873,13 @@ function discount_on_order($cart_updated) {
 add_action( 'woocommerce_add_to_cart', 'custom_add_to_cart', 25 ); 
 add_action('woocommerce_calculate_totals', 'custom_add_to_cart', 999);
 function custom_add_to_cart($cart_object ) {
-	$post_title = __( 'shipping_cost', 'woocommerce' ) ;
+	$post_title = __( 'shipping_cost', 'unidress' ) ;
 	$new_post = array(
-	'post_title'    => $post_title,
+	'post_title'    => __( 'shipping_cost', 'unidress' ) ,
 	'post_status'   => 'publish',
 	'post_author'   => 1,
 	'post_type'     =>'product'
 	);
-
 	$user_id = get_current_user_id();
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
 	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
@@ -2929,6 +2928,37 @@ function custom_add_to_cart($cart_object ) {
 	//return $cart_object;
 
 }
+add_action( 'woocommerce_after_cart_item_quantity_update', 'custom_cart_items_prices', 10, 1 );
+add_action( 'woocommerce_before_calculate_totals', 'custom_cart_items_prices', 10, 1 );
+function custom_cart_items_prices( $cart ) {
+    if ( is_admin() && ! defined( 'DOING_AJAX' ) )
+        return;
+
+    if ( did_action( 'woocommerce_before_calculate_totals' ) >= 2 )
+        return;
+
+    // Loop through cart items
+    foreach ( $cart->get_cart() as $cart_item ) {
+
+        // Get an instance of the WC_Product object
+        $product = $cart_item['data'];
+
+        // Get the product name (Added Woocommerce 3+ compatibility)
+        $original_name = method_exists( $product, 'get_name' ) ? $product->get_name() : $product->post->post_title;
+		$post_title = __( 'shipping_cost', 'unidress' ) ;
+        // SET THE NEW NAME
+		if($original_name == 'shipping_cost' )
+        $new_name = $post_title;
+
+        // Set the new name (WooCommerce versions 2.5.x to 3+)
+        if( method_exists( $product, 'set_name' ) )
+            $product->set_name( $new_name );
+        else
+            $product->post->post_title = $new_name;
+    }
+}
+
+
 
 // add class to shipping cost item
 add_filter( 'woocommerce_cart_item_class', 'additional_class_to_cart_item_classes', 10, 3 );
