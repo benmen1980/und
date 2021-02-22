@@ -92,7 +92,7 @@ function bbloomer_add_checkout_fee($cart) {
 add_filter( 'woocommerce_quantity_input_args', 'hide_quantity_input_field', 20, 2 );
 function hide_quantity_input_field( $args, $product ) {
 	global $wpdb;
-	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'דמי משלוח' ", ARRAY_A);
 	$ship_price = $ship_price[0]['ID'];
     // Here set your product IDs in the array
     $product_ids = array($ship_price);
@@ -113,7 +113,7 @@ add_filter('woocommerce_cart_item_remove_link', 'customized_cart_item_remove_lin
 function customized_cart_item_remove_link( $button_link, $cart_item_key ){
 
 	global $wpdb;
-	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'דמי משלוח' ", ARRAY_A);
 	$ship_price = $ship_price[0]['ID'];
 	// Get the current cart item
 	$cart_item = WC()->cart->get_cart()[$cart_item_key];
@@ -431,7 +431,7 @@ function unidress_update_cart_validation($passed_validation)
 	update_user_meta(1, '$passed_validation2', $passed_validation);
 
 	global $wpdb;
-	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'דמי משלוח' ", ARRAY_A);
 	$ship_price = $ship_price[0]['ID'];
 	// Product list check in cart
 	if ($product_in_cart && $product_in_kit) {
@@ -1200,7 +1200,7 @@ function check_group_limit()
 	}
 
 	global $wpdb;
-	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'דמי משלוח' ", ARRAY_A);
 	$ship_price = $ship_price[0]['ID'];
 	// Product list check in cart
 	if ($product_in_cart && $product_in_kit) {
@@ -2118,7 +2118,7 @@ add_action('woocommerce_after_checkout_form', function () {
 				wc_add_notice(__('You already buy something', 'unidress'), 'error');
 			}
 			global $wpdb;
-			$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+			$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'דמי משלוח' ", ARRAY_A);
 			$ship_price = $ship_price[0]['ID'];
 			// Product list check in cart
 			if ($product_in_cart && $product_in_kit) {
@@ -2892,9 +2892,8 @@ function discount_on_order($cart_updated) {
 add_action( 'woocommerce_add_to_cart', 'custom_add_to_cart', 25 ); 
 add_action('woocommerce_calculate_totals', 'custom_add_to_cart', 999);
 function custom_add_to_cart($cart_object ) {
-	$post_title = __( 'shipping_cost', 'unidress' ) ;
 	$new_post = array(
-	'post_title'    => __( 'shipping_cost', 'unidress' ) ,
+	'post_title'    => 'דמי משלוח' ,
 	'post_status'   => 'publish',
 	'post_author'   => 1,
 	'post_type'     =>'product'
@@ -2910,7 +2909,7 @@ function custom_add_to_cart($cart_object ) {
 
 
 	global $wpdb;
-	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'דמי משלוח' ", ARRAY_A);
 	 
 	if(!empty($ship_price)) {
 		$product_ID = $ship_price[0]['ID'];
@@ -2957,7 +2956,7 @@ add_filter( 'woocommerce_cart_item_class', 'additional_class_to_cart_item_classe
 add_filter( 'woocommerce_order_item_class', 'additional_class_to_cart_item_classes', 10, 3 );
 function additional_class_to_cart_item_classes ( $class, $cart_item, $cart_item_key ) {
 	global $wpdb;
-	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'shipping_cost' ", ARRAY_A);
+	$ship_price = $wpdb->get_results( "SELECT p.ID from $wpdb->posts as p where p.post_title LIKE 'דמי משלוח' ", ARRAY_A);
 	$product_ID = $ship_price[0]['ID'];
 	$product_cart_id = WC()->cart->generate_cart_id( $product_ID );
 	$cart_item_key1 = WC()->cart->find_product_in_cart( $product_cart_id );
