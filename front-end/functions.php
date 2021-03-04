@@ -3040,3 +3040,38 @@ add_filter( 'woocommerce_coupon_error', 'wp_coupon_error', 10, 2 );
 function wp_coupon_error( $err, $err_code ) {
 	return ( '103' == $err_code ) ? '' : $err;
 }
+
+
+/**
+ * @snippet       Enable Payment Gateway according to the type of campaign
+ * @how-to        Get CustomizeWoo.com FREE
+ * @author        Rodolfo Melogli
+ * @compatible    WooCommerce 3.8
+ * @donate $9     https://businessbloomer.com/bloomer-armada/
+ */
+  
+add_filter( 'woocommerce_available_payment_gateways', 'bbloomer_paypal_enable_manager' );
+  
+function bbloomer_paypal_enable_manager( $available_gateways ) {
+
+	$user_id = get_current_user_id();
+	$user = get_userdata($user_id);
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
+	$private_purchase_amount = get_post_meta($campaign_id, 'private_purchase_amount',  true);
+	if(empty($private_purchase_amount)){
+		if ( isset( $available_gateways['paypal'] ) ) {
+			unset( $available_gateways['paypal'] );
+		}
+		if ( isset( $available_gateways['creditguard'] ) ) {
+			unset( $available_gateways['creditguard'] );
+		}
+	}
+	else{
+		if ( isset( $available_gateways['cod'] ) ) {
+			unset( $available_gateways['cod'] );
+		} 
+	}
+   
+   return $available_gateways;
+}
