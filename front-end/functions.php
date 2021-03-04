@@ -462,6 +462,7 @@ function unidress_update_cart_validation($passed_validation)
 		}
 		$amount = $subtotal + $tax;
 		$total = WC()->cart->get_totals('total')['total'];
+		
 		if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
 			$private_amt = $private_purchase_amount;
 		}
@@ -1131,7 +1132,15 @@ function check_group_limit()
         $new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$total + $private_amt;
 
         $subtotal = WC()->cart->get_subtotal(true);
-        $balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
+		if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
+			$tax =  WC()->cart->get_subtotal_tax();
+		}else {
+			$tax = 0;
+		}
+		$ordertotal = $subtotal + $tax;
+		//change 04/03/21
+		$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal + $private_purchase_amount;
+        //$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
 
 		if ($user_roles != 'hr_manager') {
             //if ($budget_in_kit < $new_budget_limits) {
@@ -1339,7 +1348,7 @@ function wc_remove_cart_tax_totals( $tax_totals, $instance ) {
 
 	return $tax_totals;
 }
-add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
+//add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
 
 // Show the cart total excluding tax.
 function wc_exclude_tax_cart_total( $total, $instance ) {
@@ -1962,21 +1971,16 @@ add_action('woocommerce_after_checkout_form', function () {
 					global $wpdb;
 					$usercoupon = get_user_meta($user_id,'last_used_coupon',true);
 					//echo $usercoupon;
-					$coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$usercoupon}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ",ARRAY_A);
-					$additionalfee = get_post_meta( $coupon_results[0]['ID'], 'coupon_amount' ,true);
+					//$coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$usercoupon}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ",ARRAY_A);
+					//$additionalfee = get_post_meta( $coupon_results[0]['ID'], 'coupon_amount' ,true);
 					
-					if($subtotal == 0) {
-						$ordertotal = $subtotal + $tax;
-					}else{
-						
-						$ordertotal = $additionalfee + $tax;
-					}
+					$ordertotal = $subtotal + $tax + $product_price_added_total;
 
 					if(!empty($private_purchase_amount) && $private_purchase_amount > 0 ) {
                         
                         // elicheva - 20/01 the balance was not right,
                         //i don't understand how they calculate the balance
-                        $balance = $budget_in_kit - (int)$user_budget_left - $subtotal - $product_price_added_total + $private_purchase_amount ;
+                        $balance = $budget_in_kit - (int)$user_budget_left - $ordertotal + $private_purchase_amount ;
 
 						/*$halfbalance = $budget_in_kit - (int)$user_budget_left + $private_purchase_amount;
 						
@@ -1989,7 +1993,8 @@ add_action('woocommerce_after_checkout_form', function () {
                         //$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal - $product_price_added_total;
                         // elicheva - 20/01 the balance was not right,
                         //i don't understand how they calculate the balnce
-                        $balance = $budget_in_kit - (int)$user_budget_left - $subtotal - $product_price_added_total;
+                        //$balance = $budget_in_kit - (int)$user_budget_left - $subtotal - $product_price_added_total;
+						$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal;
 						/*if($ordertotal > $balance  && (empty($private_purchase_amount) || $private_purchase_amount == 0)) {
 							$show_error = 1;
 						}else{
@@ -2154,9 +2159,16 @@ add_action('woocommerce_after_checkout_form', function () {
 				$subtotal = WC()->cart->get_subtotal(true);
                 //$total = WC()->cart->get_totals('total')['total'];
                 $total = WC()->cart->get_cart_total();
+				//change 04/03/21 add tax to subtotal 
+				if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
+					$tax =  WC()->cart->get_subtotal_tax();
+				}else {
+					$tax = 0;
+				}
+				$ordertotal = $subtotal + $tax;
                 //$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
                 //change 21/01 - balance was not right
-                $balance = $budget_in_kit - (int)$user_budget_left - $subtotal - $product_price_added_total + $private_purchase_amount ;
+                $balance = $budget_in_kit - (int)$user_budget_left - $ordertotal + $private_purchase_amount ;
         
 
 				if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {

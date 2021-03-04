@@ -107,10 +107,10 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 			<tr class="cart-discount coupon-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
 				<th><?php wc_cart_totals_coupon_label( $coupon ); ?></th>
 				<td data-title="<?php echo esc_attr( wc_cart_totals_coupon_label( $coupon, false ) ); ?>">
-                    <?php if(true):?>
-                        <?php echo wc_price($coupon->amount);//wc_cart_totals_coupon_html( $coupon ); ?>
+                    <?php if(false):?>
+						<?php echo wc_price($coupon->amount); ?>
                     <?php endif;?>
-                    <?//php echo wc_price($coupon_amount) ?>
+					<?php wc_cart_totals_coupon_html( $coupon ); ?>
                 </td>
 			</tr>
 		<?php endforeach; ?>

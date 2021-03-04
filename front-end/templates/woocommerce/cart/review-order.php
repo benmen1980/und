@@ -152,7 +152,7 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 			<tr class="cart-discount coupon-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
 				<th colspan="2" ><?php wc_cart_totals_coupon_label( $coupon ); ?></th>
                 <?php if(true):?>
-                    <td><?php  echo wc_price($coupon->amount); //wc_cart_totals_coupon_html( $coupon ); ?>
+                    <td><?php  wc_cart_totals_coupon_html( $coupon ); ?>
                         <?//php echo wc_price($coupon_amount) ?>
                     </td>
                 <?php endif;?>
@@ -214,7 +214,8 @@ $current_customer = get_user_meta(get_current_user_id(), 'user_customer', true);
 
                         echo wc_price($final_total);
                     endif;
-                    echo $total;
+                    //echo $total;
+                    wc_cart_totals_order_total_html()
                     ?>
                 </td>
             </tr>
