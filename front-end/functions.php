@@ -460,6 +460,9 @@ function unidress_update_cart_validation($passed_validation)
 		}else {
 			$tax = 0;
 		}
+
+		$ordertotal = $subtotal + $tax;
+
 		$amount = $subtotal + $tax;
 		$total = WC()->cart->get_totals('total')['total'];
 		
@@ -471,12 +474,14 @@ function unidress_update_cart_validation($passed_validation)
 		}
 		$new_budget_in_kit = (float)($budget_in_kit + $private_amt);
         $new_budget_limits = (isset($user_budget_limits[$campaign_id][$kit_id]) ? (int)$user_budget_limits[$campaign_id][$kit_id] : 0) + (int)$amount;
-        $balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
+       // $balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
+		//change 04/03/21
+		$balance = $budget_in_kit - (int)$user_budget_left - $ordertotal + $private_purchase_amount;
 		if ($user_roles != 'hr_manager') {
 			// echo 'new_budget_in_kit :'.$new_budget_in_kit;
             // echo 'new_budget_ limit :'.$new_budget_limits; die;
-            
-			if ( $new_budget_in_kit < $new_budget_limits) {
+		//change 04/03/21    elicheva 
+			if ( $balance < 0) {
 				$passed_validation = false;
 				wc_add_notice(__('The total amount of the purchase exceeds the balance of your budget', 'unidress'), 'error');
 			}

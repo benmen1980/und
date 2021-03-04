@@ -748,7 +748,7 @@ if (wp_doing_ajax()) {
 			}else{
 				$finaltotal = $additionalfee;
 			}
-            $amount = $finaltotal + $tax ;
+            //$amount = $finaltotal + $tax ;
 
             // echo 'budgets_in_campaign ='.$budgets_in_campaign.'<br>';
             // echo 'unidress_budget = '.$unidress_budget.'<br>'; 
@@ -763,7 +763,7 @@ if (wp_doing_ajax()) {
 
             //$budget_total = (int)$budget_in_kit - (int)$user_budget_left - (int)$amount;
             // change 21/01/2021
-            $budget_total = (float)($budget_in_kit - (int)$user_budget_left - ($subtotal + $tax));
+            $budget_total = round((float)($budget_in_kit - (int)$user_budget_left - ($subtotal + $tax)),2);
             echo $budget_total;
         }
         die();
