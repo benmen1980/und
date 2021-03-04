@@ -3068,9 +3068,12 @@ function bbloomer_paypal_enable_manager( $available_gateways ) {
 		}
 	}
 	else{
-		if ( isset( $available_gateways['cod'] ) ) {
-			unset( $available_gateways['cod'] );
-		} 
+		if ( WC()->cart->needs_payment() ){
+			if ( isset( $available_gateways['cod'] ) ) {
+				unset( $available_gateways['cod'] );
+			} 
+		}
+		
 	}
    
    return $available_gateways;
