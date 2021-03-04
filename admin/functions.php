@@ -34,8 +34,8 @@ function unidress_style_script() {
 }
 
 //user's field
-add_filter('manage_users_columns', 'show_users_column');
-add_filter('manage_users_custom_column', 'show_users_column_content', 10, 3);
+//add_filter('manage_users_columns', 'show_users_column');
+//add_filter('manage_users_custom_column', 'show_users_column_content', 10, 3);
 
 //new post-type
 add_action('init', 'create_customers_post_type');
@@ -972,7 +972,7 @@ function add_users_table_filters($which) {
 	echo '</div>';
 
 }
-add_action('manage_users_extra_tablenav', 'add_users_table_filters');
+//add_action('manage_users_extra_tablenav', 'add_users_table_filters');
 
 // Clear One order limit when woocommerce cancelled order
 add_action('woocommerce_order_status_changed', function ($order_id, $from, $to) {
