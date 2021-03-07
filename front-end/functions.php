@@ -2750,9 +2750,8 @@ function unidress_required_products($data)
 // Cart validation
 
 //NIPL UN2-T39 coupon code
-add_action('woocommerce_cart_coupon', 'discount_on_order', 10, 1);
-//add_action('woocommerce_ajax_added_to_cart', 'discount_on_order',20);
-add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25, 1);
+//add_action('woocommerce_cart_coupon', 'discount_on_order', 10, 1);
+//add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25, 1);
 
 function discount_on_order($cart_updated) {
 	global $woocommerce;
