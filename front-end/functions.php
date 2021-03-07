@@ -1353,7 +1353,7 @@ function wc_remove_cart_tax_totals( $tax_totals, $instance ) {
 
 	return $tax_totals;
 }
-//add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
+add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
 
 // Show the cart total excluding tax.
 function wc_exclude_tax_cart_total( $total, $instance ) {
@@ -1376,15 +1376,15 @@ function wc_exclude_tax_cart_total( $total, $instance ) {
 	if($price_list_include_vat != 1 && 'excl' === get_option('woocommerce_tax_display_shop')){
 
 		$total = round( WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp );
-
+		$total =  round( WC()->cart->cart_contents_total + WC()->cart->fee_total, WC()->cart->dp );
 	}
 	$subtotal = WC()->cart->get_subtotal(true);
-	$addfee = get_user_meta($user_id,'additional_shipping_fee',true);
-	if($min_order_charge > 0 && $subtotal < $min_order_charge) {
-		$total = round($total - ($subtotal +  WC()->cart->fee_total));
-	}else{
-		$total = round($total - $subtotal);
-	}
+	// $addfee = get_user_meta($user_id,'additional_shipping_fee',true);
+	// if($min_order_charge > 0 && $subtotal < $min_order_charge) {
+	// 	$total = round($total - ($subtotal +  WC()->cart->fee_total));
+	// }else{
+	// 	$total = round($total - $subtotal);
+	// }
 
 	return $total;
 }
@@ -1976,8 +1976,8 @@ add_action('woocommerce_after_checkout_form', function () {
 					global $wpdb;
 					$usercoupon = get_user_meta($user_id,'last_used_coupon',true);
 					//echo $usercoupon;
-					//$coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$usercoupon}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ",ARRAY_A);
-					//$additionalfee = get_post_meta( $coupon_results[0]['ID'], 'coupon_amount' ,true);
+					$coupon_results = $wpdb->get_results( "SELECT p.ID,p.post_title,p.post_author,p.post_status from $wpdb->posts as p where p.post_title LIKE '%{$usercoupon}%' and p.post_author = {$user_id} AND p.post_status = 'publish' ",ARRAY_A);
+					$additionalfee = get_post_meta( $coupon_results[0]['ID'], 'coupon_amount' ,true);
 					
 					$ordertotal = $subtotal + $tax + $product_price_added_total;
 
@@ -2173,7 +2173,7 @@ add_action('woocommerce_after_checkout_form', function () {
 				$ordertotal = $subtotal + $tax;
                 //$balance = $budget_in_kit - (int)$user_budget_left - $total + $private_purchase_amount;
                 //change 21/01 - balance was not right
-                $balance = $budget_in_kit - (int)$user_budget_left - $ordertotal + $private_purchase_amount ;
+                $balance =  $budget_in_kit - $user_budget_left -  $ordertotal +  (int)$private_purchase_amount;
         
 
 				if(!empty($private_purchase_amount) && $private_purchase_amount > 0) {
