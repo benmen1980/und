@@ -2750,8 +2750,8 @@ function unidress_required_products($data)
 // Cart validation
 
 //NIPL UN2-T39 coupon code
-//add_action('woocommerce_cart_coupon', 'discount_on_order', 10, 1);
-//add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25, 1);
+add_action('woocommerce_cart_coupon', 'discount_on_order', 10, 1);
+add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25, 1);
 
 function discount_on_order($cart_updated) {
 	global $woocommerce;
@@ -2916,10 +2916,17 @@ function custom_add_to_cart($cart_object ) {
 	);
 	$user_id = get_current_user_id();
 	$customer_id        = get_user_meta($user_id, 'user_customer', true);
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
 	$campaign_id        = get_post_meta($customer_id, 'active_campaign', true);
 	$min_order_charge = get_post_meta($campaign_id, 'min_order_charge', true) ?: 0;
 	$shipping_price = get_post_meta($campaign_id, 'shipping_price', true) ?: 0;
 	$subtotal = WC()->cart->get_subtotal(true);
+	if('incl' === get_option('woocommerce_tax_display_shop') || $price_list_include_vat == 1) {
+		$tax =  WC()->cart->get_subtotal_tax();
+	}else {
+		$tax = 0;
+	}
+	$subtotal+= $tax;
 	$total_w_shipping = $subtotal - $shipping_price;
 
 
