@@ -193,7 +193,7 @@ function custom_cart_totals_order_total_html( $amount_total ){
     return $amount_total;
 }
 
-add_filter( 'woocommerce_cart_totals_order_total_html', 'custom_cart_totals_order_total_html', 20, 1 );
+//add_filter( 'woocommerce_cart_totals_order_total_html', 'custom_cart_totals_order_total_html', 20, 1 );
 
 
 
@@ -1356,39 +1356,26 @@ function wc_remove_cart_tax_totals( $tax_totals, $instance ) {
 add_filter( 'woocommerce_cart_tax_totals', 'wc_remove_cart_tax_totals', 10, 2 );
 
 // Show the cart total excluding tax.
-function wc_exclude_tax_cart_total( $total, $instance ) {
-	global $wpdb;
-	$user_id            = get_current_user_id();
-	$customer_id        = get_user_meta($user_id, 'user_customer', true);
-	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);
-	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);
-	$product_option     = get_post_meta($active_campaign, 'product_option', true);
-	$customer_type      = get_post_meta($customer_id, 'customer_type', true);
-	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);
-	$min_order_charge = get_post_meta($active_campaign, 'min_order_charge', true) ?: 0;
-	if ($customer_type == "project") {
-		$kit_id      = 0;
-	} else {
-		$kit_id      = get_user_meta($user_id, 'user_kit', true);
-	}
-	$rate = '';
-
-	if($price_list_include_vat != 1 && 'excl' === get_option('woocommerce_tax_display_shop')){
-
-		$total = round( WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp );
-		$total =  round( WC()->cart->cart_contents_total + WC()->cart->fee_total, WC()->cart->dp );
-	}
-	$subtotal = WC()->cart->get_subtotal(true);
-	// $addfee = get_user_meta($user_id,'additional_shipping_fee',true);
-	// if($min_order_charge > 0 && $subtotal < $min_order_charge) {
-	// 	$total = round($total - ($subtotal +  WC()->cart->fee_total));
-	// }else{
-	// 	$total = round($total - $subtotal);
-	// }
-
-	return $total;
+function wc_exclude_tax_cart_total( $total, $instance ) {	
+	$user_id            = get_current_user_id();	
+	$customer_id        = get_user_meta($user_id, 'user_customer', true);	
+	$active_campaign    = get_post_meta($customer_id, 'active_campaign', true);	
+	$budget_by_point 	= get_post_meta($active_campaign, 'budget_by_points',  true);	
+	$product_option     = get_post_meta($active_campaign, 'product_option', true);	
+	$customer_type      = get_post_meta($customer_id, 'customer_type', true);	
+	$price_list_include_vat = get_post_meta($customer_id, 'price_list_include_vat',  true);	
+	if ($customer_type == "project") {	
+		$kit_id      = 0;	
+	} else {	
+		$kit_id      = get_user_meta($user_id, 'user_kit', true);	
+	}	
+	$rate = '';	
+	if($price_list_include_vat != 1 && 'excl' === get_option('woocommerce_tax_display_shop')){	
+		$total = round( WC()->cart->cart_contents_total + WC()->cart->shipping_total + WC()->cart->fee_total, WC()->cart->dp );	
+	}	
+	return $total;	
 }
-//add_filter( 'woocommerce_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
+add_filter( 'woocommerce_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
 
 //add_filter( 'woocommerce_subscriptions_calculated_total', 'wc_exclude_tax_cart_total', 10, 2 );
 
@@ -2750,10 +2737,10 @@ function unidress_required_products($data)
 // Cart validation
 
 //NIPL UN2-T39 coupon code
-add_action('woocommerce_cart_coupon', 'discount_on_order', 10, 1);
-add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25, 1);
+add_action('woocommerce_cart_coupon', 'discount_on_order', 10);
+add_action('woocommerce_update_cart_action_cart_updated', 'discount_on_order', 25);
 
-function discount_on_order($cart_updated) {
+function discount_on_order() {
 	global $woocommerce;
 	global $order,$wpdb;
     
