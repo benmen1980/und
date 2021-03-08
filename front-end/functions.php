@@ -193,7 +193,7 @@ function custom_cart_totals_order_total_html( $amount_total ){
     return $amount_total;
 }
 
-//add_filter( 'woocommerce_cart_totals_order_total_html', 'custom_cart_totals_order_total_html', 20, 1 );
+add_filter( 'woocommerce_cart_totals_order_total_html', 'custom_cart_totals_order_total_html', 20, 1 );
 
 
 
@@ -3084,3 +3084,4 @@ function bbloomer_paypal_enable_manager( $available_gateways ) {
    
    return $available_gateways;
 }
+
