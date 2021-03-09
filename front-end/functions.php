@@ -3031,7 +3031,7 @@ function my_added_login_field(){
 add_filter( 'woocommerce_coupon_error', 'wp_coupon_error', 10, 2 );
 
 function wp_coupon_error( $err, $err_code ) {
-	return ( '103' == $err_code ) ? '' : $err;
+	return ( '103' == $err_code ||  '106' == $err_code ) ? '' : $err;
 }
 
 
